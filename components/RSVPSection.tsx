@@ -134,9 +134,14 @@ export default function RSVPSection() {
                 /* Form */
                 <motion.div key="form">
                   <div className="w-10 h-px bg-blush mb-9" />
-                  <p className="font-sans uppercase text-warm-gray mb-3"
-                    style={{ fontSize: '0.75rem', letterSpacing: '0.45em' }}>
-                    {t.respondBy}
+                  <p className="font-sans uppercase text-warm-gray mb-2"
+                    style={{ fontSize: '0.72rem', letterSpacing: '0.45em' }}>
+                    {t.rsvpDeadlineLabel}
+                  </p>
+                  {/* Deadline date — visually prominent */}
+                  <p className="font-serif italic mb-7"
+                    style={{ fontSize: 'clamp(1.3rem, 3.5vw, 1.8rem)', color: '#6E1A28' }}>
+                    {t.deadline}
                   </p>
                   <h2 className="font-serif leading-[1.15] text-charcoal mb-10"
                     style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', whiteSpace: 'pre-line' }}>

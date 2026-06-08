@@ -28,10 +28,15 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
             {/* ── Left: Invitation ── */}
             <div>
               <div className="w-10 h-px bg-blush mb-9" />
-              <h2 className="font-serif leading-[1.15] text-charcoal mb-7"
+              <h2 className="font-serif leading-[1.15] text-charcoal mb-5"
                 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.8rem)' }}>
                 {t.inviteHeading}
               </h2>
+              {/* Event dates — prominent */}
+              <p className="font-serif italic mb-7"
+                style={{ fontSize: 'clamp(1.1rem, 2.8vw, 1.45rem)', color: '#6E1A28' }}>
+                {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
+              </p>
               <p className="font-sans font-light leading-[1.95] text-stone mb-8"
                 style={{ fontSize: '1.05rem' }}>
                 {t.inviteBody1}
