@@ -179,13 +179,13 @@ export default function RSVPSection() {
                       </div>
                     </div>
 
-                    {/* Conditional fields */}
+                    {/* Conditional fields — NO height animation, NO overflow-hidden (blocks inputs on mobile) */}
                     <AnimatePresence>
                       {attending === 'yes' && (
                         <motion.div key="yes-fields"
-                          initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.35, ease: EASE }}
-                          className="overflow-hidden space-y-8">
+                          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
+                          className="space-y-8">
 
                           {/* Guest count */}
                           <div className="space-y-2">
