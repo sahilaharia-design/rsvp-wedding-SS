@@ -202,36 +202,34 @@ export default function RSVPSection() {
                             />
                           </div>
 
-                          {/* Dynamic guest names */}
-                          <AnimatePresence>
-                            {guestNames.length > 0 && (
-                              <motion.div key="names"
-                                initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3, ease: EASE }}
-                                className="overflow-hidden space-y-6">
-                                <p className={labelCls} style={labelStyle}>{t.guestNames}</p>
-                                {guestNames.map((name, i) => (
-                                  <motion.div key={i}
-                                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.25, delay: i * 0.06 }}
-                                    className="space-y-1">
-                                    <label className="block font-sans uppercase text-warm-gray/70"
-                                      style={{ fontSize: '0.68rem', letterSpacing: '0.3em' }}>
-                                      {t.guestLabel} {i + 1}
-                                    </label>
-                                    <input type="text" value={name}
-                                      onChange={(e) => {
-                                        const u = [...guestNames]; u[i] = e.target.value; setGuestNames(u)
-                                      }}
-                                      placeholder={`${t.guestLabel} ${i + 1} full name`}
-                                      className="w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-2.5 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200"
-                                      style={{ fontSize: '0.95rem' }}
-                                    />
-                                  </motion.div>
-                                ))}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
+                          {/* Dynamic guest names — plain divs, no overflow:hidden (breaks input focus) */}
+                          {guestNames.length > 0 && (
+                            <div className="space-y-6">
+                              <p className={labelCls} style={labelStyle}>{t.guestNames}</p>
+                              {guestNames.map((name, i) => (
+                                <div key={i} className="space-y-1">
+                                  <label className="block font-sans uppercase text-warm-gray/70"
+                                    style={{ fontSize: '0.68rem', letterSpacing: '0.3em' }}>
+                                    {t.guestLabel} {i + 1}
+                                  </label>
+                                  <input
+                                    type="text"
+                                    autoComplete="off"
+                                    autoCorrect="off"
+                                    value={name}
+                                    onChange={(e) => {
+                                      const u = [...guestNames]
+                                      u[i] = e.target.value
+                                      setGuestNames(u)
+                                    }}
+                                    placeholder={`${t.guestLabel} ${i + 1} full name`}
+                                    className="w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-2.5 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200"
+                                    style={{ fontSize: '0.95rem' }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
 
                           {/* Travel mode */}
                           <div className="space-y-4">
