@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
-import path from 'path'
 
-// ── Local JSON fallback (dev without Supabase) ──────────────────────────────
+// ── Local JSON fallback (dev only — Vercel FS is read-only) ──────────────────
 const IS_DEV = process.env.NODE_ENV === 'development'
-const LOCAL_FILE = IS_DEV ? require('path').join(process.cwd(), '.rsvp-local.json') : ''
+const LOCAL_FILE = IS_DEV
+  ? require('path').join(process.cwd(), '.rsvp-local.json')
+  : ''
 
 function localRead(): Record<string, unknown>[] {
   if (!IS_DEV) return []
@@ -23,85 +24,18 @@ function localWrite(rows: Record<string, unknown>[]) {
 
 async function appendToSheet(payload: Record<string, unknown>) {
   const url = process.env.APPS_SCRIPT_URL
-  if (!url) return
+  if (!url || url === 'PENDING') return
   try {
-    await fetch(url, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload),
     })
+    if (!res.ok) {
+      console.error('Apps Script non-OK response:', res.status)
+    }
   } catch (e) {
     console.error('Apps Script append error:', e)
-  }
-}
-
-async function sendThankYouEmail(name: string, email: string, attending: boolean) {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return
-  try {
-    const nodemailer = await import('nodemailer')
-    const transporter = nodemailer.default.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-    })
-
-    const attendingHtml = attending
-      ? `<p style="font-family:Arial,sans-serif;font-size:14px;line-height:1.85;color:#4A4540;margin:0 0 14px;">
-           Thank you for confirming your presence. We are so looking forward to celebrating with you in Delhi, India.
-         </p>
-         <p style="font-family:Arial,sans-serif;font-size:14px;line-height:1.85;color:#4A4540;margin:0;">
-           We will be in touch with further details as we get closer to January 2027.
-         </p>`
-      : `<p style="font-family:Arial,sans-serif;font-size:14px;line-height:1.85;color:#4A4540;margin:0;">
-           We understand, and thank you so much for letting us know. You will be missed — we hope to celebrate with you again soon.
-         </p>`
-
-    const html = `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background-color:#FAF6F0;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#FAF6F0;padding:40px 16px;">
-    <tr><td align="center">
-      <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;background-color:#FAF6F0;">
-        <tr><td align="center" style="padding:40px 40px 24px;">
-          <p style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#8B8580;margin:0 0 16px;">Save the Date</p>
-          <div style="width:40px;height:1px;background:#D4A99A;margin:0 auto 18px;"></div>
-          <h1 style="font-family:Georgia,serif;font-style:italic;font-size:32px;color:#18181B;margin:0 0 10px;line-height:1.1;">#SakshiKoMilaKinara</h1>
-          <p style="font-family:Georgia,serif;font-size:17px;color:#4A4540;margin:0;">Sakshi &amp; Dr. Sahil</p>
-        </td></tr>
-        <tr><td style="padding:0 40px;"><div style="height:1px;background:#EDE8DF;"></div></td></tr>
-        <tr><td style="padding:28px 40px;">
-          <p style="font-family:Arial,sans-serif;font-size:14px;line-height:1.85;color:#4A4540;margin:0 0 14px;">Dear ${name},</p>
-          ${attendingHtml}
-        </td></tr>
-        <tr><td style="padding:0 40px 28px;">
-          <p style="font-family:Arial,sans-serif;font-size:14px;line-height:1.85;color:#4A4540;margin:0 0 4px;">With love,</p>
-          <p style="font-family:Georgia,serif;font-size:16px;color:#18181B;margin:0 0 6px;">Sakshi &amp; Dr. Sahil</p>
-          <p style="font-family:Georgia,serif;font-style:italic;font-size:14px;color:#D4A99A;margin:0;">#SakshiKoMilaKinara</p>
-        </td></tr>
-        <tr><td style="padding:0 40px 40px;">
-          <div style="border-top:1px solid #EDE8DF;border-bottom:1px solid #EDE8DF;padding:20px 0;text-align:center;">
-            <p style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#8B8580;margin:0 0 8px;">The Celebration</p>
-            <p style="font-family:Georgia,serif;font-size:20px;color:#18181B;margin:0 0 4px;">20 &ndash; 21 January 2027</p>
-            <p style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#8B8580;margin:0;">Delhi, India</p>
-          </div>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`
-
-    await transporter.sendMail({
-      from: `"Sakshi & Dr. Sahil" <${process.env.GMAIL_USER}>`,
-      to: email,
-      subject: '#SakshiKoMilaKinara — Thank You',
-      html,
-    })
-  } catch (e) {
-    console.error('Email send error:', e)
   }
 }
 
@@ -111,9 +45,9 @@ export async function POST(request: NextRequest) {
   let body: {
     full_name?: string
     mobile_number?: string
-    email?: string
     attending?: boolean
     guest_count?: number
+    guest_names?: string[]
     travel_mode?: string
   }
 
@@ -123,7 +57,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
   }
 
-  const { full_name, mobile_number, email, attending, guest_count, travel_mode } = body
+  const { full_name, mobile_number, attending, guest_count, guest_names, travel_mode } = body
 
   if (!full_name?.trim() || !mobile_number?.trim() || attending === undefined) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
@@ -156,9 +90,9 @@ export async function POST(request: NextRequest) {
     const { error } = await db.from('rsvp').insert({
       full_name: full_name.trim(),
       mobile_number: normalised,
-      email: email?.trim() ?? null,
       attending,
-      guest_count: attending ? (guest_count ?? 1) : null,
+      guest_count: attending ? (guest_count ?? 0) : null,
+      guest_names: attending && guest_names?.length ? guest_names.join(', ') : null,
       travel_mode: attending ? (travel_mode ?? null) : null,
     })
 
@@ -180,29 +114,25 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
       full_name: full_name.trim(),
       mobile_number: normalised,
-      email: email?.trim() ?? null,
       attending,
-      guest_count: attending ? (guest_count ?? 1) : null,
+      guest_count: attending ? (guest_count ?? 0) : null,
+      guest_names: attending && guest_names?.length ? guest_names.join(', ') : null,
       travel_mode: attending ? (travel_mode ?? null) : null,
     })
     localWrite(rows)
   }
 
-  // Fire-and-forget — RSVP response is not gated on these
+  // Await the sheet append — do NOT use void. Vercel terminates on return.
   const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-  void appendToSheet({
+  await appendToSheet({
     timestamp,
     full_name: full_name.trim(),
     mobile: normalised,
-    email: email?.trim() ?? '',
     attending: attending ? 'Yes' : 'No',
-    guests: attending ? (guest_count ?? 1) : 0,
+    guests: attending ? (guest_count ?? 0) : 0,
+    guest_names: attending && guest_names?.length ? guest_names.join(', ') : '',
     travel_mode: attending ? (travel_mode ?? '') : '',
   })
-
-  if (email?.trim()) {
-    void sendThankYouEmail(full_name.trim(), email.trim(), attending)
-  }
 
   return NextResponse.json({ success: true })
 }

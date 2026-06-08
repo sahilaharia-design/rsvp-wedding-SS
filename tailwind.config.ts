@@ -10,6 +10,7 @@ const config: Config = {
       fontFamily: {
         serif: ['var(--font-cormorant)', 'Georgia', 'serif'],
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-allura)', 'cursive'],
       },
       colors: {
         cream: '#FAF6F0',
@@ -20,6 +21,9 @@ const config: Config = {
         blush: '#D4A99A',
         'rose-gold': '#C4956A',
         parchment: '#EDE8DF',
+        burgundy: '#6E1A28',
+        'dark-brown': '#2C1810',
+        'kinara-bg': '#F5EDE2',
       },
       letterSpacing: {
         luxury: '0.3em',

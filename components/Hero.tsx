@@ -11,8 +11,8 @@ interface HeroProps {
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
 const fade = (delay = 0) => ({
-  hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1, delay, ease: EASE } },
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay, ease: EASE } },
 })
 
 export default function Hero({ onRSVPClick }: HeroProps) {
@@ -23,7 +23,7 @@ export default function Hero({ onRSVPClick }: HeroProps) {
 
   return (
     <section id="hero" className="relative h-screen overflow-hidden">
-      {/* Photo fills entire screen */}
+      {/* Photo fills screen */}
       <div
         className="absolute inset-0"
         style={imgError ? { background: placeholderBg } : undefined}
@@ -42,41 +42,56 @@ export default function Hero({ onRSVPClick }: HeroProps) {
       </div>
 
       {/* Top vignette */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 30%)' }} />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.25) 28%, transparent 55%)' }}
+      />
 
-      {/* Bottom gradient — strong dark band for text legibility */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.88) 22%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.15) 70%, transparent 100%)' }} />
+      {/* Bottom gradient */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.88) 20%, rgba(0,0,0,0.5) 42%, transparent 70%)' }}
+      />
 
-      {/* Save The Date badge — top left */}
+      {/* ── SAVE THE DATE — top centre, bold ── */}
       <motion.div
-        className="absolute top-8 left-7 md:left-14 flex items-center gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.3, ease: EASE }}
+        className="absolute top-0 left-0 right-0 flex flex-col items-center pt-8 md:pt-10"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.1, delay: 0.2, ease: EASE }}
       >
-        <div className="h-px w-6 bg-white/50" />
-        <p className="font-sans text-[8px] md:text-[9px] tracking-[0.5em] uppercase text-white/60">
-          Save the Date
+        <p
+          className="font-sans font-light text-white tracking-[0.6em] uppercase text-center"
+          style={{ fontSize: 'clamp(0.85rem, 2.8vw, 1.4rem)', letterSpacing: '0.55em' }}
+        >
+          Save&nbsp;&nbsp;the&nbsp;&nbsp;Date
         </p>
+        <motion.div
+          className="mt-3 h-px bg-white/35"
+          style={{ originX: 0.5 }}
+          initial={{ scaleX: 0, width: '120px' }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.9, delay: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        />
       </motion.div>
 
-      {/* All text — overlaid at bottom, unified for mobile + desktop */}
+      {/* ── Bottom text block ── */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 px-7 md:px-14 pb-10 md:pb-14"
         initial="hidden"
         animate="visible"
-        variants={{ visible: { transition: { staggerChildren: 0.13 } } }}
+        variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
       >
-        {/* Hashtag — the centrepiece */}
+        {/* Hashtag — display script */}
         <motion.h1
           variants={fade(0)}
-          className="font-serif italic leading-none text-white mb-5 md:mb-6"
-          style={{ fontSize: 'clamp(1.5rem, 7.2vw, 7.5rem)' }}
+          className="font-display text-white leading-none mb-5"
+          style={{ fontSize: 'clamp(1.8rem, 7.5vw, 7rem)' }}
         >
           #SakshiKoMilaKinara
         </motion.h1>
 
-        {/* Names + date + CTA row */}
+        {/* Names + date row */}
         <motion.div
           variants={fade(0.1)}
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-10"
@@ -85,15 +100,15 @@ export default function Hero({ onRSVPClick }: HeroProps) {
             <p className="font-serif text-[1.35rem] md:text-[1.75rem] text-white/90 mb-2">
               Sakshi &amp; Dr. Sahil
             </p>
-            <p className="font-sans text-[10px] tracking-[0.22em] uppercase text-white/55">
-              Wednesday &amp; Thursday &middot; 20 &ndash; 21 January 2027 &middot; Delhi, India
+            <p className="font-sans text-[9px] tracking-[0.2em] uppercase text-white/50">
+              20 &ndash; 21 January 2027 &nbsp;&middot;&nbsp; Pitampura, Delhi, India
             </p>
           </div>
 
           <motion.div variants={fade(0.2)} className="flex-shrink-0">
             <button
               onClick={onRSVPClick}
-              className="px-9 md:px-10 py-3.5 md:py-4 border border-white/65 text-white font-sans text-[10px] tracking-[0.3em] uppercase hover:bg-white hover:text-charcoal transition-all duration-300 w-full md:w-auto text-center"
+              className="px-9 md:px-10 py-3.5 md:py-4 border border-white/60 text-white font-sans text-[9px] tracking-[0.3em] uppercase hover:bg-white hover:text-charcoal transition-all duration-300 w-full md:w-auto text-center"
             >
               Confirm Attendance
             </button>
