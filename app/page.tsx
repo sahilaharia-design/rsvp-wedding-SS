@@ -3,7 +3,6 @@
 import { useCallback } from 'react'
 import Hero from '@/components/Hero'
 import MessageSection from '@/components/MessageSection'
-import StatementSection from '@/components/StatementSection'
 import RSVPSection from '@/components/RSVPSection'
 import StickyRSVP from '@/components/StickyRSVP'
 import GrandReveal from '@/components/GrandReveal'
@@ -21,8 +20,7 @@ export default function Home() {
       <LanguageSwitcher />
       <main>
         <Hero onRSVPClick={scrollToRSVP} />
-        <StatementSection />
-        <MessageSection onRSVPClick={scrollToRSVP} />
+<MessageSection onRSVPClick={scrollToRSVP} />
         <RSVPSection />
 
         <footer className="px-7 md:px-14 py-12 border-t border-parchment text-center bg-cream">
