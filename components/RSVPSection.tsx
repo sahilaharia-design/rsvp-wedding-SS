@@ -2,15 +2,22 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { useLang } from '@/contexts/Language'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error' | 'duplicate'
 type TravelMode = 'flight' | 'train' | 'road'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
+const labelCls = 'block font-sans uppercase text-warm-gray'
+const labelStyle = { fontSize: '0.72rem', letterSpacing: '0.35em' }
+const inputCls = 'w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-3 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200'
+const inputStyle = { fontSize: '1rem' }
+
 export default function RSVPSection() {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
+  const { t } = useLang()
 
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -19,15 +26,12 @@ export default function RSVPSection() {
   const [guestNames, setGuestNames] = useState<string[]>([])
   const [travelMode, setTravelMode] = useState<TravelMode | null>(null)
 
-  // Sync guestNames array length when count changes
   useEffect(() => {
     const n = parseInt(guestCountStr) || 0
     const clamped = Math.min(Math.max(n, 0), 10)
     setGuestNames((prev) => {
       if (clamped === prev.length) return prev
-      if (clamped > prev.length) {
-        return [...prev, ...Array(clamped - prev.length).fill('')]
-      }
+      if (clamped > prev.length) return [...prev, ...Array(clamped - prev.length).fill('')]
       return prev.slice(0, clamped)
     })
   }, [guestCountStr])
@@ -55,9 +59,7 @@ export default function RSVPSection() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        full_name,
-        mobile_number,
-        attending: isAttending,
+        full_name, mobile_number, attending: isAttending,
         guest_count: isAttending ? guestCount : 0,
         guest_names: isAttending ? guestNames.filter((n) => n.trim()) : [],
         travel_mode: isAttending ? travelMode : undefined,
@@ -65,32 +67,20 @@ export default function RSVPSection() {
     })
 
     const json = await res.json()
-
-    if (res.status === 409) {
-      setFormState('duplicate')
-      return
-    }
-
+    if (res.status === 409) { setFormState('duplicate'); return }
     if (!res.ok) {
       setErrorMsg(json.error ?? 'Something went wrong. Please try again.')
       setFormState('error')
       return
     }
-
     setFormState('success')
   }
 
   return (
     <section id="rsvp" ref={ref} className="bg-ivory relative overflow-hidden">
-      {/* Background RSVP lettering */}
-      <div
-        className="absolute left-[-2%] top-1/2 -translate-y-1/2 pointer-events-none select-none"
-        aria-hidden
-      >
-        <span
-          className="font-serif italic leading-none text-charcoal/[0.03]"
-          style={{ fontSize: 'clamp(120px, 16vw, 240px)' }}
-        >
+      <div className="absolute left-[-2%] top-1/2 -translate-y-1/2 pointer-events-none select-none" aria-hidden>
+        <span className="font-serif italic leading-none text-charcoal/[0.03]"
+          style={{ fontSize: 'clamp(120px, 16vw, 240px)' }}>
           RSVP
         </span>
       </div>
@@ -103,195 +93,139 @@ export default function RSVPSection() {
             transition={{ duration: 0.9, ease: EASE }}
           >
             <AnimatePresence mode="wait">
-              {/* ── Success state ── */}
+              {/* Success */}
               {formState === 'success' ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.97 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="py-14 text-center"
-                >
+                <motion.div key="success" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="py-14 text-center">
                   <div className="w-10 h-px bg-blush mx-auto mb-10" />
-                  <p className="font-sans text-[9px] tracking-[0.4em] uppercase text-warm-gray mb-6">
-                    Response Received
+                  <p className="font-sans uppercase text-warm-gray mb-6"
+                    style={{ fontSize: '0.75rem', letterSpacing: '0.4em' }}>
+                    {t.responseReceived}
                   </p>
-                  <h2 className="font-serif text-[2.2rem] md:text-[2.8rem] italic leading-[1.2] text-charcoal mb-6">
-                    Thank you.
+                  <h2 className="font-serif italic leading-[1.2] text-charcoal mb-6"
+                    style={{ fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
+                    {t.thankYou}
                   </h2>
-                  <p className="font-sans font-light text-[0.9rem] leading-[1.9] text-stone mb-8">
-                    Your response has been received.
-                    <br />
-                    We&apos;re looking forward to celebrating together.
+                  <p className="font-sans font-light leading-[1.9] text-stone mb-8"
+                    style={{ fontSize: '1.05rem' }}>
+                    {t.thankYouBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
                   </p>
-                  <p className="font-serif text-[1.1rem] text-charcoal mb-3">
-                    With love, Sakshi &amp; Sahil
+                  <p className="font-serif text-charcoal mb-3" style={{ fontSize: '1.15rem' }}>
+                    {t.withLove}
                   </p>
-                  <p className="font-display text-[1.6rem] text-blush">
+                  <p className="font-display text-blush" style={{ fontSize: '1.8rem' }}>
                     #SakshiKoMilaKinara
                   </p>
                 </motion.div>
 
               ) : formState === 'duplicate' ? (
-                <motion.div
-                  key="duplicate"
-                  initial={{ opacity: 0, scale: 0.97 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }}
-                  className="py-14 text-center"
-                >
+                <motion.div key="duplicate" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6 }} className="py-14 text-center">
                   <div className="w-10 h-px bg-blush mx-auto mb-10" />
-                  <h2 className="font-serif text-[2rem] italic text-charcoal mb-5">
-                    Already received.
+                  <h2 className="font-serif italic text-charcoal mb-5" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)' }}>
+                    {t.alreadyReceived}
                   </h2>
-                  <p className="font-sans font-light text-[0.9rem] leading-[1.9] text-stone">
-                    We already have your response on file.
-                    <br />
-                    Thank you — see you in Pitampura, Delhi.
+                  <p className="font-sans font-light leading-[1.9] text-stone" style={{ fontSize: '1.05rem' }}>
+                    {t.alreadyBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
                   </p>
                 </motion.div>
 
               ) : (
-                /* ── Form ── */
+                /* Form */
                 <motion.div key="form">
                   <div className="w-10 h-px bg-blush mb-9" />
-
-                  <p className="font-sans text-[9px] tracking-[0.45em] uppercase text-warm-gray mb-3">
-                    Kindly respond by 18 June 2026
+                  <p className="font-sans uppercase text-warm-gray mb-3"
+                    style={{ fontSize: '0.75rem', letterSpacing: '0.45em' }}>
+                    {t.respondBy}
                   </p>
-                  <h2 className="font-serif text-[1.9rem] md:text-[2.5rem] leading-[1.15] text-charcoal mb-10">
-                    Confirm Your
-                    <br />
-                    Presence
+                  <h2 className="font-serif leading-[1.15] text-charcoal mb-10"
+                    style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', whiteSpace: 'pre-line' }}>
+                    {t.confirmPresence}
                   </h2>
 
                   <form onSubmit={handleSubmit} className="space-y-8">
                     {/* Full Name */}
                     <div className="space-y-2">
-                      <label className="block font-sans text-[9px] tracking-[0.35em] uppercase text-warm-gray">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        name="full_name"
-                        required
-                        placeholder="Your name"
-                        className="w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-3 font-sans text-[0.95rem] text-charcoal placeholder:text-parchment transition-colors duration-200"
-                      />
+                      <label className={labelCls} style={labelStyle}>{t.fullName}</label>
+                      <input type="text" name="full_name" required
+                        placeholder="Your name" className={inputCls} style={inputStyle} />
                     </div>
 
                     {/* Mobile */}
                     <div className="space-y-2">
-                      <label className="block font-sans text-[9px] tracking-[0.35em] uppercase text-warm-gray">
-                        Mobile Number
-                      </label>
-                      <input
-                        type="tel"
-                        name="mobile_number"
-                        required
-                        placeholder="10-digit mobile number"
-                        className="w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-3 font-sans text-[0.95rem] text-charcoal placeholder:text-parchment transition-colors duration-200"
-                      />
+                      <label className={labelCls} style={labelStyle}>{t.mobile}</label>
+                      <input type="tel" name="mobile_number" required
+                        placeholder="10-digit mobile number" className={inputCls} style={inputStyle} />
                     </div>
 
                     {/* Attendance */}
                     <div className="space-y-4">
-                      <label className="block font-sans text-[9px] tracking-[0.35em] uppercase text-warm-gray">
-                        Will you be attending?
-                      </label>
+                      <label className={labelCls} style={labelStyle}>{t.attending}</label>
                       <div className="flex gap-8">
                         <label className="flex items-center gap-3 cursor-pointer group">
-                          <input
-                            type="radio"
-                            name="attending"
-                            value="yes"
-                            required
-                            onChange={() => setAttending('yes')}
-                          />
-                          <span className="font-sans text-[0.9rem] text-stone group-hover:text-charcoal transition-colors">
-                            Yes, I&apos;ll be there
+                          <input type="radio" name="attending" value="yes" required onChange={() => setAttending('yes')} />
+                          <span className="font-sans text-stone group-hover:text-charcoal transition-colors"
+                            style={{ fontSize: '1rem' }}>
+                            {t.yesAttend}
                           </span>
                         </label>
                         <label className="flex items-center gap-3 cursor-pointer group">
-                          <input
-                            type="radio"
-                            name="attending"
-                            value="no"
-                            onChange={() => setAttending('no')}
-                          />
-                          <span className="font-sans text-[0.9rem] text-stone group-hover:text-charcoal transition-colors">
-                            Unable to attend
+                          <input type="radio" name="attending" value="no" onChange={() => setAttending('no')} />
+                          <span className="font-sans text-stone group-hover:text-charcoal transition-colors"
+                            style={{ fontSize: '1rem' }}>
+                            {t.noAttend}
                           </span>
                         </label>
                       </div>
                     </div>
 
-                    {/* Conditional attending fields */}
+                    {/* Conditional fields */}
                     <AnimatePresence>
                       {attending === 'yes' && (
-                        <motion.div
-                          key="attending-fields"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.35, ease: EASE }}
-                          className="overflow-hidden space-y-8"
-                        >
-                          {/* Number of additional guests */}
+                        <motion.div key="yes-fields"
+                          initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.35, ease: EASE }}
+                          className="overflow-hidden space-y-8">
+
+                          {/* Guest count */}
                           <div className="space-y-2">
-                            <label className="block font-sans text-[9px] tracking-[0.35em] uppercase text-warm-gray">
-                              How many guests are you bringing?
-                            </label>
-                            <p className="font-sans text-[11px] text-warm-gray/70">
-                              Enter 0 if you&apos;re attending alone
+                            <label className={labelCls} style={labelStyle}>{t.guestCount}</label>
+                            <p className="font-sans text-warm-gray/70" style={{ fontSize: '0.85rem' }}>
+                              {t.guestCountNote}
                             </p>
-                            <input
-                              type="number"
-                              min="0"
-                              max="10"
+                            <input type="number" min="0" max="10"
                               value={guestCountStr}
                               onChange={(e) => setGuestCountStr(e.target.value)}
                               placeholder="0"
-                              className="w-24 bg-transparent border-b border-parchment focus:border-charcoal outline-none py-3 font-sans text-[0.95rem] text-charcoal placeholder:text-parchment transition-colors duration-200"
+                              className="w-24 bg-transparent border-b border-parchment focus:border-charcoal outline-none py-3 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200"
+                              style={inputStyle}
                             />
                           </div>
 
-                          {/* Dynamic guest name fields */}
+                          {/* Dynamic guest names */}
                           <AnimatePresence>
                             {guestNames.length > 0 && (
-                              <motion.div
-                                key="guest-names"
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.3, ease: EASE }}
-                                className="overflow-hidden space-y-6"
-                              >
-                                <p className="font-sans text-[9px] tracking-[0.35em] uppercase text-warm-gray">
-                                  Guest Names
-                                </p>
+                              <motion.div key="names"
+                                initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3, ease: EASE }}
+                                className="overflow-hidden space-y-6">
+                                <p className={labelCls} style={labelStyle}>{t.guestNames}</p>
                                 {guestNames.map((name, i) => (
-                                  <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 8 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                  <motion.div key={i}
+                                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.25, delay: i * 0.06 }}
-                                    className="space-y-1"
-                                  >
-                                    <label className="block font-sans text-[8px] tracking-[0.3em] uppercase text-warm-gray/70">
-                                      Guest {i + 1}
+                                    className="space-y-1">
+                                    <label className="block font-sans uppercase text-warm-gray/70"
+                                      style={{ fontSize: '0.68rem', letterSpacing: '0.3em' }}>
+                                      {t.guestLabel} {i + 1}
                                     </label>
-                                    <input
-                                      type="text"
-                                      value={name}
+                                    <input type="text" value={name}
                                       onChange={(e) => {
-                                        const updated = [...guestNames]
-                                        updated[i] = e.target.value
-                                        setGuestNames(updated)
+                                        const u = [...guestNames]; u[i] = e.target.value; setGuestNames(u)
                                       }}
-                                      placeholder={`Guest ${i + 1} full name`}
-                                      className="w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-2.5 font-sans text-[0.9rem] text-charcoal placeholder:text-parchment transition-colors duration-200"
+                                      placeholder={`${t.guestLabel} ${i + 1} full name`}
+                                      className="w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-2.5 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200"
+                                      style={{ fontSize: '0.95rem' }}
                                     />
                                   </motion.div>
                                 ))}
@@ -301,25 +235,18 @@ export default function RSVPSection() {
 
                           {/* Travel mode */}
                           <div className="space-y-4">
-                            <label className="block font-sans text-[9px] tracking-[0.35em] uppercase text-warm-gray">
-                              How are you planning to travel to Delhi?
-                            </label>
+                            <label className={labelCls} style={labelStyle}>{t.travelMode}</label>
                             <div className="flex flex-wrap gap-x-7 gap-y-3">
-                              {(
-                                [
-                                  { value: 'flight', label: 'By Flight' },
-                                  { value: 'train', label: 'By Train' },
-                                  { value: 'road', label: 'By Road' },
-                                ] as { value: TravelMode; label: string }[]
-                              ).map(({ value, label }) => (
+                              {([
+                                { value: 'flight' as TravelMode, label: t.byFlight },
+                                { value: 'train' as TravelMode, label: t.byTrain },
+                                { value: 'road' as TravelMode, label: t.byRoad },
+                              ]).map(({ value, label }) => (
                                 <label key={value} className="flex items-center gap-3 cursor-pointer group">
-                                  <input
-                                    type="radio"
-                                    name="travel_mode"
-                                    value={value}
-                                    onChange={() => setTravelMode(value)}
-                                  />
-                                  <span className="font-sans text-[0.9rem] text-stone group-hover:text-charcoal transition-colors">
+                                  <input type="radio" name="travel_mode" value={value}
+                                    onChange={() => setTravelMode(value)} />
+                                  <span className="font-sans text-stone group-hover:text-charcoal transition-colors"
+                                    style={{ fontSize: '1rem' }}>
                                     {label}
                                   </span>
                                 </label>
@@ -330,19 +257,15 @@ export default function RSVPSection() {
                       )}
                     </AnimatePresence>
 
-                    {/* Error */}
                     {formState === 'error' && errorMsg && (
-                      <p className="font-sans text-[0.8rem] text-rose-700">{errorMsg}</p>
+                      <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errorMsg}</p>
                     )}
 
-                    {/* Submit */}
                     <div className="pt-2">
-                      <button
-                        type="submit"
-                        disabled={formState === 'submitting'}
-                        className="w-full py-4 bg-charcoal text-cream font-sans text-[10px] tracking-[0.35em] uppercase hover:bg-stone disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
-                      >
-                        {formState === 'submitting' ? 'Sending…' : 'Confirm Attendance'}
+                      <button type="submit" disabled={formState === 'submitting'}
+                        className="w-full py-4 bg-charcoal text-cream font-sans uppercase hover:bg-stone disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
+                        style={{ fontSize: '0.85rem', letterSpacing: '0.35em' }}>
+                        {formState === 'submitting' ? t.sending : t.confirmBtn}
                       </button>
                     </div>
                   </form>

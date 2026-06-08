@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { useLang } from '@/contexts/Language'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
@@ -13,24 +14,28 @@ const rise = (delay = 0) => ({
 const events = [
   {
     date: '20 Jan',
-    day: 'Wednesday',
-    occasions: 'Check-in · Mehendi & Engagement Party',
+    day: 'Wed',
+    line1: 'Check-in',
+    line2: 'Mehendi & Engagement',
   },
   {
     date: '21 Jan',
-    day: 'Thursday',
-    occasions: 'Haldi & Wedding Night',
+    day: 'Thu',
+    line1: 'Haldi',
+    line2: '& Wedding Night',
   },
   {
     date: '22 Jan',
-    day: 'Friday',
-    occasions: 'Checkout',
+    day: 'Fri',
+    line1: 'Checkout',
+    line2: '',
   },
 ]
 
 export default function StatementSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
+  const { t } = useLang()
 
   return (
     <section ref={ref} className="bg-charcoal relative overflow-hidden">
@@ -56,71 +61,77 @@ export default function StatementSection() {
         {/* Label */}
         <motion.p
           variants={rise(0)}
-          className="font-sans text-[9px] md:text-[10px] tracking-[0.55em] uppercase text-white/35 mb-8"
+          className="font-sans uppercase text-white/40 mb-8"
+          style={{ fontSize: 'clamp(0.65rem, 1.5vw, 0.8rem)', letterSpacing: '0.55em' }}
         >
-          The Wedding Celebration of
+          {t.celebrationOf}
         </motion.p>
 
-        {/* Top rule */}
         <motion.div variants={rise(0.05)} className="w-14 h-px bg-white/15 mx-auto mb-10" />
 
         {/* Names */}
         <motion.h2
           variants={rise(0.1)}
-          className="font-serif text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] leading-none text-white mb-4 tracking-tight"
+          className="font-serif tracking-tight text-white leading-none mb-4"
+          style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)' }}
         >
           Sakshi
         </motion.h2>
         <motion.p
           variants={rise(0.18)}
-          className="font-serif italic text-[1.2rem] md:text-[1.6rem] text-white/40 mb-4 tracking-widest"
+          className="font-serif italic text-white/40 mb-4 tracking-widest"
+          style={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)' }}
         >
           &amp;
         </motion.p>
         <motion.h2
           variants={rise(0.26)}
-          className="font-serif text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7rem] leading-none text-white mb-14"
+          className="font-serif tracking-tight text-white leading-none mb-14"
+          style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)' }}
         >
           Dr. Sahil
         </motion.h2>
 
-        {/* Rule */}
         <motion.div variants={rise(0.34)} className="w-14 h-px bg-white/15 mx-auto mb-12" />
 
-        {/* Date + Venue */}
-        <motion.div variants={rise(0.4)} className="space-y-3 mb-12">
-          <p className="font-serif text-[2rem] md:text-[2.8rem] text-white leading-tight">
-            20 &ndash; 21 January 2027
+        {/* Date range — now 20-22 */}
+        <motion.div variants={rise(0.40)} className="space-y-3 mb-4">
+          <p className="font-serif text-white leading-tight"
+            style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)' }}>
+            20 &ndash; 22 January 2027
           </p>
-          <p className="font-sans text-[10px] md:text-[11px] tracking-[0.45em] uppercase text-white/50 pt-1">
+          <p className="font-sans uppercase text-white/50 pt-1"
+            style={{ fontSize: 'clamp(0.7rem, 1.6vw, 0.85rem)', letterSpacing: '0.45em' }}>
             Pitampura, Delhi, India
           </p>
         </motion.div>
 
-        {/* Rule before events */}
-        <motion.div variants={rise(0.46)} className="w-14 h-px bg-white/10 mx-auto mb-10" />
+        <motion.div variants={rise(0.46)} className="w-14 h-px bg-white/10 mx-auto mt-10 mb-10" />
 
-        {/* Event schedule — subtle 3-day breakdown */}
+        {/* 3-day event schedule */}
         <motion.div
           variants={rise(0.52)}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-2xl mx-auto"
+          className="grid grid-cols-3 gap-4 md:gap-8 max-w-xl mx-auto"
         >
           {events.map((ev) => (
             <div key={ev.date} className="text-center">
-              <p className="font-sans text-[8px] tracking-[0.45em] uppercase text-white/25 mb-1">
+              <p className="font-sans uppercase text-white/25 mb-1"
+                style={{ fontSize: 'clamp(0.6rem, 1.2vw, 0.7rem)', letterSpacing: '0.35em' }}>
                 {ev.day}
               </p>
-              <p className="font-serif text-[1.1rem] text-white/80 mb-1.5">
+              <p className="font-serif text-white/80 mb-1.5"
+                style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)' }}>
                 {ev.date}
               </p>
-              <p className="font-sans text-[8px] tracking-[0.15em] text-white/40 leading-relaxed">
-                {ev.occasions}
+              <p className="font-sans text-white/40 leading-snug"
+                style={{ fontSize: 'clamp(0.65rem, 1.2vw, 0.75rem)', letterSpacing: '0.1em' }}>
+                {ev.line1}
+                {ev.line2 && <><br />{ev.line2}</>}
               </p>
             </div>
           ))}
         </motion.div>
 
-        {/* Bottom rule */}
         <motion.div variants={rise(0.6)} className="w-14 h-px bg-white/15 mx-auto mt-12" />
       </motion.div>
     </section>
