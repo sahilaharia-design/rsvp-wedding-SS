@@ -3,9 +3,11 @@ import fs from 'fs'
 import path from 'path'
 
 // ── Local JSON fallback (dev without Supabase) ──────────────────────────────
-const LOCAL_FILE = path.join(process.cwd(), '.rsvp-local.json')
+const IS_DEV = process.env.NODE_ENV === 'development'
+const LOCAL_FILE = IS_DEV ? require('path').join(process.cwd(), '.rsvp-local.json') : ''
 
 function localRead(): Record<string, unknown>[] {
+  if (!IS_DEV) return []
   try {
     return JSON.parse(fs.readFileSync(LOCAL_FILE, 'utf8'))
   } catch {
@@ -14,6 +16,7 @@ function localRead(): Record<string, unknown>[] {
 }
 
 function localWrite(rows: Record<string, unknown>[]) {
+  if (!IS_DEV) return
   fs.writeFileSync(LOCAL_FILE, JSON.stringify(rows, null, 2))
 }
 // ────────────────────────────────────────────────────────────────────────────
