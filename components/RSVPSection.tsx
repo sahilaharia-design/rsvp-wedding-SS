@@ -139,9 +139,13 @@ export default function RSVPSection() {
                     {t.rsvpDeadlineLabel}
                   </p>
                   {/* Deadline date — visually prominent */}
-                  <p className="font-serif italic mb-7"
+                  <p className="font-serif italic mb-4"
                     style={{ fontSize: 'clamp(1.3rem, 3.5vw, 1.8rem)', color: '#6E1A28' }}>
                     {t.deadline}
+                  </p>
+                  <p className="font-sans font-light leading-[1.85] text-stone mb-9"
+                    style={{ fontSize: '1.05rem' }}>
+                    {t.arrangementNote}
                   </p>
                   <h2 className="font-serif leading-[1.15] text-charcoal mb-10"
                     style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', whiteSpace: 'pre-line' }}>
