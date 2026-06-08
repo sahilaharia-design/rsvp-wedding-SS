@@ -49,22 +49,22 @@ export default function Hero({ onRSVPClick }: HeroProps) {
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.88) 20%, rgba(0,0,0,0.5) 42%, transparent 68%)' }} />
 
-      {/* ── SAVE THE DATE — prominent top centre ── */}
+      {/* ── SAVE THE DATE — left on mobile (avoids lang switcher), centred on md+ ── */}
       <motion.div
-        className="absolute top-0 left-0 right-0 flex flex-col items-center pt-9 md:pt-11"
+        className="absolute top-0 left-0 right-0 flex flex-col items-start md:items-center px-7 md:px-0 pt-9 md:pt-11"
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.1, delay: 0.2, ease: EASE }}
       >
         <p
-          className="font-sans text-white uppercase text-center tracking-[0.65em]"
+          className="font-sans text-white uppercase tracking-[0.65em]"
           style={{ fontSize: 'clamp(0.9rem, 3vw, 1.55rem)' }}
         >
           {t.saveTheDate}
         </p>
         <motion.div
           className="mt-3 h-px bg-white/30"
-          style={{ originX: 0.5, width: 130 }}
+          style={{ originX: 0.5, width: 'clamp(80px, 35vw, 130px)' }}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.9, delay: 0.55, ease: [0.4, 0, 0.2, 1] }}

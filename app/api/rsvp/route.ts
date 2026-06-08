@@ -130,7 +130,9 @@ export async function POST(request: NextRequest) {
     mobile: normalised,
     attending: attending ? 'Yes' : 'No',
     guests: attending ? (guest_count ?? 0) : 0,
-    guest_names: attending && guest_names?.length ? guest_names.join(', ') : '',
+    guest_names: attending && guest_names?.length
+      ? guest_names.filter((n) => n.trim()).join(' | ')
+      : '',
     travel_mode: attending ? (travel_mode ?? '') : '',
   })
 
