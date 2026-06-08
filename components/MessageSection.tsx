@@ -34,8 +34,7 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
               </h2>
               <p className="font-sans font-light leading-[1.95] text-stone mb-8"
                 style={{ fontSize: '1.05rem' }}>
-                This celebration is for the people who matter most to us.
-                We would love to have you there — please let us know you are coming.
+                {t.inviteBody1}
               </p>
               <p className="font-sans font-light leading-[1.9] text-stone mb-9"
                 style={{ fontSize: '1.05rem' }}>
