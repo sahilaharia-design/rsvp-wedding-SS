@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.*.local
+
+# Local RSVP data (dev only)
+.rsvp-local.json
+
+# OS & editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Misc
+*.log
+npm-debug.log*
