@@ -25,7 +25,7 @@ const allura = Allura({
 })
 
 export const metadata: Metadata = {
-  title: '#SakshiKoMilaKinara — Save The Date',
+  title: 'Save The Date — #SakshiKoMilaKinara',
   description:
     'Sakshi & Dr. Sahil are getting married! 20–22 January 2027 · Pitampura, Delhi, India. RSVP at sakshisahil.com',
   openGraph: {
