@@ -9,10 +9,10 @@ type TravelMode = 'flight' | 'train' | 'road'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
-const labelCls = 'block font-sans uppercase text-warm-gray'
-const labelStyle = { fontSize: '0.72rem', letterSpacing: '0.35em' }
-const inputCls = 'w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-3 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200'
-const inputStyle = { fontSize: '1rem' }
+const labelCls = 'block font-sans uppercase text-charcoal/65'
+const labelStyle = { fontSize: '0.82rem', letterSpacing: '0.22em' }
+const inputCls = 'w-full bg-transparent border-b-2 border-stone/30 focus:border-charcoal outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200'
+const inputStyle = { fontSize: '1.05rem' }
 
 export default function RSVPSection() {
   const ref = useRef<HTMLElement>(null)
@@ -106,11 +106,11 @@ export default function RSVPSection() {
                     style={{ fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
                     {t.thankYou}
                   </h2>
-                  <p className="font-sans font-light leading-[1.9] text-stone mb-8"
-                    style={{ fontSize: '1.05rem' }}>
+                  <p className="font-sans leading-[1.9] text-stone mb-8"
+                    style={{ fontSize: '1.1rem' }}>
                     {t.thankYouBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
                   </p>
-                  <p className="font-serif text-charcoal mb-3" style={{ fontSize: '1.15rem' }}>
+                  <p className="font-serif text-charcoal mb-3" style={{ fontSize: '1.2rem' }}>
                     {t.withLove}
                   </p>
                   <p className="font-display text-blush" style={{ fontSize: '1.8rem' }}>
@@ -125,7 +125,7 @@ export default function RSVPSection() {
                   <h2 className="font-serif italic text-charcoal mb-5" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)' }}>
                     {t.alreadyReceived}
                   </h2>
-                  <p className="font-sans font-light leading-[1.9] text-stone" style={{ fontSize: '1.05rem' }}>
+                  <p className="font-sans leading-[1.9] text-stone" style={{ fontSize: '1.1rem' }}>
                     {t.alreadyBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
                   </p>
                 </motion.div>
@@ -143,8 +143,8 @@ export default function RSVPSection() {
                     style={{ fontSize: 'clamp(1.3rem, 3.5vw, 1.8rem)', color: '#6E1A28' }}>
                     {t.deadline}
                   </p>
-                  <p className="font-sans font-light leading-[1.85] text-stone mb-9"
-                    style={{ fontSize: '1.05rem' }}>
+                  <p className="font-sans leading-[1.85] text-stone mb-9"
+                    style={{ fontSize: '1.1rem' }}>
                     {t.arrangementNote}
                   </p>
                   <h2 className="font-serif leading-[1.15] text-charcoal mb-10"
@@ -173,15 +173,15 @@ export default function RSVPSection() {
                       <div className="flex gap-8">
                         <label className="flex items-center gap-3 cursor-pointer group">
                           <input type="radio" name="attending" value="yes" required onChange={() => setAttending('yes')} />
-                          <span className="font-sans text-stone group-hover:text-charcoal transition-colors"
-                            style={{ fontSize: '1rem' }}>
+                          <span className="font-sans text-charcoal transition-colors"
+                            style={{ fontSize: '1.05rem' }}>
                             {t.yesAttend}
                           </span>
                         </label>
                         <label className="flex items-center gap-3 cursor-pointer group">
                           <input type="radio" name="attending" value="no" onChange={() => setAttending('no')} />
-                          <span className="font-sans text-stone group-hover:text-charcoal transition-colors"
-                            style={{ fontSize: '1rem' }}>
+                          <span className="font-sans text-charcoal transition-colors"
+                            style={{ fontSize: '1.05rem' }}>
                             {t.noAttend}
                           </span>
                         </label>
@@ -197,16 +197,16 @@ export default function RSVPSection() {
                           className="space-y-8">
 
                           {/* Guest count */}
-                          <div className="space-y-2">
+                          <div className="space-y-3">
                             <label className={labelCls} style={labelStyle}>{t.guestCount}</label>
-                            <p className="font-sans text-warm-gray/70" style={{ fontSize: '0.85rem' }}>
+                            <p className="font-sans text-stone/70" style={{ fontSize: '1rem' }}>
                               {t.guestCountNote}
                             </p>
                             <input type="number" min="0" max="10"
                               value={guestCountStr}
                               onChange={(e) => setGuestCountStr(e.target.value)}
                               placeholder="0"
-                              className="w-24 bg-transparent border-b border-parchment focus:border-charcoal outline-none py-3 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200"
+                              className="w-28 bg-transparent border-b-2 border-stone/30 focus:border-charcoal outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200"
                               style={inputStyle}
                             />
                           </div>
@@ -216,9 +216,9 @@ export default function RSVPSection() {
                             <div className="space-y-6">
                               <p className={labelCls} style={labelStyle}>{t.guestNames}</p>
                               {guestNames.map((name, i) => (
-                                <div key={i} className="space-y-1">
-                                  <label className="block font-sans uppercase text-warm-gray/70"
-                                    style={{ fontSize: '0.68rem', letterSpacing: '0.3em' }}>
+                                <div key={i} className="space-y-2">
+                                  <label className="block font-sans uppercase text-charcoal/60"
+                                    style={{ fontSize: '0.82rem', letterSpacing: '0.2em' }}>
                                     {t.guestLabel} {i + 1}
                                   </label>
                                   <input
@@ -231,9 +231,9 @@ export default function RSVPSection() {
                                       u[i] = e.target.value
                                       setGuestNames(u)
                                     }}
-                                    placeholder={`${t.guestLabel} ${i + 1} full name`}
-                                    className="w-full bg-transparent border-b border-parchment focus:border-charcoal outline-none py-2.5 font-sans text-charcoal placeholder:text-parchment transition-colors duration-200"
-                                    style={{ fontSize: '0.95rem' }}
+                                    placeholder={`${t.guestLabel} ${i + 1} — full name`}
+                                    className="w-full bg-transparent border-b-2 border-stone/30 focus:border-charcoal outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200"
+                                    style={{ fontSize: '1.05rem' }}
                                   />
                                 </div>
                               ))}
@@ -249,11 +249,11 @@ export default function RSVPSection() {
                                 { value: 'train' as TravelMode, label: t.byTrain },
                                 { value: 'road' as TravelMode, label: t.byRoad },
                               ]).map(({ value, label }) => (
-                                <label key={value} className="flex items-center gap-3 cursor-pointer group">
+                                <label key={value} className="flex items-center gap-3 cursor-pointer">
                                   <input type="radio" name="travel_mode" value={value}
                                     onChange={() => setTravelMode(value)} />
-                                  <span className="font-sans text-stone group-hover:text-charcoal transition-colors"
-                                    style={{ fontSize: '1rem' }}>
+                                  <span className="font-sans text-charcoal"
+                                    style={{ fontSize: '1.05rem' }}>
                                     {label}
                                   </span>
                                 </label>
@@ -265,13 +265,13 @@ export default function RSVPSection() {
                     </AnimatePresence>
 
                     {formState === 'error' && errorMsg && (
-                      <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errorMsg}</p>
+                      <p className="font-sans text-rose-700" style={{ fontSize: '1rem' }}>{errorMsg}</p>
                     )}
 
-                    <div className="pt-2">
+                    <div className="pt-4">
                       <button type="submit" disabled={formState === 'submitting'}
-                        className="w-full py-4 bg-charcoal text-cream font-sans uppercase hover:bg-stone disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
-                        style={{ fontSize: '0.85rem', letterSpacing: '0.35em' }}>
+                        className="w-full py-5 bg-charcoal text-cream font-sans uppercase hover:bg-stone disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
+                        style={{ fontSize: '1rem', letterSpacing: '0.28em' }}>
                         {formState === 'submitting' ? t.sending : t.confirmBtn}
                       </button>
                     </div>

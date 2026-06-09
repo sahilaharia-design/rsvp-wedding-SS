@@ -37,19 +37,19 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
                 style={{ fontSize: 'clamp(1.1rem, 2.8vw, 1.45rem)', color: '#6E1A28' }}>
                 {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
               </p>
-              <p className="font-sans font-light leading-[1.95] text-stone mb-8"
-                style={{ fontSize: '1.05rem' }}>
+              <p className="font-sans leading-[1.95] text-stone mb-8"
+                style={{ fontSize: '1.1rem' }}>
                 {t.inviteBody1}
               </p>
-              <p className="font-sans font-light leading-[1.9] text-stone mb-9"
-                style={{ fontSize: '1.05rem' }}>
+              <p className="font-sans leading-[1.9] text-stone mb-9"
+                style={{ fontSize: '1.1rem' }}>
                 {t.inviteBody2}{' '}
-                <span className="text-charcoal font-medium">{t.deadline}</span>.
+                <span className="text-charcoal font-semibold">{t.deadline}</span>.
               </p>
               <button
                 onClick={onRSVPClick}
-                className="font-sans uppercase text-charcoal border-b border-charcoal pb-0.5 hover:text-warm-gray hover:border-warm-gray transition-colors duration-300"
-                style={{ fontSize: '0.82rem', letterSpacing: '0.32em' }}
+                className="inline-block font-sans uppercase bg-charcoal text-cream px-8 py-3.5 hover:bg-stone transition-colors duration-300"
+                style={{ fontSize: '0.88rem', letterSpacing: '0.28em' }}
               >
                 {t.confirmAttend}
               </button>
@@ -67,29 +67,29 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
               </h3>
 
               {/* Step 1 */}
-              <div className="mb-7">
-                <p className="font-sans uppercase text-warm-gray mb-2"
-                  style={{ fontSize: '0.7rem', letterSpacing: '0.38em' }}>
+              <div className="mb-8">
+                <p className="font-sans uppercase text-charcoal/60 mb-2"
+                  style={{ fontSize: '0.82rem', letterSpacing: '0.25em' }}>
                   Step 1 — Getting to Delhi
                 </p>
-                <p className="font-sans font-light leading-[1.95] text-stone"
-                  style={{ fontSize: '1.05rem' }}>
+                <p className="font-sans leading-[1.95] text-stone"
+                  style={{ fontSize: '1.1rem' }}>
                   {t.travelBody1}
                 </p>
               </div>
 
               {/* Travel mode icons */}
-              <div className="flex gap-4 mb-8">
+              <div className="flex gap-3 mb-9">
                 {[
                   { icon: '✈', label: t.byFlight },
                   { icon: '🚄', label: t.byTrain },
                   { icon: '🚗', label: t.byRoad },
                 ].map(({ icon, label }) => (
                   <div key={label}
-                    className="flex flex-col items-center gap-1.5 bg-parchment/60 rounded px-4 py-3 flex-1">
-                    <span style={{ fontSize: '1.25rem' }}>{icon}</span>
-                    <span className="font-sans text-stone text-center"
-                      style={{ fontSize: '0.75rem', letterSpacing: '0.08em' }}>
+                    className="flex flex-col items-center gap-2 bg-parchment rounded px-4 py-4 flex-1">
+                    <span style={{ fontSize: '1.4rem' }}>{icon}</span>
+                    <span className="font-sans text-charcoal/70 text-center"
+                      style={{ fontSize: '0.85rem', letterSpacing: '0.05em' }}>
                       {label}
                     </span>
                   </div>
@@ -98,12 +98,12 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
 
               {/* Step 2 */}
               <div>
-                <p className="font-sans uppercase text-warm-gray mb-2"
-                  style={{ fontSize: '0.7rem', letterSpacing: '0.38em' }}>
+                <p className="font-sans uppercase text-charcoal/60 mb-2"
+                  style={{ fontSize: '0.82rem', letterSpacing: '0.25em' }}>
                   Step 2 — Once you're in Delhi
                 </p>
-                <p className="font-sans font-light leading-[1.95] text-stone"
-                  style={{ fontSize: '1.05rem' }}>
+                <p className="font-sans leading-[1.95] text-stone"
+                  style={{ fontSize: '1.1rem' }}>
                   {t.travelBody2}
                 </p>
               </div>
