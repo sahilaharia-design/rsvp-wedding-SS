@@ -22,9 +22,14 @@ export default function RSVPSection() {
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null)
-  const [plusOne, setPlusOne] = useState<boolean | null>(null)
-  const [plusOneName, setPlusOneName] = useState('')
+  const [guestCount, setGuestCount] = useState<number | null>(null)
+  const [guestNames, setGuestNames] = useState<string[]>([])
   const [travelMode, setTravelMode] = useState<TravelMode | null>(null)
+
+  function handleGuestCount(n: number) {
+    setGuestCount(n)
+    setGuestNames(Array(n).fill(''))
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -49,8 +54,8 @@ export default function RSVPSection() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         full_name, mobile_number, attending: isAttending,
-        guest_count: isAttending && plusOne ? 1 : 0,
-        guest_names: isAttending && plusOne && plusOneName.trim() ? [plusOneName.trim()] : [],
+        guest_count: isAttending ? (guestCount ?? 0) : 0,
+        guest_names: isAttending ? guestNames.filter(n => n.trim()) : [],
         travel_mode: isAttending ? travelMode : undefined,
       }),
     })
@@ -185,41 +190,60 @@ export default function RSVPSection() {
                           exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
                           className="space-y-8">
 
-                          {/* +1 question */}
+                          {/* Guest count — pill selector */}
                           <div className="space-y-4">
                             <label className={labelCls} style={labelStyle}>{t.guestCount}</label>
-                            <div className="flex gap-8">
-                              <label className="flex items-center gap-3 cursor-pointer">
-                                <input type="radio" name="plus_one" value="yes"
-                                  onChange={() => setPlusOne(true)} />
-                                <span className="font-sans text-charcoal" style={{ fontSize: '1.15rem' }}>
-                                  {t.plusOneYes}
-                                </span>
-                              </label>
-                              <label className="flex items-center gap-3 cursor-pointer">
-                                <input type="radio" name="plus_one" value="no"
-                                  onChange={() => { setPlusOne(false); setPlusOneName('') }} />
-                                <span className="font-sans text-charcoal" style={{ fontSize: '1.15rem' }}>
-                                  {t.plusOneNo}
-                                </span>
-                              </label>
+                            <div className="flex gap-3 flex-wrap">
+                              {[
+                                { val: 0, label: t.justMe },
+                                { val: 1, label: '+1' },
+                                { val: 2, label: '+2' },
+                                { val: 3, label: '+3' },
+                              ].map(({ val, label }) => (
+                                <button
+                                  key={val}
+                                  type="button"
+                                  onClick={() => handleGuestCount(val)}
+                                  className="px-5 py-2.5 font-sans border transition-colors duration-200"
+                                  style={{
+                                    fontSize: '1rem',
+                                    background: guestCount === val ? '#18181B' : 'transparent',
+                                    color: guestCount === val ? '#FAF6F0' : '#4A4540',
+                                    borderColor: guestCount === val ? '#18181B' : '#C8C0B8',
+                                  }}
+                                >
+                                  {label}
+                                </button>
+                              ))}
                             </div>
                           </div>
 
-                          {/* +1 name — only if yes */}
-                          {plusOne === true && (
-                            <div className="space-y-2">
-                              <label className={labelCls} style={labelStyle}>{t.guestNames}</label>
-                              <input
-                                type="text"
-                                autoComplete="off"
-                                autoCorrect="off"
-                                value={plusOneName}
-                                onChange={(e) => setPlusOneName(e.target.value)}
-                                placeholder="Full name"
-                                className={inputCls}
-                                style={inputStyle}
-                              />
+                          {/* Name fields — one per guest */}
+                          {guestCount !== null && guestCount > 0 && (
+                            <div className="space-y-6">
+                              <p className={labelCls} style={labelStyle}>{t.guestNames}</p>
+                              {guestNames.map((name, i) => (
+                                <div key={i} className="space-y-2">
+                                  <label className="block font-sans uppercase text-charcoal/60"
+                                    style={{ fontSize: '0.95rem', letterSpacing: '0.12em' }}>
+                                    {t.guestLabel} {i + 1}
+                                  </label>
+                                  <input
+                                    type="text"
+                                    autoComplete="off"
+                                    autoCorrect="off"
+                                    value={name}
+                                    onChange={(e) => {
+                                      const u = [...guestNames]
+                                      u[i] = e.target.value
+                                      setGuestNames(u)
+                                    }}
+                                    placeholder="Full name"
+                                    className={inputCls}
+                                    style={inputStyle}
+                                  />
+                                </div>
+                              ))}
                             </div>
                           )}
 
