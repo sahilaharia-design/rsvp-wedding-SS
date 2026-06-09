@@ -69,7 +69,7 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
               {/* Step 1 */}
               <div className="mb-8">
                 <p className="font-sans uppercase text-charcoal/60 mb-2"
-                  style={{ fontSize: '0.82rem', letterSpacing: '0.25em' }}>
+                  style={{ fontSize: '0.95rem', letterSpacing: '0.15em' }}>
                   Step 1 — Getting to Delhi
                 </p>
                 <p className="font-sans leading-[1.95] text-stone"
@@ -89,7 +89,7 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
                     className="flex flex-col items-center gap-2 bg-parchment rounded px-4 py-4 flex-1">
                     <span style={{ fontSize: '1.4rem' }}>{icon}</span>
                     <span className="font-sans text-charcoal/70 text-center"
-                      style={{ fontSize: '0.85rem', letterSpacing: '0.05em' }}>
+                      style={{ fontSize: '0.95rem' }}>
                       {label}
                     </span>
                   </div>
@@ -99,7 +99,7 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
               {/* Step 2 */}
               <div>
                 <p className="font-sans uppercase text-charcoal/60 mb-2"
-                  style={{ fontSize: '0.82rem', letterSpacing: '0.25em' }}>
+                  style={{ fontSize: '0.95rem', letterSpacing: '0.15em' }}>
                   Step 2 — Once you're in Delhi
                 </p>
                 <p className="font-sans leading-[1.95] text-stone"
