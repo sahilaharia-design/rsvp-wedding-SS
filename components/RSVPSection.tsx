@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 
@@ -22,19 +22,9 @@ export default function RSVPSection() {
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null)
-  const [guestCountStr, setGuestCountStr] = useState('')
-  const [guestNames, setGuestNames] = useState<string[]>([])
+  const [plusOne, setPlusOne] = useState<boolean | null>(null)
+  const [plusOneName, setPlusOneName] = useState('')
   const [travelMode, setTravelMode] = useState<TravelMode | null>(null)
-
-  useEffect(() => {
-    const n = parseInt(guestCountStr) || 0
-    const clamped = Math.min(Math.max(n, 0), 10)
-    setGuestNames((prev) => {
-      if (clamped === prev.length) return prev
-      if (clamped > prev.length) return [...prev, ...Array(clamped - prev.length).fill('')]
-      return prev.slice(0, clamped)
-    })
-  }, [guestCountStr])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -53,15 +43,14 @@ export default function RSVPSection() {
     }
 
     const isAttending = attendingVal === 'yes'
-    const guestCount = parseInt(guestCountStr) || 0
 
     const res = await fetch('/api/rsvp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         full_name, mobile_number, attending: isAttending,
-        guest_count: isAttending ? guestCount : 0,
-        guest_names: isAttending ? guestNames.filter((n) => n.trim()) : [],
+        guest_count: isAttending && plusOne ? 1 : 0,
+        guest_names: isAttending && plusOne && plusOneName.trim() ? [plusOneName.trim()] : [],
         travel_mode: isAttending ? travelMode : undefined,
       }),
     })
@@ -196,47 +185,41 @@ export default function RSVPSection() {
                           exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
                           className="space-y-8">
 
-                          {/* Guest count */}
-                          <div className="space-y-3">
+                          {/* +1 question */}
+                          <div className="space-y-4">
                             <label className={labelCls} style={labelStyle}>{t.guestCount}</label>
-                            <p className="font-sans text-stone/80" style={{ fontSize: '1.1rem' }}>
-                              {t.guestCountNote}
-                            </p>
-                            <input type="number" min="0" max="10"
-                              value={guestCountStr}
-                              onChange={(e) => setGuestCountStr(e.target.value)}
-                              placeholder="0"
-                              className="w-28 bg-transparent border-b-2 border-stone/30 focus:border-charcoal outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200"
-                              style={inputStyle}
-                            />
+                            <div className="flex gap-8">
+                              <label className="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="plus_one" value="yes"
+                                  onChange={() => setPlusOne(true)} />
+                                <span className="font-sans text-charcoal" style={{ fontSize: '1.15rem' }}>
+                                  {t.plusOneYes}
+                                </span>
+                              </label>
+                              <label className="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="plus_one" value="no"
+                                  onChange={() => { setPlusOne(false); setPlusOneName('') }} />
+                                <span className="font-sans text-charcoal" style={{ fontSize: '1.15rem' }}>
+                                  {t.plusOneNo}
+                                </span>
+                              </label>
+                            </div>
                           </div>
 
-                          {/* Dynamic guest names — plain divs, no overflow:hidden (breaks input focus) */}
-                          {guestNames.length > 0 && (
-                            <div className="space-y-6">
-                              <p className={labelCls} style={labelStyle}>{t.guestNames}</p>
-                              {guestNames.map((name, i) => (
-                                <div key={i} className="space-y-2">
-                                  <label className="block font-sans uppercase text-charcoal/60"
-                                    style={{ fontSize: '0.95rem', letterSpacing: '0.12em' }}>
-                                    {t.guestLabel} {i + 1}
-                                  </label>
-                                  <input
-                                    type="text"
-                                    autoComplete="off"
-                                    autoCorrect="off"
-                                    value={name}
-                                    onChange={(e) => {
-                                      const u = [...guestNames]
-                                      u[i] = e.target.value
-                                      setGuestNames(u)
-                                    }}
-                                    placeholder={`${t.guestLabel} ${i + 1} — full name`}
-                                    className="w-full bg-transparent border-b-2 border-stone/30 focus:border-charcoal outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200"
-                                    style={{ fontSize: '1.05rem' }}
-                                  />
-                                </div>
-                              ))}
+                          {/* +1 name — only if yes */}
+                          {plusOne === true && (
+                            <div className="space-y-2">
+                              <label className={labelCls} style={labelStyle}>{t.guestNames}</label>
+                              <input
+                                type="text"
+                                autoComplete="off"
+                                autoCorrect="off"
+                                value={plusOneName}
+                                onChange={(e) => setPlusOneName(e.target.value)}
+                                placeholder="Full name"
+                                className={inputCls}
+                                style={inputStyle}
+                              />
                             </div>
                           )}
 
