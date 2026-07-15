@@ -81,7 +81,7 @@ function EnvelopeVisual({
               #SakshiKoMilaKinara
             </p>
             <p className="font-serif italic text-center" style={{ fontSize: 'clamp(0.78rem, 2.2vw, 1rem)', color: '#2C1810', opacity: 0.45 }}>
-              Sakshi &amp; Dr. Sahil &nbsp;·&nbsp; 20 &ndash; 22 January 2027
+              Sakshi &amp; Dr. Sahil &nbsp;·&nbsp; Wed 20 &ndash; Fri 22 January 2027
             </p>
           </motion.div>
 

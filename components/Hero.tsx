@@ -100,11 +100,11 @@ export default function Hero({ onRSVPClick }: HeroProps) {
             {/* All 3 dates */}
             <p className="font-sans text-white/55 mb-1"
               style={{ fontSize: 'clamp(0.7rem, 1.6vw, 0.9rem)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-              20 &ndash; 22 January 2027 &nbsp;&middot;&nbsp; Pitampura, Delhi, India
+              Wed 20 &ndash; Fri 22 January 2027 &nbsp;&middot;&nbsp; Pitampura, Delhi, India
             </p>
             <p className="font-sans text-white/35"
               style={{ fontSize: 'clamp(0.65rem, 1.4vw, 0.8rem)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>
-              20 Mehendi &amp; Engagement &nbsp;·&nbsp; 21 Haldi &amp; Wedding &nbsp;·&nbsp; 22 Checkout
+              Wed 20 Mehendi &amp; Engagement &nbsp;·&nbsp; Thu 21 Haldi &amp; Wedding &nbsp;·&nbsp; Fri 22 Checkout
             </p>
           </div>
 
