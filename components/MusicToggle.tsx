@@ -12,7 +12,7 @@ export default function MusicToggle() {
         <motion.button
           onClick={toggle}
           aria-label={playing ? 'Mute music' : 'Play music'}
-          className="fixed top-4 left-4 md:top-5 md:left-5 z-[90] flex items-center justify-center rounded-full"
+          className="flex items-center justify-center rounded-full flex-shrink-0"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}

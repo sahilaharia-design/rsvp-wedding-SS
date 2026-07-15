@@ -49,9 +49,9 @@ export default function Hero({ onRSVPClick }: HeroProps) {
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.88) 20%, rgba(0,0,0,0.5) 42%, transparent 68%)' }} />
 
-      {/* ── SAVE THE DATE — left on mobile (avoids lang switcher), centred on md+ ── */}
+      {/* ── SAVE THE DATE — left on mobile, pushed below the top-right icon cluster; centred on md+ ── */}
       <motion.div
-        className="absolute top-0 left-0 right-0 flex flex-col items-start md:items-center px-7 md:px-0 pt-9 md:pt-11"
+        className="absolute top-0 left-0 right-0 flex flex-col items-start md:items-center px-7 md:px-0 pt-20 md:pt-11"
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.1, delay: 0.2, ease: EASE }}

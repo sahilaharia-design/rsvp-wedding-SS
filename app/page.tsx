@@ -20,8 +20,10 @@ export default function Home() {
     <LanguageProvider>
       <MusicProvider>
         <GrandReveal />
-        <LanguageSwitcher />
-        <MusicToggle />
+        <div className="fixed top-4 right-4 md:top-5 md:right-5 z-[90] flex items-center gap-2">
+          <MusicToggle />
+          <LanguageSwitcher />
+        </div>
         <main>
           <Hero onRSVPClick={scrollToRSVP} />
           <MessageSection onRSVPClick={scrollToRSVP} />
