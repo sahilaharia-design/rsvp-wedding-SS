@@ -57,7 +57,7 @@ input[type="radio"] {
 }
 
 input[type="radio"]:checked {
-  border-color: #18181B;
+  border-color: #E2971F;
 }
 
 input[type="radio"]:checked::after {
@@ -69,7 +69,7 @@ input[type="radio"]:checked::after {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background-color: #18181B;
+  background-color: #E2971F;
 }
 
 /* Select dropdown */

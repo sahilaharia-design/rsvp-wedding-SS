@@ -24,6 +24,8 @@ const config: Config = {
         burgundy: '#6E1A28',
         'dark-brown': '#2C1810',
         'kinara-bg': '#F5EDE2',
+        marigold: '#E2971F',
+        'marigold-dark': '#B97914',
       },
       letterSpacing: {
         luxury: '0.3em',

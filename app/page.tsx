@@ -7,7 +7,9 @@ import RSVPSection from '@/components/RSVPSection'
 import StickyRSVP from '@/components/StickyRSVP'
 import GrandReveal from '@/components/GrandReveal'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import MusicToggle from '@/components/MusicToggle'
 import { LanguageProvider } from '@/contexts/Language'
+import { MusicProvider } from '@/contexts/Music'
 
 export default function Home() {
   const scrollToRSVP = useCallback(() => {
@@ -16,21 +18,24 @@ export default function Home() {
 
   return (
     <LanguageProvider>
-      <GrandReveal />
-      <LanguageSwitcher />
-      <main>
-        <Hero onRSVPClick={scrollToRSVP} />
-<MessageSection onRSVPClick={scrollToRSVP} />
-        <RSVPSection />
+      <MusicProvider>
+        <GrandReveal />
+        <LanguageSwitcher />
+        <MusicToggle />
+        <main>
+          <Hero onRSVPClick={scrollToRSVP} />
+          <MessageSection onRSVPClick={scrollToRSVP} />
+          <RSVPSection />
 
-        <footer className="px-7 md:px-14 py-14 border-t border-parchment text-center bg-cream">
-          <p className="font-display text-blush" style={{ fontSize: '2.2rem' }}>
-            #SakshiKoMilaKinara
-          </p>
-        </footer>
+          <footer className="px-7 md:px-14 py-10 border-t border-parchment text-center bg-cream">
+            <p className="font-display text-blush" style={{ fontSize: '2.2rem' }}>
+              #SakshiKoMilaKinara
+            </p>
+          </footer>
 
-        <StickyRSVP onRSVPClick={scrollToRSVP} />
-      </main>
+          <StickyRSVP onRSVPClick={scrollToRSVP} />
+        </main>
+      </MusicProvider>
     </LanguageProvider>
   )
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
+import { useMusic } from '@/contexts/Music'
 
 type Stage = 'sealed' | 'opening'
 
@@ -132,6 +133,7 @@ export default function GrandReveal() {
   const [visible, setVisible] = useState(false)
   const [stage, setStage] = useState<Stage>('sealed')
   const { t } = useLang()
+  const { start } = useMusic()
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !sessionStorage.getItem('std-revealed')) {
@@ -144,10 +146,11 @@ export default function GrandReveal() {
 
   const openEnvelope = useCallback(() => {
     if (stage !== 'sealed') return
+    start() // user gesture — safe to start audio with sound here
     setStage('opening')
     // Flap opens in 1.1s → pause 0.7s for inside content to show → fade out
     setTimeout(dismiss, 1900)
-  }, [stage, dismiss])
+  }, [stage, dismiss, start])
 
   return (
     <AnimatePresence>

@@ -51,7 +51,7 @@ export default function StickyRSVP({ onRSVPClick }: StickyRSVPProps) {
         >
           <button
             onClick={onRSVPClick}
-            className="w-full py-5 bg-charcoal text-cream font-sans uppercase shadow-lg hover:bg-stone transition-colors duration-300"
+            className="w-full py-5 bg-marigold text-charcoal font-sans uppercase shadow-lg hover:bg-marigold-dark transition-colors duration-300"
           style={{ fontSize: '0.95rem', letterSpacing: '0.25em' }}
           >
             Confirm Attendance

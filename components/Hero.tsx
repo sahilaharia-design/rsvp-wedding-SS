@@ -95,7 +95,7 @@ export default function Hero({ onRSVPClick }: HeroProps) {
           <div>
             <p className="font-serif text-white/90 mb-2"
               style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.85rem)' }}>
-              Sakshi &amp; Dr. Sahil
+              {t.weddingOf}
             </p>
             {/* All 3 dates */}
             <p className="font-sans text-white/55 mb-1"
@@ -111,7 +111,7 @@ export default function Hero({ onRSVPClick }: HeroProps) {
           <motion.div variants={fade(0.2)} className="flex-shrink-0">
             <button
               onClick={onRSVPClick}
-              className="px-9 md:px-10 py-4 border border-white/60 text-white font-sans uppercase hover:bg-white hover:text-charcoal transition-all duration-300 w-full md:w-auto text-center"
+              className="px-9 md:px-10 py-4 border border-white/60 text-white font-sans uppercase hover:bg-marigold hover:border-marigold hover:text-charcoal transition-all duration-300 w-full md:w-auto text-center"
               style={{ fontSize: 'clamp(0.7rem, 1.5vw, 0.85rem)', letterSpacing: '0.3em' }}
             >
               {t.confirmAttend.replace(' →', '')}

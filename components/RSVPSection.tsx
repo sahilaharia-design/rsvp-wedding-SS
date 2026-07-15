@@ -11,7 +11,7 @@ const EASE = [0.25, 0.1, 0.25, 1] as const
 
 const labelCls = 'block font-sans uppercase text-charcoal/70'
 const labelStyle = { fontSize: '0.95rem', letterSpacing: '0.12em' }
-const inputCls = 'w-full bg-transparent border-b-2 border-stone/30 focus:border-charcoal outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200'
+const inputCls = 'w-full bg-transparent border-b-2 border-stone/30 focus:border-marigold outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200'
 const inputStyle = { fontSize: '1.1rem' }
 
 export default function RSVPSection() {
@@ -22,14 +22,8 @@ export default function RSVPSection() {
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null)
-  const [guestCount, setGuestCount] = useState<number | null>(null)
-  const [guestNames, setGuestNames] = useState<string[]>([])
+  const [familyNames, setFamilyNames] = useState('')
   const [travelMode, setTravelMode] = useState<TravelMode | null>(null)
-
-  function handleGuestCount(n: number) {
-    setGuestCount(n)
-    setGuestNames(Array(n).fill(''))
-  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -54,8 +48,8 @@ export default function RSVPSection() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         full_name, mobile_number, attending: isAttending,
-        guest_count: isAttending ? (guestCount ?? 0) : 0,
-        guest_names: isAttending ? guestNames.filter(n => n.trim()) : [],
+        guest_count: 0,
+        guest_names: isAttending && familyNames.trim() ? [familyNames.trim()] : [],
         travel_mode: isAttending ? travelMode : undefined,
       }),
     })
@@ -79,7 +73,7 @@ export default function RSVPSection() {
         </span>
       </div>
 
-      <div className="relative px-7 md:px-14 py-16 md:py-24">
+      <div className="relative px-7 md:px-14 py-12 md:py-16">
         <div className="max-w-xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 32 }}
@@ -90,17 +84,17 @@ export default function RSVPSection() {
               {/* Success */}
               {formState === 'success' ? (
                 <motion.div key="success" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="py-14 text-center">
-                  <div className="w-10 h-px bg-blush mx-auto mb-10" />
-                  <p className="font-sans uppercase text-warm-gray mb-6"
+                  exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="py-10 text-center">
+                  <div className="w-12 h-[2px] bg-marigold mx-auto mb-8" />
+                  <p className="font-sans uppercase text-warm-gray mb-5"
                     style={{ fontSize: '0.75rem', letterSpacing: '0.4em' }}>
                     {t.responseReceived}
                   </p>
-                  <h2 className="font-serif italic leading-[1.2] text-charcoal mb-6"
+                  <h2 className="font-serif italic leading-[1.2] text-charcoal mb-5"
                     style={{ fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
                     {t.thankYou}
                   </h2>
-                  <p className="font-sans leading-[1.9] text-stone mb-8"
+                  <p className="font-sans leading-[1.9] text-stone mb-7"
                     style={{ fontSize: '1.1rem' }}>
                     {t.thankYouBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
                   </p>
@@ -114,9 +108,9 @@ export default function RSVPSection() {
 
               ) : formState === 'duplicate' ? (
                 <motion.div key="duplicate" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }} className="py-14 text-center">
-                  <div className="w-10 h-px bg-blush mx-auto mb-10" />
-                  <h2 className="font-serif italic text-charcoal mb-5" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)' }}>
+                  transition={{ duration: 0.6 }} className="py-10 text-center">
+                  <div className="w-12 h-[2px] bg-marigold mx-auto mb-8" />
+                  <h2 className="font-serif italic text-charcoal mb-4" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)' }}>
                     {t.alreadyReceived}
                   </h2>
                   <p className="font-sans leading-[1.9] text-stone" style={{ fontSize: '1.1rem' }}>
@@ -127,7 +121,11 @@ export default function RSVPSection() {
               ) : (
                 /* Form */
                 <motion.div key="form">
-                  <div className="w-10 h-px bg-blush mb-9" />
+                  <p className="font-sans uppercase text-stone mb-5"
+                    style={{ fontSize: '0.75rem', letterSpacing: '0.4em' }}>
+                    {t.weddingOf}
+                  </p>
+                  <div className="w-12 h-[2px] bg-marigold mb-7" />
                   <p className="font-sans uppercase text-charcoal/60 mb-2"
                     style={{ fontSize: '0.95rem', letterSpacing: '0.15em' }}>
                     {t.rsvpDeadlineLabel}
@@ -137,16 +135,16 @@ export default function RSVPSection() {
                     style={{ fontSize: 'clamp(1.3rem, 3.5vw, 1.8rem)', color: '#6E1A28' }}>
                     {t.deadline}
                   </p>
-                  <p className="font-sans leading-[1.85] text-stone mb-9"
+                  <p className="font-sans leading-[1.85] text-stone mb-7"
                     style={{ fontSize: '1.15rem' }}>
                     {t.arrangementNote}
                   </p>
-                  <h2 className="font-serif leading-[1.15] text-charcoal mb-10"
+                  <h2 className="font-serif leading-[1.15] text-charcoal mb-8"
                     style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', whiteSpace: 'pre-line' }}>
                     {t.confirmPresence}
                   </h2>
 
-                  <form onSubmit={handleSubmit} className="space-y-8">
+                  <form onSubmit={handleSubmit} className="space-y-7">
                     {/* Full Name */}
                     <div className="space-y-2">
                       <label className={labelCls} style={labelStyle}>{t.fullName}</label>
@@ -182,70 +180,13 @@ export default function RSVPSection() {
                       </div>
                     </div>
 
-                    {/* Conditional fields — NO height animation, NO overflow-hidden (blocks inputs on mobile) */}
+                    {/* Conditional fields */}
                     <AnimatePresence>
                       {attending === 'yes' && (
                         <motion.div key="yes-fields"
                           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
                           className="space-y-8">
-
-                          {/* Guest count — pill selector */}
-                          <div className="space-y-4">
-                            <label className={labelCls} style={labelStyle}>{t.guestCount}</label>
-                            <div className="flex gap-3 flex-wrap">
-                              {[
-                                { val: 0, label: t.justMe },
-                                { val: 1, label: '+1' },
-                                { val: 2, label: '+2' },
-                                { val: 3, label: '+3' },
-                              ].map(({ val, label }) => (
-                                <button
-                                  key={val}
-                                  type="button"
-                                  onClick={() => handleGuestCount(val)}
-                                  className="px-5 py-2.5 font-sans border transition-colors duration-200"
-                                  style={{
-                                    fontSize: '1rem',
-                                    background: guestCount === val ? '#18181B' : 'transparent',
-                                    color: guestCount === val ? '#FAF6F0' : '#4A4540',
-                                    borderColor: guestCount === val ? '#18181B' : '#C8C0B8',
-                                  }}
-                                >
-                                  {label}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Name fields — one per guest */}
-                          {guestCount !== null && guestCount > 0 && (
-                            <div className="space-y-6">
-                              <p className={labelCls} style={labelStyle}>{t.guestNames}</p>
-                              {guestNames.map((name, i) => (
-                                <div key={i} className="space-y-2">
-                                  <label className="block font-sans uppercase text-charcoal/60"
-                                    style={{ fontSize: '0.95rem', letterSpacing: '0.12em' }}>
-                                    {t.guestLabel} {i + 1}
-                                  </label>
-                                  <input
-                                    type="text"
-                                    autoComplete="off"
-                                    autoCorrect="off"
-                                    value={name}
-                                    onChange={(e) => {
-                                      const u = [...guestNames]
-                                      u[i] = e.target.value
-                                      setGuestNames(u)
-                                    }}
-                                    placeholder="Full name"
-                                    className={inputCls}
-                                    style={inputStyle}
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          )}
 
                           {/* Travel mode */}
                           <div className="space-y-4">
@@ -267,6 +208,24 @@ export default function RSVPSection() {
                               ))}
                             </div>
                           </div>
+
+                          {/* Family names — free text, at the end */}
+                          <div className="space-y-2">
+                            <label className={labelCls} style={labelStyle}>
+                              {t.familyNamesLabel}
+                            </label>
+                            <input
+                              type="text"
+                              autoComplete="off"
+                              autoCorrect="off"
+                              value={familyNames}
+                              onChange={(e) => setFamilyNames(e.target.value)}
+                              placeholder="e.g. Priya Sharma, Raj Sharma"
+                              className={inputCls}
+                              style={inputStyle}
+                            />
+                          </div>
+
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -277,7 +236,7 @@ export default function RSVPSection() {
 
                     <div className="pt-4">
                       <button type="submit" disabled={formState === 'submitting'}
-                        className="w-full py-5 bg-charcoal text-cream font-sans uppercase hover:bg-stone disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
+                        className="w-full py-5 bg-marigold text-charcoal font-sans uppercase hover:bg-marigold-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
                         style={{ fontSize: '1rem', letterSpacing: '0.28em' }}>
                         {formState === 'submitting' ? t.sending : t.confirmBtn}
                       </button>
