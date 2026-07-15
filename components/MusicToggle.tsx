@@ -18,8 +18,8 @@ export default function MusicToggle() {
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.5 }}
           style={{
-            width: 40,
-            height: 40,
+            width: 44,
+            height: 44,
             background: 'rgba(110,26,40,0.82)',
             backdropFilter: 'blur(6px)',
             boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
@@ -46,9 +46,9 @@ export default function MusicToggle() {
           {!playing && (
             <svg
               className="absolute"
-              width="40" height="40" viewBox="0 0 40 40" fill="none"
+              width="44" height="44" viewBox="0 0 44 44" fill="none"
             >
-              <line x1="12" y1="12" x2="28" y2="28" stroke="#F5EDE2" strokeWidth="1.1" strokeLinecap="round" />
+              <line x1="14" y1="14" x2="30" y2="30" stroke="#F5EDE2" strokeWidth="1.1" strokeLinecap="round" />
             </svg>
           )}
         </motion.button>
