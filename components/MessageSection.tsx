@@ -5,12 +5,12 @@ import { useRef } from 'react'
 import { useLang } from '@/contexts/Language'
 
 interface MessageSectionProps {
-  onRSVPClick: () => void
+  onCTAClick: () => void
 }
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
-export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
+export default function MessageSection({ onCTAClick }: MessageSectionProps) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const { t } = useLang()
@@ -47,11 +47,11 @@ export default function MessageSection({ onRSVPClick }: MessageSectionProps) {
                 <span className="text-charcoal font-semibold">{t.deadline}</span>.
               </p>
               <button
-                onClick={onRSVPClick}
+                onClick={onCTAClick}
                 className="inline-block font-sans uppercase bg-marigold text-charcoal px-8 py-3.5 hover:bg-marigold-dark transition-colors duration-300"
                 style={{ fontSize: '0.88rem', letterSpacing: '0.28em' }}
               >
-                {t.confirmAttend}
+                {t.confirmTravelBtn}
               </button>
             </div>
 

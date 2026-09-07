@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 
 interface HeroProps {
-  onRSVPClick: () => void
+  onCTAClick: () => void
 }
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
@@ -16,7 +16,7 @@ const fade = (delay = 0) => ({
   visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay, ease: EASE } },
 })
 
-export default function Hero({ onRSVPClick }: HeroProps) {
+export default function Hero({ onCTAClick }: HeroProps) {
   const [imgError, setImgError] = useState(false)
   const { t } = useLang()
 
@@ -110,11 +110,11 @@ export default function Hero({ onRSVPClick }: HeroProps) {
 
           <motion.div variants={fade(0.2)} className="flex-shrink-0">
             <button
-              onClick={onRSVPClick}
+              onClick={onCTAClick}
               className="px-9 md:px-10 py-4 border border-white/60 text-white font-sans uppercase hover:bg-marigold hover:border-marigold hover:text-charcoal transition-all duration-300 w-full md:w-auto text-center"
               style={{ fontSize: 'clamp(0.7rem, 1.5vw, 0.85rem)', letterSpacing: '0.3em' }}
             >
-              {t.confirmAttend.replace(' →', '')}
+              {t.confirmTravelBtn}
             </button>
           </motion.div>
         </motion.div>

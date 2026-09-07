@@ -3,9 +3,8 @@
 import { useCallback } from 'react'
 import Hero from '@/components/Hero'
 import MessageSection from '@/components/MessageSection'
-import RSVPSection from '@/components/RSVPSection'
 import TravelDetailsSection from '@/components/TravelDetailsSection'
-import StickyRSVP from '@/components/StickyRSVP'
+import StickyCTA from '@/components/StickyCTA'
 import GrandReveal from '@/components/GrandReveal'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import MusicToggle from '@/components/MusicToggle'
@@ -13,8 +12,8 @@ import { LanguageProvider } from '@/contexts/Language'
 import { MusicProvider } from '@/contexts/Music'
 
 export default function Home() {
-  const scrollToRSVP = useCallback(() => {
-    document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const scrollToTravelDetails = useCallback(() => {
+    document.getElementById('travel-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
   return (
@@ -26,9 +25,8 @@ export default function Home() {
           <LanguageSwitcher />
         </div>
         <main>
-          <Hero onRSVPClick={scrollToRSVP} />
-          <MessageSection onRSVPClick={scrollToRSVP} />
-          <RSVPSection />
+          <Hero onCTAClick={scrollToTravelDetails} />
+          <MessageSection onCTAClick={scrollToTravelDetails} />
           <TravelDetailsSection />
 
           <footer className="px-7 md:px-14 py-10 border-t border-parchment text-center bg-cream">
@@ -37,7 +35,7 @@ export default function Home() {
             </p>
           </footer>
 
-          <StickyRSVP onRSVPClick={scrollToRSVP} />
+          <StickyCTA onCTAClick={scrollToTravelDetails} />
         </main>
       </MusicProvider>
     </LanguageProvider>

@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLang } from '@/contexts/Language'
 
-interface StickyRSVPProps {
-  onRSVPClick: () => void
+interface StickyCTAProps {
+  onCTAClick: () => void
 }
 
-export default function StickyRSVP({ onRSVPClick }: StickyRSVPProps) {
+export default function StickyCTA({ onCTAClick }: StickyCTAProps) {
   const [visible, setVisible] = useState(false)
+  const { t } = useLang()
 
   useEffect(() => {
     const hero = document.getElementById('hero')
-    const rsvp = document.getElementById('rsvp')
+    const travelDetails = document.getElementById('travel-details')
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -21,8 +23,8 @@ export default function StickyRSVP({ onRSVPClick }: StickyRSVPProps) {
             // Show button once hero is out of view
             setVisible(!entry.isIntersecting)
           }
-          if (entry.target === rsvp && entry.isIntersecting) {
-            // Hide once RSVP section is visible
+          if (entry.target === travelDetails && entry.isIntersecting) {
+            // Hide once the travel details form is visible
             setVisible(false)
           }
         })
@@ -31,7 +33,7 @@ export default function StickyRSVP({ onRSVPClick }: StickyRSVPProps) {
     )
 
     if (hero) observer.observe(hero)
-    if (rsvp) observer.observe(rsvp)
+    if (travelDetails) observer.observe(travelDetails)
 
     return () => observer.disconnect()
   }, [])
@@ -50,11 +52,11 @@ export default function StickyRSVP({ onRSVPClick }: StickyRSVPProps) {
           }}
         >
           <button
-            onClick={onRSVPClick}
+            onClick={onCTAClick}
             className="w-full py-5 bg-marigold text-charcoal font-sans uppercase shadow-lg hover:bg-marigold-dark transition-colors duration-300"
           style={{ fontSize: '0.95rem', letterSpacing: '0.25em' }}
           >
-            Confirm Attendance
+            {t.confirmTravelBtn}
           </button>
         </motion.div>
       )}
