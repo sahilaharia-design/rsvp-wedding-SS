@@ -42,45 +42,48 @@ function doPost(e) {
 
 // ── Travel details (arrival/departure info) ───────────────────────────
 function handleTravelInfo_(payload) {
-  const sheet = getOrCreateSheet_(TRAVEL_SHEET_NAME,
-    ['Timestamp', 'Full Name', 'Mobile', 'Arrival Mode', 'Arrival Date', 'Arrival Time',
-      'Travel Number', 'Departure Date', 'Notes', 'ID Documents'])
+  const lock = LockService.getScriptLock()
+  lock.waitLock(30000) // up to 30s — Sheets writes are fast, this just serialises concurrent hits
+  try {
+    const sheet = getOrCreateSheet_(TRAVEL_SHEET_NAME,
+      ['Timestamp', 'Full Name', 'Mobile', 'Arrival Mode', 'Arrival Date', 'Arrival Time',
+        'Travel Number', 'Departure Date', 'Notes', 'ID Documents'])
 
-  const mobile = payload.mobile || ''
-  const rowIndex = findRowByMobile_(sheet, mobile)
+    const mobile = payload.mobile || ''
+    const rowIndex = findRowByMobile_(sheet, mobile)
 
-  const rowData = [
-    new Date(),
-    payload.full_name || '',
-    mobile,
-    payload.arrival_mode || '',
-    payload.arrival_date || '',
-    payload.arrival_time || '',
-    payload.travel_number || '',
-    payload.departure_date || '',
-    payload.notes || '',
-  ]
+    const rowData = [
+      new Date(),
+      payload.full_name || '',
+      mobile,
+      payload.arrival_mode || '',
+      payload.arrival_date || '',
+      payload.arrival_time || '',
+      payload.travel_number || '',
+      payload.departure_date || '',
+      payload.notes || '',
+    ]
 
-  if (rowIndex > 0) {
-    // Update in place — keep whatever's already in the ID Documents column
-    sheet.getRange(rowIndex, 1, 1, 9).setValues([rowData])
-  } else {
-    sheet.appendRow(rowData.concat(['']))
+    if (rowIndex > 0) {
+      // Update in place — keep whatever's already in the ID Documents column
+      sheet.getRange(rowIndex, 1, 1, 9).setValues([rowData])
+    } else {
+      sheet.appendRow(rowData.concat(['']))
+    }
+    return jsonResponse_({ ok: true })
+  } finally {
+    lock.releaseLock()
   }
-  return jsonResponse_({ ok: true })
 }
 
 // ── Travel details (one ID photo per request) ─────────────────────────
 function handleTravelFile_(payload) {
-  const sheet = getOrCreateSheet_(TRAVEL_SHEET_NAME,
-    ['Timestamp', 'Full Name', 'Mobile', 'Arrival Mode', 'Arrival Date', 'Arrival Time',
-      'Travel Number', 'Departure Date', 'Notes', 'ID Documents'])
-
   const mobile = payload.mobile || ''
   const filename = payload.filename || 'id-document'
   const mimeType = payload.mime_type || 'application/octet-stream'
   const base64 = payload.data || ''
 
+  // Drive upload doesn't need the lock — only the Sheet read/write does
   const folder = DriveApp.getFolderById(ID_DOCS_FOLDER_ID)
   const bytes = Utilities.base64Decode(base64)
   const blob = Utilities.newBlob(bytes, mimeType, mobile + '_' + filename)
@@ -90,15 +93,25 @@ function handleTravelFile_(payload) {
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW)
   const fileUrl = file.getUrl()
 
-  const rowIndex = findRowByMobile_(sheet, mobile)
-  if (rowIndex < 0) {
-    sheet.appendRow([new Date(), payload.full_name || '', mobile, '', '', '', '', '', '', fileUrl])
-  } else {
-    const cell = sheet.getRange(rowIndex, 10) // ID Documents column
-    const existing = cell.getValue()
-    cell.setValue(existing ? existing + ', ' + fileUrl : fileUrl)
+  const lock = LockService.getScriptLock()
+  lock.waitLock(30000)
+  try {
+    const sheet = getOrCreateSheet_(TRAVEL_SHEET_NAME,
+      ['Timestamp', 'Full Name', 'Mobile', 'Arrival Mode', 'Arrival Date', 'Arrival Time',
+        'Travel Number', 'Departure Date', 'Notes', 'ID Documents'])
+
+    const rowIndex = findRowByMobile_(sheet, mobile)
+    if (rowIndex < 0) {
+      sheet.appendRow([new Date(), payload.full_name || '', mobile, '', '', '', '', '', '', fileUrl])
+    } else {
+      const cell = sheet.getRange(rowIndex, 10) // ID Documents column
+      const existing = cell.getValue()
+      cell.setValue(existing ? existing + ', ' + fileUrl : fileUrl)
+    }
+    return jsonResponse_({ ok: true, url: fileUrl })
+  } finally {
+    lock.releaseLock()
   }
-  return jsonResponse_({ ok: true, url: fileUrl })
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────
