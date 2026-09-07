@@ -101,9 +101,19 @@ export default function RSVPSection() {
                   <p className="font-serif text-charcoal mb-3" style={{ fontSize: '1.2rem' }}>
                     {t.withLove}
                   </p>
-                  <p className="font-display text-blush" style={{ fontSize: '1.8rem' }}>
+                  <p className="font-display text-blush mb-8" style={{ fontSize: '1.8rem' }}>
                     #SakshiKoMilaKinara
                   </p>
+                  {attending === 'yes' && (
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById('travel-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                      className="font-sans uppercase text-charcoal underline decoration-marigold decoration-2 underline-offset-4 hover:text-marigold-dark transition-colors duration-200"
+                      style={{ fontSize: '0.85rem', letterSpacing: '0.15em' }}
+                    >
+                      {t.travelDetailsCta}
+                    </button>
+                  )}
                 </motion.div>
 
               ) : formState === 'duplicate' ? (
@@ -113,9 +123,17 @@ export default function RSVPSection() {
                   <h2 className="font-serif italic text-charcoal mb-4" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)' }}>
                     {t.alreadyReceived}
                   </h2>
-                  <p className="font-sans leading-[1.9] text-stone" style={{ fontSize: '1.1rem' }}>
+                  <p className="font-sans leading-[1.9] text-stone mb-8" style={{ fontSize: '1.1rem' }}>
                     {t.alreadyBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('travel-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="font-sans uppercase text-charcoal underline decoration-marigold decoration-2 underline-offset-4 hover:text-marigold-dark transition-colors duration-200"
+                    style={{ fontSize: '0.85rem', letterSpacing: '0.15em' }}
+                  >
+                    {t.travelDetailsCta}
+                  </button>
                 </motion.div>
 
               ) : (
