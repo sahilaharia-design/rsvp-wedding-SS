@@ -1,0 +1,100 @@
+{
+  "couple": "Sakshi & Dr. Sahil",
+  "hashtag": "#SakshiKoMilaKinara",
+  "website": "https://sakshisahil.com/",
+  "city": "Delhi",
+  "areaAsSeenOnWebsite": "Pitampura",
+  "weddingStart": "2027-01-20",
+  "checkout": "2027-01-22",
+  "travelDeadline": "2026-10-31",
+  "timezone": "Asia/Kolkata",
+  "themesHeading": "From a solo journey to a shared forever.",
+  "themesIntro": "What began as a solo trip to the hills of Bir became a journey neither of us would take alone.",
+  "themesClosing": "Four celebrations. Four chapters. One complete journey.",
+  "chapters": [
+    {
+      "id": "bloom",
+      "number": 1,
+      "event": "Mehendi",
+      "title": "Bloom",
+      "date": "2027-01-20",
+      "timeOfDay": "Morning",
+      "story": "Two strangers meet in the hills.",
+      "shortLine": "Traditions in full bloom.",
+      "dressCode": "Florals & pastels with a tint of green",
+      "palette": [
+        "Sage",
+        "Blush",
+        "Peach",
+        "Ivory"
+      ],
+      "outfitExamples": [
+        "Floral or pastel kurta sets",
+        "Floral lehengas, sarees or easy festive sets"
+      ],
+      "art": "assets/artwork/chapter-01-bloom.png"
+    },
+    {
+      "id": "promise",
+      "number": 2,
+      "event": "Engagement & Cocktail",
+      "title": "Promise",
+      "date": "2027-01-20",
+      "timeOfDay": "Evening",
+      "story": "Two lives choose a shared forever.",
+      "shortLine": "A toast to what’s ahead.",
+      "men": "Tuxedos & Suits",
+      "womenSourceVerbatim": "Neon Gowns & Evening Indian",
+      "paletteSourceVerbatim": "Cocktail Formal · Jewel Tones",
+      "palette": [
+        "Navy",
+        "Emerald",
+        "Plum",
+        "Ruby"
+      ],
+      "approvalNote": "Neon versus jewel tones unresolved. Palette and wardrobe examples are provisional; preserve source wording pending owner clarification.",
+      "art": "assets/artwork/chapter-02-promise.png"
+    },
+    {
+      "id": "romance",
+      "number": 3,
+      "event": "Haldi",
+      "title": "Romance",
+      "date": "2027-01-21",
+      "timeOfDay": "Morning",
+      "story": "Every call, trip and moment in between.",
+      "shortLine": "Colours of love.",
+      "dressCode": "Hot pink",
+      "fabricNote": "Easy, Haldi-friendly fabrics",
+      "palette": [
+        "Hot pink"
+      ],
+      "outfitExamples": [
+        "Light hot-pink kurta sets",
+        "Easy hot-pink salwar suits or sarees"
+      ],
+      "art": "assets/artwork/chapter-03-romance.png"
+    },
+    {
+      "id": "legacy",
+      "number": 4,
+      "event": "Wedding",
+      "title": "Legacy",
+      "date": "2027-01-21",
+      "timeOfDay": "Evening",
+      "story": "The journey finds its Kinara—its home.",
+      "shortLine": "A love for generations.",
+      "dressCode": "Indian formal",
+      "palette": [
+        "Ivory",
+        "Champagne",
+        "Gold"
+      ],
+      "outfitExamples": [
+        "Ivory or champagne sherwanis and formal Indian sets",
+        "Ivory, champagne or gold sarees and lehengas"
+      ],
+      "art": "assets/artwork/chapter-04-legacy.png"
+    }
+  ]
+}

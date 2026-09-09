@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     arrival_time?: string
     travel_number?: string
     departure_date?: string
+    guest_names?: string
     notes?: string
   }
 
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
 
   const {
     full_name, mobile_number, arrival_mode, arrival_date,
-    arrival_time, travel_number, departure_date, notes,
+    arrival_time, travel_number, departure_date, guest_names, notes,
   } = body
 
   if (!full_name?.trim() || !mobile_number?.trim()) {
@@ -68,6 +69,7 @@ export async function POST(request: NextRequest) {
     arrival_time: arrival_time?.trim() ?? '',
     travel_number: travel_number?.trim() ?? '',
     departure_date: departure_date?.trim() ?? '',
+    guest_names: guest_names?.trim() ?? '',
     notes: notes?.trim() ?? '',
   })
 

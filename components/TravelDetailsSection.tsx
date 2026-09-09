@@ -13,7 +13,7 @@ const MAX_FILE_BYTES = 3.2 * 1024 * 1024 // ~3.2MB raw — keeps base64 well und
 
 const labelCls = 'block font-sans uppercase text-charcoal/70'
 const labelStyle = { fontSize: '0.95rem', letterSpacing: '0.12em' }
-const inputCls = 'w-full bg-transparent border-b-2 border-stone/30 focus:border-marigold outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200'
+const inputCls = 'w-full bg-transparent border-b-2 border-stone/30 focus:border-burgundy outline-none py-4 font-sans text-charcoal placeholder:text-stone/35 transition-colors duration-200 min-h-[44px]'
 const inputStyle = { fontSize: '1.1rem' }
 
 function fileToBase64(file: File): Promise<string> {
@@ -75,6 +75,7 @@ export default function TravelDetailsSection() {
     const arrival_time = fd.get('arrival_time') as string
     const travel_number = fd.get('travel_number') as string
     const departure_date = fd.get('departure_date') as string
+    const guest_names = fd.get('guest_names') as string
     const notes = fd.get('notes') as string
 
     if (!arrivalMode) {
@@ -90,7 +91,7 @@ export default function TravelDetailsSection() {
         body: JSON.stringify({
           full_name, mobile_number,
           arrival_mode: arrivalMode, arrival_date, arrival_time,
-          travel_number, departure_date, notes,
+          travel_number, departure_date, guest_names, notes,
         }),
       })
       const infoJson = await infoRes.json()
@@ -153,7 +154,7 @@ export default function TravelDetailsSection() {
               {formState === 'success' ? (
                 <motion.div key="success" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6 }} className="py-10 text-center">
-                  <div className="w-12 h-[2px] bg-marigold mx-auto mb-8" />
+                  <div className="w-12 h-[2px] bg-gold mx-auto mb-8" />
                   <h2 className="font-serif italic leading-[1.2] text-charcoal mb-5"
                     style={{ fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
                     {t.travelSuccessHeading}
@@ -168,7 +169,7 @@ export default function TravelDetailsSection() {
                     style={{ fontSize: '0.75rem', letterSpacing: '0.4em' }}>
                     {t.travelConfirmEyebrow}
                   </p>
-                  <div className="w-12 h-[2px] bg-marigold mb-7" />
+                  <div className="w-12 h-[2px] bg-gold mb-7" />
                   <h2 className="font-serif leading-[1.15] text-charcoal mb-5"
                     style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)' }}>
                     {t.travelConfirmHeading}
@@ -219,7 +220,9 @@ export default function TravelDetailsSection() {
                           className={inputCls} style={inputStyle} />
                       </div>
                       <div className="space-y-2">
-                        <label className={labelCls} style={labelStyle}>{t.arrivalTime}</label>
+                        <label className={labelCls} style={labelStyle}>
+                          {t.arrivalTime} <span className="normal-case tracking-normal text-stone/70">({t.arrivalTimeHint})</span>
+                        </label>
                         <input type="time" name="arrival_time" required
                           className={inputCls} style={inputStyle} />
                       </div>
@@ -240,6 +243,15 @@ export default function TravelDetailsSection() {
                         {t.departureDate} <span className="normal-case tracking-normal">{t.optionalTag}</span>
                       </label>
                       <input type="date" name="departure_date" className={inputCls} style={inputStyle} />
+                    </div>
+
+                    {/* Guest names — informational only, not a confirmed room allocation */}
+                    <div className="space-y-2">
+                      <label className={labelCls} style={labelStyle}>
+                        {t.guestNamesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
+                      </label>
+                      <input type="text" name="guest_names" autoComplete="off"
+                        className={inputCls} style={inputStyle} />
                     </div>
 
                     {/* ID upload */}
@@ -298,7 +310,7 @@ export default function TravelDetailsSection() {
 
                     <div className="pt-4">
                       <button type="submit" disabled={formState === 'submitting'}
-                        className="w-full py-5 bg-marigold text-charcoal font-sans uppercase hover:bg-marigold-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
+                        className="w-full py-5 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
                         style={{ fontSize: '1rem', letterSpacing: '0.28em' }}>
                         {formState === 'submitting' ? t.sending : t.travelConfirmBtn}
                       </button>

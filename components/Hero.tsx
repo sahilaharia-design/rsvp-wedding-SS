@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
@@ -13,7 +14,7 @@ const EASE = [0.25, 0.1, 0.25, 1] as const
 
 const fade = (delay = 0) => ({
   hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay, ease: EASE } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, delay, ease: EASE } },
 })
 
 export default function Hero({ onCTAClick }: HeroProps) {
@@ -21,104 +22,82 @@ export default function Hero({ onCTAClick }: HeroProps) {
   const { t } = useLang()
 
   const placeholderBg =
-    'linear-gradient(160deg, #A08070 0%, #B89888 25%, #C8A898 55%, #D8C0B0 80%, #E0D0C4 100%)'
+    'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
 
   return (
-    <section id="hero" className="relative h-screen overflow-hidden">
-      {/* Photo */}
-      <div
-        className="absolute inset-0"
-        style={imgError ? { background: placeholderBg } : undefined}
-      >
-        {!imgError && (
-          <Image
-            src="/hero.jpg"
-            alt="Sakshi & Dr. Sahil — Roka Ceremony"
-            fill priority
-            sizes="100vw"
-            className="object-cover object-top"
-            onError={() => setImgError(true)}
-          />
-        )}
-      </div>
+    <section id="hero" className="relative bg-paper overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 md:px-14 pt-28 pb-14 md:pt-24 md:pb-20">
+        <div className="grid md:grid-cols-[58%_1fr] gap-10 md:gap-14 items-center">
 
-      {/* Top vignette */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.2) 30%, transparent 55%)' }} />
-      {/* Bottom gradient */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.88) 20%, rgba(0,0,0,0.5) 42%, transparent 68%)' }} />
-
-      {/* ── Eyebrow ("Confirm Travel") — left on mobile, pushed below the top-right icon cluster; centred on md+ ── */}
-      <motion.div
-        className="absolute top-0 left-0 right-0 flex flex-col items-start md:items-center px-7 md:px-0 pt-20 md:pt-11"
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.1, delay: 0.2, ease: EASE }}
-      >
-        <p
-          className="font-sans text-white uppercase tracking-[0.65em]"
-          style={{ fontSize: 'clamp(0.9rem, 3vw, 1.55rem)' }}
-        >
-          {t.saveTheDate}
-        </p>
-        <motion.div
-          className="mt-3 h-px bg-white/30"
-          style={{ originX: 0.5, width: 'clamp(80px, 35vw, 130px)' }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.9, delay: 0.55, ease: [0.4, 0, 0.2, 1] }}
-        />
-      </motion.div>
-
-      {/* ── Bottom text ── */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 px-7 md:px-14 pb-10 md:pb-14"
-        initial="hidden"
-        animate="visible"
-        variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-      >
-        {/* Hashtag */}
-        <motion.h1
-          variants={fade(0)}
-          className="font-display text-white leading-none mb-5"
-          style={{ fontSize: 'clamp(2rem, 8vw, 7.5rem)' }}
-        >
-          #SakshiKoMilaKinara
-        </motion.h1>
-
-        {/* Names + date + CTA row */}
-        <motion.div
-          variants={fade(0.1)}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-10"
-        >
-          <div>
-            <p className="font-serif text-white/90 mb-2"
-              style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.85rem)' }}>
-              {t.weddingOf}
-            </p>
-            {/* All 3 dates */}
-            <p className="font-sans text-white/55 mb-1"
-              style={{ fontSize: 'clamp(0.7rem, 1.6vw, 0.9rem)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-              Wed 20 &ndash; Fri 22 January 2027 &nbsp;&middot;&nbsp; Pitampura, Delhi, India
-            </p>
-            <p className="font-sans text-white/35"
-              style={{ fontSize: 'clamp(0.65rem, 1.4vw, 0.8rem)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>
-              Wed 20 Mehendi &amp; Engagement &nbsp;·&nbsp; Thu 21 Haldi &amp; Wedding &nbsp;·&nbsp; Fri 22 Checkout
-            </p>
-          </div>
-
-          <motion.div variants={fade(0.2)} className="flex-shrink-0">
-            <button
-              onClick={onCTAClick}
-              className="px-9 md:px-10 py-4 border border-white/60 text-white font-sans uppercase hover:bg-marigold hover:border-marigold hover:text-charcoal transition-all duration-300 w-full md:w-auto text-center"
-              style={{ fontSize: 'clamp(0.7rem, 1.5vw, 0.85rem)', letterSpacing: '0.3em' }}
-            >
-              {t.confirmTravelBtn}
-            </button>
+          {/* ── Photo ── */}
+          <motion.div
+            initial="hidden" animate="visible" variants={fade(0)}
+            className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden"
+            style={{ border: '3px solid var(--thread-border, #D8C6AD)', boxShadow: '0 18px 44px rgba(48,54,50,0.14)' }}
+          >
+            {!imgError ? (
+              <Image
+                src="/photos/couple-closeup.jpg"
+                alt="Sakshi and Dr. Sahil, foreheads together, smiling"
+                fill priority
+                sizes="(max-width: 768px) 100vw, 58vw"
+                className="object-cover"
+                style={{ objectPosition: '50% 40%' }}
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className="absolute inset-0" style={{ background: placeholderBg }} />
+            )}
           </motion.div>
-        </motion.div>
-      </motion.div>
+
+          {/* ── Text ── */}
+          <motion.div
+            initial="hidden" animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          >
+            <motion.p variants={fade(0.05)}
+              className="font-sans uppercase text-burgundy/80 mb-4"
+              style={{ fontSize: '0.85rem', letterSpacing: '0.3em' }}>
+              {t.saveTheDate}
+            </motion.p>
+
+            <motion.h1 variants={fade(0.1)}
+              className="font-serif leading-[1.1] text-ink mb-3"
+              style={{ fontSize: 'clamp(2.1rem, 5vw, 3.4rem)' }}>
+              {t.namesLine}
+            </motion.h1>
+
+            <motion.p variants={fade(0.15)}
+              className="font-sans text-stone mb-8"
+              style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em' }}>
+              {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
+            </motion.p>
+
+            <motion.div variants={fade(0.2)} className="flex flex-col items-start gap-4">
+              <button
+                onClick={onCTAClick}
+                className="px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+                style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
+              >
+                {t.confirmTravelBtn}
+              </button>
+              <Link
+                href="/themes"
+                className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
+                style={{ fontSize: '0.95rem' }}
+              >
+                {t.themesLinkLabel} &rarr;
+              </Link>
+            </motion.div>
+
+            <motion.h2 variants={fade(0.3)}
+              className="font-display text-burgundy leading-none mt-10 break-words"
+              style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word' }}>
+              #SakshiKoMilaKinara
+            </motion.h2>
+          </motion.div>
+        </div>
+      </div>
     </section>
   )
 }

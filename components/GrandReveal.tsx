@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
@@ -7,28 +8,7 @@ import { useMusic } from '@/contexts/Music'
 
 type Stage = 'sealed' | 'opening'
 
-// ── Wax seal — S & S monogram ─────────────────────────────────────────────────
-function WaxSeal({ size = 54 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 54 54" fill="none">
-      <circle cx="27" cy="27" r="25" fill="#6E1A28" />
-      <circle cx="27" cy="27" r="22.5" fill="none" stroke="rgba(245,237,226,0.22)" strokeWidth="0.7" />
-      <text
-        x="27" y="32"
-        textAnchor="middle"
-        fontFamily="var(--font-cormorant), Georgia, serif"
-        fontSize="13"
-        fontStyle="italic"
-        fill="#F5EDE2"
-        letterSpacing="2"
-      >
-        S &amp; S
-      </text>
-    </svg>
-  )
-}
-
-// ── Envelope ──────────────────────────────────────────────────────────────────
+// ── Envelope — illustrated artwork, tap to open ────────────────────────────
 function EnvelopeVisual({
   isOpening,
   onClick,
@@ -38,74 +18,31 @@ function EnvelopeVisual({
   onClick: () => void
   tapLabel: string
 }) {
-  const W = 400
-  const H = 280
-  const FLAP_H = 126
+  const [imgError, setImgError] = useState(false)
 
   return (
-    <div className="flex flex-col items-center gap-10 w-full px-6">
+    <div className="flex flex-col items-center gap-8 w-full px-6">
       <motion.div
-        className="relative cursor-pointer"
-        style={{ width: `min(${W}px, 92vw)`, aspectRatio: `${W} / ${H}` }}
+        className="relative cursor-pointer rounded-lg overflow-hidden"
+        style={{ width: 'min(440px, 90vw)', aspectRatio: '3 / 2', boxShadow: '0 32px 72px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.35)' }}
         onClick={isOpening ? undefined : onClick}
-        animate={isOpening ? {} : {
-          y: [0, -6, 0],
-          transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
-        }}
+        animate={isOpening
+          ? { scale: 1.06, opacity: 0, transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } }
+          : { y: [0, -6, 0], transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }
+        }
         whileHover={isOpening ? {} : { scale: 1.015 }}
-        transition={{ duration: 0.2 }}
       >
-        {/* Shadow */}
-        <div
-          className="absolute inset-0 rounded-sm pointer-events-none"
-          style={{ boxShadow: '0 32px 72px rgba(0,0,0,0.65), 0 8px 24px rgba(0,0,0,0.4)' }}
-        />
-
-        {/* Envelope body */}
-        <div
-          className="absolute inset-0"
-          style={{ background: '#F5EDE2', border: '1px solid rgba(44,24,16,0.12)' }}
-        >
-          {/* Diagonal crease lines */}
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom right, transparent 49.7%, rgba(44,24,16,0.06) 50%, transparent 50.3%)' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom left, transparent 49.7%, rgba(44,24,16,0.06) 50%, transparent 50.3%)' }} />
-
-          {/* Inside text — fades in as flap opens */}
-          <motion.div
-            className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-8"
-            initial={{ opacity: 0 }}
-            animate={isOpening ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.5, delay: 0.65 }}
-          >
-            <p className="font-display text-center" style={{ fontSize: 'clamp(1.2rem, 5vw, 2.2rem)', color: '#6E1A28', opacity: 0.7 }}>
-              #SakshiKoMilaKinara
-            </p>
-            <p className="font-serif italic text-center" style={{ fontSize: 'clamp(0.78rem, 2.2vw, 1rem)', color: '#2C1810', opacity: 0.45 }}>
-              Sakshi &amp; Dr. Sahil &nbsp;·&nbsp; Wed 20 &ndash; Fri 22 January 2027
-            </p>
-          </motion.div>
-
-          {/* Bottom fold triangle */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '55%', clipPath: 'polygon(0 100%, 100% 100%, 50% 0)', background: 'rgba(44,24,16,0.05)', pointerEvents: 'none' }} />
-        </div>
-
-        {/* Animated flap */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: `${(FLAP_H / H) * 100}%`, perspective: '1200px', zIndex: 10 }}>
-          <motion.div
-            style={{ width: '100%', height: '100%', transformOrigin: '50% 0%', transformStyle: 'preserve-3d' }}
-            animate={isOpening
-              ? { rotateX: -165, transition: { duration: 1.1, delay: 0.1, ease: [0.4, 0, 0.2, 1] } }
-              : { rotateX: 0 }
-            }
-          >
-            {/* Flap face */}
-            <div style={{ position: 'absolute', inset: 0, background: '#EDE8DF', clipPath: 'polygon(0 0, 100% 0, 50% 100%)', borderLeft: '1px solid rgba(44,24,16,0.08)', borderRight: '1px solid rgba(44,24,16,0.08)' }} />
-            {/* Wax seal at flap tip */}
-            <div style={{ position: 'absolute', bottom: '-27px', left: '50%', transform: 'translateX(-50%)', zIndex: 20 }}>
-              <WaxSeal size={54} />
-            </div>
-          </motion.div>
-        </div>
+        {!imgError ? (
+          <Image
+            src="/artwork/invitation-envelope.jpg"
+            alt="Illustrated wedding invitation envelope"
+            fill sizes="440px" priority
+            className="object-cover"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #760D25, #A17B3D)' }} />
+        )}
       </motion.div>
 
       {/* Tap to open */}
@@ -114,9 +51,9 @@ function EnvelopeVisual({
           <motion.p
             key="tap"
             className="font-sans uppercase tracking-[0.45em] text-center"
-            style={{ fontSize: '11px', color: 'rgba(212,169,154,0.5)' }}
+            style={{ fontSize: '11px', color: 'rgba(221,200,165,0.75)' }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.5, 0.2, 0.5] }}
+            animate={{ opacity: [0, 0.85, 0.4, 0.85] }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2.5, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
           >
@@ -136,9 +73,25 @@ export default function GrandReveal() {
   const { start } = useMusic()
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !sessionStorage.getItem('std-revealed')) {
+    if (typeof window === 'undefined') return
+
+    // Deep links must never be gated behind the envelope: a direct
+    // #travel-details anchor (or arriving already having seen it) skips it.
+    const hasDeepLink = window.location.hash === '#travel-details'
+    const alreadyRevealed = sessionStorage.getItem('std-revealed')
+
+    if (!alreadyRevealed && !hasDeepLink) {
       setVisible(true)
-      sessionStorage.setItem('std-revealed', '1')
+    }
+    sessionStorage.setItem('std-revealed', '1')
+
+    if (hasDeepLink) {
+      // Let layout settle before jumping, since content mounts client-side.
+      // A short timeout (rather than requestAnimationFrame) so this still
+      // fires promptly even if the tab isn't the active/visible one yet.
+      setTimeout(() => {
+        document.getElementById('travel-details')?.scrollIntoView({ block: 'start' })
+      }, 60)
     }
   }, [])
 
@@ -148,8 +101,7 @@ export default function GrandReveal() {
     if (stage !== 'sealed') return
     start() // user gesture — safe to start audio with sound here
     setStage('opening')
-    // Flap opens in 1.1s → pause 0.7s for inside content to show → fade out
-    setTimeout(dismiss, 1900)
+    setTimeout(dismiss, 1000)
   }, [stage, dismiss, start])
 
   return (
@@ -157,9 +109,9 @@ export default function GrandReveal() {
       {visible && (
         <motion.div
           className="fixed inset-0 z-[100] overflow-hidden"
-          style={{ backgroundColor: '#0D0805' }}
+          style={{ backgroundColor: '#1A0E08' }}
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } }}
+          exit={{ opacity: 0, transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] } }}
         >
           <motion.div
             className="absolute inset-0 flex items-center justify-center"
@@ -173,6 +125,17 @@ export default function GrandReveal() {
               tapLabel={t.tapToOpen}
             />
           </motion.div>
+
+          {/* Skip — envelope must never gate the invitation or the form */}
+          {stage === 'sealed' && (
+            <button
+              onClick={dismiss}
+              className="absolute top-6 right-6 md:top-8 md:right-8 font-sans uppercase text-champagne/70 hover:text-champagne transition-colors"
+              style={{ fontSize: '0.75rem', letterSpacing: '0.2em' }}
+            >
+              Skip
+            </button>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

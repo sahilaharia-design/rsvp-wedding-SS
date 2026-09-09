@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Inter, Allura } from 'next/font/google'
+import Providers from '@/components/Providers'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -49,7 +50,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable} ${allura.variable}`}>
-      <body className="bg-cream text-charcoal antialiased">{children}</body>
+      <body className="bg-cream text-charcoal antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

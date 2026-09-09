@@ -20,6 +20,16 @@
  * 5. In Vercel → your project → Settings → Environment Variables, add:
  *      TRAVEL_APPS_SCRIPT_URL = <that /exec URL>
  *    (Production + Preview), then redeploy.
+ *
+ * UPDATE — 'Guest Names' column (added for the website redesign)
+ * ────────────────────────────────────────────────────────────────────────
+ * This version writes an optional "accompanying guest names" value into
+ * column K (11) of the "Travel Details" tab. Because the tab already
+ * exists with a 10-column header row, that header will NOT be created
+ * automatically — go to the "Travel Details" tab once and manually type
+ * "Guest Names" into cell K1 so the column is labelled. No other columns
+ * move or change. If you skip this, the data still saves correctly — the
+ * column is just unlabelled until you add the header.
  */
 
 const SPREADSHEET_ID = '1SQHdH67JLTLATJyyARYHhIli3nBrg-0PtMPNSEGiTcU' // "Guest Confirmations" sheet
@@ -41,18 +51,22 @@ function doPost(e) {
 }
 
 // ── Travel details (arrival/departure info) ───────────────────────────
+// Column layout is intentionally append-only ('Guest Names' added at the
+// end, column 11) so this script stays compatible with the "Travel Details"
+// tab's existing header row and existing rows — inserting a column in the
+// middle would silently misalign every prior submission.
 function handleTravelInfo_(payload) {
   const lock = LockService.getScriptLock()
   lock.waitLock(30000) // up to 30s — Sheets writes are fast, this just serialises concurrent hits
   try {
     const sheet = getOrCreateSheet_(TRAVEL_SHEET_NAME,
       ['Timestamp', 'Full Name', 'Mobile', 'Arrival Mode', 'Arrival Date', 'Arrival Time',
-        'Travel Number', 'Departure Date', 'Notes', 'ID Documents'])
+        'Travel Number', 'Departure Date', 'Notes', 'ID Documents', 'Guest Names'])
 
     const mobile = payload.mobile || ''
     const rowIndex = findRowByMobile_(sheet, mobile)
 
-    const rowData = [
+    const rowDataCols1to9 = [
       new Date(),
       payload.full_name || '',
       mobile,
@@ -63,12 +77,15 @@ function handleTravelInfo_(payload) {
       payload.departure_date || '',
       payload.notes || '',
     ]
+    const guestNames = payload.guest_names || ''
 
     if (rowIndex > 0) {
-      // Update in place — keep whatever's already in the ID Documents column
-      sheet.getRange(rowIndex, 1, 1, 9).setValues([rowData])
+      // Update columns 1–9 in place — keep whatever's already in the ID
+      // Documents column (10), overwrite Guest Names (11) with the latest.
+      sheet.getRange(rowIndex, 1, 1, 9).setValues([rowDataCols1to9])
+      sheet.getRange(rowIndex, 11).setValue(guestNames)
     } else {
-      sheet.appendRow(rowData.concat(['']))
+      sheet.appendRow(rowDataCols1to9.concat(['', guestNames]))
     }
     return jsonResponse_({ ok: true })
   } finally {
@@ -98,7 +115,7 @@ function handleTravelFile_(payload) {
   try {
     const sheet = getOrCreateSheet_(TRAVEL_SHEET_NAME,
       ['Timestamp', 'Full Name', 'Mobile', 'Arrival Mode', 'Arrival Date', 'Arrival Time',
-        'Travel Number', 'Departure Date', 'Notes', 'ID Documents'])
+        'Travel Number', 'Departure Date', 'Notes', 'ID Documents', 'Guest Names'])
 
     const rowIndex = findRowByMobile_(sheet, mobile)
     if (rowIndex < 0) {
