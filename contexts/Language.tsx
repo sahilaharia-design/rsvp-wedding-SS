@@ -6,7 +6,7 @@ export type Lang = 'en' | 'hi' | 'gu'
 
 export const strings = {
   en: {
-    saveTheDate:       'Save the Date',
+    saveTheDate:       'Confirm Travel',
     tapToOpen:         'Tap to open',
     inviteHeading:     'Help Us Take Care of You',
     eventDates:        'Wed 20 – Fri 22 January 2027',
@@ -45,7 +45,7 @@ export const strings = {
     travelDetailsError: 'Couldn\'t reach the server. Please check your connection and try again.',
   },
   hi: {
-    saveTheDate:       'तारीख याद रखें',
+    saveTheDate:       'यात्रा की पुष्टि करें',
     tapToOpen:         'खोलने के लिए टैप करें',
     inviteHeading:     'हमें आपका ख्याल रखने दें',
     eventDates:        'बुध 20 – शुक्र 22 जनवरी 2027',
@@ -84,7 +84,7 @@ export const strings = {
     travelDetailsError: 'सर्वर तक नहीं पहुँच सके। कृपया अपना कनेक्शन जाँचें और फिर से प्रयास करें।',
   },
   gu: {
-    saveTheDate:       'તારીખ યાદ રાખો',
+    saveTheDate:       'મુસાફરીની પુષ્ટિ કરો',
     tapToOpen:         'ખોલવા ટૅપ કરો',
     inviteHeading:     'અમને તમારી કાળજી લેવા દો',
     eventDates:        'બુધ 20 – શુક્ર 22 જાન્યુઆરી 2027',

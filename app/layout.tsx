@@ -26,19 +26,19 @@ const allura = Allura({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://sakshisahil.com'),
-  title: 'Save The Date — #SakshiKoMilaKinara',
+  title: 'Confirm Your Travel Details — #SakshiKoMilaKinara',
   description:
-    'Sakshi & Dr. Sahil are getting married! Wed 20 – Fri 22 January 2027 · Pitampura, Delhi, India. Confirm your travel details at sakshisahil.com',
+    'Sakshi & Dr. Sahil\'s wedding is Wed 20 – Fri 22 January 2027 · Pitampura, Delhi, India. Please confirm your travel details and ID at sakshisahil.com',
   openGraph: {
-    title: '#SakshiKoMilaKinara — Save the Date',
-    description: 'Sakshi & Dr. Sahil · Wed 20 – Fri 22 January 2027 · Pitampura, Delhi · Confirm your travel details at sakshisahil.com',
+    title: '#SakshiKoMilaKinara — Confirm Your Travel Details',
+    description: 'Sakshi & Dr. Sahil · Wed 20 – Fri 22 January 2027 · Pitampura, Delhi · Please confirm your travel details and ID at sakshisahil.com',
     type: 'website',
     url: 'https://sakshisahil.com',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '#SakshiKoMilaKinara — Save the Date',
-    description: 'Sakshi & Dr. Sahil · Wed 20 – Fri 22 January 2027 · Pitampura, Delhi, India',
+    title: '#SakshiKoMilaKinara — Confirm Your Travel Details',
+    description: 'Sakshi & Dr. Sahil · Wed 20 – Fri 22 January 2027 · Pitampura, Delhi, India — please confirm your travel details and ID.',
   },
 }
 

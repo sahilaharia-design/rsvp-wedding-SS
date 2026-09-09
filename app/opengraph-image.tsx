@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 import fs from 'fs'
 import path from 'path'
 
-export const alt = 'Sakshi & Dr. Sahil — Save the Date · Wed 20 – Fri 22 January 2027 · Pitampura, Delhi'
+export const alt = 'Sakshi & Dr. Sahil — Confirm Your Travel Details · Wed 20 – Fri 22 January 2027 · Pitampura, Delhi'
 export const size = { width: 700, height: 1522 }
 export const contentType = 'image/png'
 
@@ -52,10 +52,10 @@ export default async function Image() {
           }}
         />
 
-        {/* Save the Date */}
+        {/* Eyebrow */}
         <div style={{ position: 'absolute', top: 58, left: 37, display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', color: '#FFFFFF', fontFamily: 'Inter', fontWeight: 500, fontSize: 20, letterSpacing: 13 }}>
-            SAVE THE DATE
+            CONFIRM TRAVEL
           </div>
           <div style={{ display: 'flex', marginTop: 12, width: 93, height: 1, backgroundColor: 'rgba(255,255,255,0.3)' }} />
         </div>
