@@ -94,12 +94,12 @@ export default function Reveal() {
     }
   }, [side, stage, setRevealed])
 
-  // Once the envelope finishes opening, decide what's next: a returning
-  // guest who already has a side saved skips straight to the homepage;
+  // Once the envelope finishes opening, decide what's next: a guest who
+  // already answered earlier THIS session skips straight to the homepage;
   // everyone else sees the side question — and nothing else.
   const advanceAfterEnvelope = useCallback(() => {
     if (!ready) {
-      // localStorage hasn't been read yet (extremely fast, but be safe) —
+      // sessionStorage hasn't been read yet (extremely fast, but be safe) —
       // check again shortly rather than assuming "no side chosen".
       setTimeout(advanceAfterEnvelope, 50)
       return

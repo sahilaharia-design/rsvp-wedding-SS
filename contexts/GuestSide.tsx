@@ -8,12 +8,12 @@ const STORAGE_KEY = 'std-guest-side'
 
 interface GuestSideContextValue {
   side: GuestSide
-  /** false until localStorage has been read on mount — avoids flashing the
-      picker for returning guests before their saved choice loads. */
+  /** false until sessionStorage has been read on mount — avoids flashing
+      the picker before an already-answered-this-session choice loads. */
   ready: boolean
   setSide: (side: GuestSide) => void
-  /** Reopen the picker (e.g. from a "switch" control) without losing the
-      current choice until the guest picks again. */
+  /** Reopen the picker (e.g. from a "start over" control) without losing
+      the current choice until the guest picks again. */
   reset: () => void
 }
 
@@ -30,7 +30,13 @@ export function GuestSideProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
+      // Deliberately sessionStorage, not localStorage: the choice should
+      // only be remembered for the current browser tab/session, not
+      // forever. A permanent choice meant every future visit — on the
+      // couple's own devices while testing, and for any guest checking
+      // the site again another day — silently skipped the question with
+      // no way to tell it had even asked before.
+      const stored = sessionStorage.getItem(STORAGE_KEY)
       if (stored === 'groom' || stored === 'bride') {
         setSideState(stored)
       } else if (typeof window !== 'undefined' && window.location.hash === '#travel-details') {
@@ -40,7 +46,7 @@ export function GuestSideProvider({ children }: { children: ReactNode }) {
         setSideState('groom')
       }
     } catch {
-      // localStorage unavailable (private mode etc.) — picker just shows every visit
+      // sessionStorage unavailable (private mode etc.) — picker just shows every visit
     }
     setReady(true)
   }, [])
@@ -48,8 +54,8 @@ export function GuestSideProvider({ children }: { children: ReactNode }) {
   const setSide = useCallback((next: GuestSide) => {
     setSideState(next)
     try {
-      if (next) localStorage.setItem(STORAGE_KEY, next)
-      else localStorage.removeItem(STORAGE_KEY)
+      if (next) sessionStorage.setItem(STORAGE_KEY, next)
+      else sessionStorage.removeItem(STORAGE_KEY)
     } catch {
       // ignore — in-memory state still works for this visit
     }
@@ -59,9 +65,9 @@ export function GuestSideProvider({ children }: { children: ReactNode }) {
     setSide(null)
     try {
       // Also clear the "envelope already opened this session" flag, so
-      // the "switch view" control genuinely starts the whole ceremony
-      // over (envelope + question) rather than only reopening the
-      // question underneath an envelope that silently never reappears.
+      // the "start over" control genuinely restarts the whole ceremony —
+      // envelope included — not just the question underneath an envelope
+      // that would otherwise never reappear this session.
       sessionStorage.removeItem('std-revealed')
     } catch {
       // ignore
