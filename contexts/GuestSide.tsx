@@ -55,7 +55,18 @@ export function GuestSideProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const reset = useCallback(() => setSide(null), [setSide])
+  const reset = useCallback(() => {
+    setSide(null)
+    try {
+      // Also clear the "envelope already opened this session" flag, so
+      // the "switch view" control genuinely starts the whole ceremony
+      // over (envelope + question) rather than only reopening the
+      // question underneath an envelope that silently never reappears.
+      sessionStorage.removeItem('std-revealed')
+    } catch {
+      // ignore
+    }
+  }, [setSide])
 
   return (
     <GuestSideContext.Provider value={{ side, ready, setSide, reset }}>

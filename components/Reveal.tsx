@@ -82,12 +82,14 @@ export default function Reveal() {
     }
   }, [])
 
-  // The "switch view" control resets `side` to null without unmounting
-  // this component's earlier work — bring the question screen back (no
-  // need to replay the envelope, they've already seen it this session).
+  // The "switch view" control resets `side` to null (and clears the
+  // "already revealed" session flag) without unmounting this component —
+  // bring the whole ceremony back, envelope included, rather than jumping
+  // straight to the question underneath an envelope that would otherwise
+  // never reappear this session.
   useEffect(() => {
     if (side === null && stage === 'done') {
-      setStage('question')
+      setStage('sealed')
       setRevealed(false)
     }
   }, [side, stage, setRevealed])
