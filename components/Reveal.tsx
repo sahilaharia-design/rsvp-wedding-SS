@@ -154,7 +154,7 @@ export default function Reveal() {
                 onClick={stage === 'opening' ? undefined : openEnvelope}
                 animate={stage === 'opening'
                   ? { scale: 1.06, opacity: 0, transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } }
-                  : { y: [0, -6, 0], transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }
+                  : { opacity: 1, scale: 1, y: [0, -6, 0], transition: { opacity: { duration: 0.6 }, scale: { duration: 0.6 }, y: { duration: 4, repeat: Infinity, ease: 'easeInOut' } } }
                 }
                 initial={{ opacity: 0, scale: 0.94 }}
                 whileHover={stage === 'opening' ? {} : { scale: 1.015 }}
