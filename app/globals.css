@@ -90,3 +90,97 @@ select {
     font-size: 16px;
   }
 }
+
+/* ── "Wow factor" motion & texture utilities ──────────────────────────── */
+
+/* Fine paper-grain texture — very low-opacity noise, adds tactile richness
+   without reading as decoration. Respects reduced-motion trivially (static). */
+.grain-overlay {
+  position: relative;
+}
+.grain-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hover-lift: for cards/panels. Transform + shadow only (GPU-cheap). */
+.hover-lift {
+  transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1), box-shadow 0.35s cubic-bezier(0.25,0.1,0.25,1), border-color 0.35s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-5px) scale(1.012);
+  box-shadow: 0 22px 48px rgba(48,54,50,0.16);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift:hover { transform: none; }
+}
+
+/* Shimmer-sweep buttons — a soft light band sweeps across on hover.
+   Pure transform (translateX), reduced-motion disables the sweep only;
+   the button remains fully usable either way. */
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+.shimmer-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.7s cubic-bezier(0.25,0.1,0.25,1);
+  pointer-events: none;
+}
+.shimmer-btn:hover::after { left: 130%; }
+.shimmer-btn:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-btn::after { display: none; }
+}
+
+/* Gold glint pass over text (hashtag/headline accents) */
+@keyframes gold-glint {
+  0%, 92%, 100% { background-position: -200% 0; }
+  96% { background-position: 200% 0; }
+}
+.gold-glint {
+  background-image: linear-gradient(100deg, currentColor 40%, #F3D9A4 50%, currentColor 60%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: gold-glint 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gold-glint { animation: none; }
+}
+
+/* Slow Ken Burns zoom for hero/decorative imagery (never used on crops where
+   it would push a face out of frame — see component-level comments). */
+@keyframes ken-burns {
+  from { transform: scale(1); }
+  to { transform: scale(1.045); }
+}
+.ken-burns {
+  animation: ken-burns 22s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ken-burns { animation: none; }
+}
+
+/* Soft ambient float for small decorative accents */
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.gentle-float {
+  animation: gentle-float 5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gentle-float { animation: none; }
+}

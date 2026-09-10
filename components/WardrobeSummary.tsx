@@ -35,7 +35,7 @@ export default function WardrobeSummary({ chapters }: { chapters: ThemesChapterD
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {chapters.map((c) => (
             <a key={c.id} href={`#${c.id}`}
-              className="block bg-white/70 rounded-xl p-5 border border-thread-border/50 hover:border-gold transition-colors">
+              className="hover-lift block bg-white/70 rounded-xl p-5 border border-thread-border/50 hover:border-gold transition-colors">
               <p className="font-sans uppercase text-gold mb-1" style={{ fontSize: '0.72rem', letterSpacing: '0.18em' }}>
                 {c.event}
               </p>

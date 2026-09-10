@@ -8,6 +8,35 @@ import { useMusic } from '@/contexts/Music'
 
 type Stage = 'sealed' | 'opening'
 
+// ── Sparkle burst — a small gold radiate-and-fade at the moment of opening.
+// Pure transform/opacity, one-shot, respects reduced motion via MotionConfig.
+function SparkleBurst() {
+  const sparkles = Array.from({ length: 8 })
+  return (
+    <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+      {sparkles.map((_, i) => {
+        const angle = (i / sparkles.length) * Math.PI * 2
+        const dist = 90
+        return (
+          <motion.span
+            key={i}
+            className="absolute rounded-full"
+            style={{ width: 5, height: 5, background: '#F3D9A4', boxShadow: '0 0 8px 2px rgba(243,217,164,0.6)' }}
+            initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
+            animate={{
+              x: Math.cos(angle) * dist,
+              y: Math.sin(angle) * dist,
+              opacity: [0, 1, 0],
+              scale: [0.4, 1, 0.6],
+            }}
+            transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
 // ── Envelope — illustrated artwork, tap to open ────────────────────────────
 function EnvelopeVisual({
   isOpening,
@@ -43,6 +72,7 @@ function EnvelopeVisual({
         ) : (
           <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #760D25, #A17B3D)' }} />
         )}
+        {isOpening && <SparkleBurst />}
       </motion.div>
 
       {/* Tap to open */}

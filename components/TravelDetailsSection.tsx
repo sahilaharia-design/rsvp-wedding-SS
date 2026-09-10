@@ -30,7 +30,14 @@ function fileToBase64(file: File): Promise<string> {
   })
 }
 
-export default function TravelDetailsSection() {
+interface TravelDetailsSectionProps {
+  /** Bride's-side (already-in-Delhi) guests get lighter, "for a travelling
+      guest" framing instead of the full Mumbai-facing sales pitch — the
+      form fields underneath are identical either way. */
+  compact?: boolean
+}
+
+export default function TravelDetailsSection({ compact = false }: TravelDetailsSectionProps) {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
   const { t } = useLang()
@@ -167,16 +174,16 @@ export default function TravelDetailsSection() {
                 <motion.div key="form">
                   <p className="font-sans uppercase text-stone mb-5"
                     style={{ fontSize: '0.75rem', letterSpacing: '0.4em' }}>
-                    {t.travelConfirmEyebrow}
+                    {compact ? t.travelCompactEyebrow : t.travelConfirmEyebrow}
                   </p>
                   <div className="w-12 h-[2px] bg-gold mb-7" />
                   <h2 className="font-serif leading-[1.15] text-charcoal mb-5"
                     style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)' }}>
-                    {t.travelConfirmHeading}
+                    {compact ? t.travelCompactHeading : t.travelConfirmHeading}
                   </h2>
                   <p className="font-sans leading-[1.85] text-stone mb-8"
                     style={{ fontSize: '1.1rem' }}>
-                    {t.travelConfirmIntro}
+                    {compact ? t.travelCompactIntro : t.travelConfirmIntro}
                   </p>
 
                   <form onSubmit={handleSubmit} className="space-y-7">
@@ -310,7 +317,7 @@ export default function TravelDetailsSection() {
 
                     <div className="pt-4">
                       <button type="submit" disabled={formState === 'submitting'}
-                        className="w-full py-5 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
+                        className="shimmer-btn w-full py-5 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
                         style={{ fontSize: '1rem', letterSpacing: '0.28em' }}>
                         {formState === 'submitting' ? t.sending : t.travelConfirmBtn}
                       </button>

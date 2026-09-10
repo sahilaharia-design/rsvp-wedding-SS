@@ -8,6 +8,7 @@ import { ReactNode } from 'react'
 import { MotionConfig } from 'framer-motion'
 import { LanguageProvider } from '@/contexts/Language'
 import { MusicProvider } from '@/contexts/Music'
+import { GuestSideProvider } from '@/contexts/GuestSide'
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
@@ -16,7 +17,9 @@ export default function Providers({ children }: { children: ReactNode }) {
     // still reach their end state, just without the transform/transition.
     <MotionConfig reducedMotion="user">
       <LanguageProvider>
-        <MusicProvider>{children}</MusicProvider>
+        <MusicProvider>
+          <GuestSideProvider>{children}</GuestSideProvider>
+        </MusicProvider>
       </LanguageProvider>
     </MotionConfig>
   )

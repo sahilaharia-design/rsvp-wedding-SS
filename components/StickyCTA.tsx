@@ -1,18 +1,22 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
+import type { GuestSide } from '@/contexts/GuestSide'
 
 interface StickyCTAProps {
   onCTAClick: () => void
+  side?: GuestSide
 }
 
-export default function StickyCTA({ onCTAClick }: StickyCTAProps) {
+export default function StickyCTA({ onCTAClick, side = null }: StickyCTAProps) {
   const [inTravelSection, setInTravelSection] = useState(false)
   const [pastHero, setPastHero] = useState(false)
   const [fieldFocused, setFieldFocused] = useState(false)
   const { t } = useLang()
+  const isBride = side === 'bride'
 
   useEffect(() => {
     const hero = document.getElementById('hero')
@@ -54,7 +58,13 @@ export default function StickyCTA({ onCTAClick }: StickyCTAProps) {
     }
   }, [])
 
-  const visible = pastHero && !inTravelSection && !fieldFocused
+  // Bride-side guests aren't scrolling toward the travel form, so that
+  // section's visibility shouldn't hide their bar — only the field-focus
+  // guard still applies (in case they do open the compact form below).
+  const visible = isBride ? pastHero && !fieldFocused : pastHero && !inTravelSection && !fieldFocused
+
+  const btnCls = 'shimmer-btn w-full py-5 bg-burgundy text-paper-light font-sans uppercase shadow-lg hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm block text-center'
+  const btnStyle = { fontSize: '0.95rem', letterSpacing: '0.25em' }
 
   return (
     <AnimatePresence>
@@ -70,13 +80,15 @@ export default function StickyCTA({ onCTAClick }: StickyCTAProps) {
             background: 'linear-gradient(to top, #FAF6F0 70%, transparent)',
           }}
         >
-          <button
-            onClick={onCTAClick}
-            className="w-full py-5 bg-burgundy text-paper-light font-sans uppercase shadow-lg hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
-          style={{ fontSize: '0.95rem', letterSpacing: '0.25em' }}
-          >
-            {t.confirmTravelBtn}
-          </button>
+          {isBride ? (
+            <Link href="/themes" className={btnCls} style={btnStyle}>
+              {t.exploreCelebrationsBtn}
+            </Link>
+          ) : (
+            <button onClick={onCTAClick} className={btnCls} style={btnStyle}>
+              {t.confirmTravelBtn}
+            </button>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

@@ -31,7 +31,7 @@ export default function ChaptersPreview() {
           </p>
         </div>
 
-        <Link href="/themes" className="group block relative rounded-xl overflow-hidden aspect-[3/1] md:aspect-[3.1/1]"
+        <Link href="/themes" className="hover-lift group block relative rounded-xl overflow-hidden aspect-[3/1] md:aspect-[3.1/1]"
           style={{ border: '2px solid var(--thread-border, #D8C6AD)' }}>
           {!imgError ? (
             <Image

@@ -26,14 +26,16 @@ export default function PersonalInterlude() {
           style={{ border: '3px solid var(--thread-border, #D8C6AD)', boxShadow: '0 16px 40px rgba(48,54,50,0.14)' }}
         >
           {!imgError ? (
-            <Image
-              src="/photos/couple-roka.jpg"
-              alt="Sakshi and Dr. Sahil seated together at their Roka ceremony"
-              fill
-              sizes="(max-width: 480px) 100vw, 420px"
-              className="object-cover"
-              onError={() => setImgError(true)}
-            />
+            <div className="absolute inset-0 ken-burns">
+              <Image
+                src="/photos/couple-roka.jpg"
+                alt="Sakshi and Dr. Sahil seated together at their Roka ceremony"
+                fill
+                sizes="(max-width: 480px) 100vw, 420px"
+                className="object-cover"
+                onError={() => setImgError(true)}
+              />
+            </div>
           ) : (
             <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #E8C5BE, #E8BEA0)' }} />
           )}

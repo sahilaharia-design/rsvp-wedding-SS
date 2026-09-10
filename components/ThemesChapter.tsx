@@ -39,8 +39,8 @@ export default function ThemesChapter({
   return (
     <section id={chapter.id} ref={ref} className="scroll-mt-20 bg-cream odd:bg-paper">
       <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
+        initial={{ opacity: 0, y: 36, scale: 0.97 }}
+        animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
         transition={{ duration: 0.9, ease: EASE }}
         className={`max-w-6xl mx-auto px-6 md:px-14 py-14 md:py-20 md:grid md:grid-cols-2 md:gap-14 items-center ${reverse ? 'md:[direction:rtl]' : ''}`}
       >
@@ -48,13 +48,15 @@ export default function ThemesChapter({
         <div className="relative aspect-[3/2] rounded-2xl overflow-hidden mb-8 md:mb-0"
           style={{ direction: 'ltr', border: '2px solid var(--thread-border, #D8C6AD)', boxShadow: '0 16px 40px rgba(48,54,50,0.12)' }}>
           {!imgError ? (
-            <Image
-              src={`/artwork/${chapter.art}`}
-              alt={`${chapter.event} — illustrated, symbolic artwork for the ${chapter.event} celebration`}
-              fill sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-              onError={() => setImgError(true)}
-            />
+            <div className="absolute inset-0 ken-burns">
+              <Image
+                src={`/artwork/${chapter.art}`}
+                alt={`${chapter.event} — illustrated, symbolic artwork for the ${chapter.event} celebration`}
+                fill sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                onError={() => setImgError(true)}
+              />
+            </div>
           ) : (
             <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${PALETTE_HEX[chapter.palette[0]] ?? '#E8C5BE'}, ${PALETTE_HEX[chapter.palette[chapter.palette.length - 1]] ?? '#DDC8A5'})` }} />
           )}
@@ -76,7 +78,7 @@ export default function ThemesChapter({
           </p>
 
           {/* What to wear — visible without hover, useful even if the image above fails */}
-          <div id={`${chapter.id}-wear`} className="bg-ivory/70 rounded-xl p-6 border border-thread-border/50">
+          <div id={`${chapter.id}-wear`} className="hover-lift bg-ivory/70 rounded-xl p-6 border border-thread-border/50">
             <p className="font-sans uppercase text-ink/60 mb-3" style={{ fontSize: '0.78rem', letterSpacing: '0.2em' }}>
               {tt.whatToWearEyebrow}
             </p>

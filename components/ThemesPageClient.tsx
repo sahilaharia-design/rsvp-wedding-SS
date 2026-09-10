@@ -5,6 +5,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import { useLang, themesStrings } from '@/contexts/Language'
 import ThemesChapter, { ThemesChapterData } from '@/components/ThemesChapter'
 import WardrobeSummary from '@/components/WardrobeSummary'
@@ -15,6 +16,8 @@ export default function ThemesPageClient() {
   const { lang } = useLang()
   const tt = themesStrings[lang]
   const [heroImgError, setHeroImgError] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.3 })
 
   // Merge factual/structural data (content/wedding-content.json — dates,
   // palette names, art filenames) with the reviewed/translated copy
@@ -47,6 +50,13 @@ export default function ThemesPageClient() {
 
   return (
     <main className="bg-paper">
+      {/* ── Reading-progress thread — a small, genuinely-earned "wow" that
+            also doubles as a chapter progress indicator ── */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 z-50 h-[3px] origin-left"
+        style={{ scaleX: progress, background: 'linear-gradient(90deg, #A17B3D, #760D25)' }}
+      />
+
       {/* ── Nav ── */}
       <nav className="sticky top-0 z-40 bg-paper/95 backdrop-blur border-b border-thread-border/60">
         <div className="max-w-6xl mx-auto px-6 md:px-14 py-4 flex flex-wrap items-center justify-between gap-3">
@@ -74,14 +84,16 @@ export default function ThemesPageClient() {
       <section className="relative">
         <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden">
           {!heroImgError ? (
-            <Image
-              src="/artwork/journey-hero.jpg"
-              alt="Illustrated artwork: a solo journey through the hills becoming a shared path"
-              fill priority
-              sizes="100vw"
-              className="object-cover"
-              onError={() => setHeroImgError(true)}
-            />
+            <div className="absolute inset-0 ken-burns">
+              <Image
+                src="/artwork/journey-hero.jpg"
+                alt="Illustrated artwork: a solo journey through the hills becoming a shared path"
+                fill priority
+                sizes="100vw"
+                className="object-cover"
+                onError={() => setHeroImgError(true)}
+              />
+            </div>
           ) : (
             <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #E8BEA0, #E8C5BE, #919B80)' }} />
           )}
@@ -133,7 +145,7 @@ export default function ThemesPageClient() {
             {tt.backDeadline}
           </p>
           <Link href="/#travel-details"
-            className="inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+            className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
             style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}>
             {tt.backCta}
           </Link>
