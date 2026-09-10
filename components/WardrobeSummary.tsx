@@ -8,7 +8,17 @@ import type { ThemesChapterData } from '@/components/ThemesChapter'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
-export default function WardrobeSummary({ chapters }: { chapters: ThemesChapterData[] }) {
+interface WardrobeSummaryProps {
+  chapters: ThemesChapterData[]
+  /** Prepended to each card's `#chapter-id` anchor — pass "/themes" when
+      this is embedded on a page (like the homepage) that doesn't itself
+      have those chapter sections, so the link actually goes somewhere. */
+  linkPrefix?: string
+  /** Suppress the built-in heading/intro when the caller supplies its own. */
+  hideHeading?: boolean
+}
+
+export default function WardrobeSummary({ chapters, linkPrefix = '', hideHeading = false }: WardrobeSummaryProps) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const { lang } = useLang()
@@ -22,19 +32,21 @@ export default function WardrobeSummary({ chapters }: { chapters: ThemesChapterD
         transition={{ duration: 0.8, ease: EASE }}
         className="max-w-5xl mx-auto px-6 md:px-14 py-14 md:py-16"
       >
-        <div className="text-center mb-10">
-          <h2 className="font-serif text-ink mb-3" style={{ fontSize: 'clamp(1.6rem, 3.8vw, 2.2rem)' }}>
-            {tt.wearHeading}
-          </h2>
-          <p className="font-sans text-stone" style={{ fontSize: '1rem' }}>
-            {tt.wearIntro}
-          </p>
-        </div>
+        {!hideHeading && (
+          <div className="text-center mb-10">
+            <h2 className="font-serif text-ink mb-3" style={{ fontSize: 'clamp(1.6rem, 3.8vw, 2.2rem)' }}>
+              {tt.wearHeading}
+            </h2>
+            <p className="font-sans text-stone" style={{ fontSize: '1rem' }}>
+              {tt.wearIntro}
+            </p>
+          </div>
+        )}
 
         {/* Pure-text summary — useful even with every image failed to load */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {chapters.map((c) => (
-            <a key={c.id} href={`#${c.id}`}
+            <a key={c.id} href={`${linkPrefix}#${c.id}`}
               className="hover-lift block bg-white/70 rounded-xl p-5 border border-thread-border/50 hover:border-gold transition-colors">
               <p className="font-sans uppercase text-gold mb-1" style={{ fontSize: '0.72rem', letterSpacing: '0.18em' }}>
                 {c.event}

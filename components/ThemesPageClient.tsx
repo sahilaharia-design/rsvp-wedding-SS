@@ -7,10 +7,10 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { useLang, themesStrings } from '@/contexts/Language'
-import ThemesChapter, { ThemesChapterData } from '@/components/ThemesChapter'
+import ThemesChapter from '@/components/ThemesChapter'
 import WardrobeSummary from '@/components/WardrobeSummary'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
-import weddingContent from '@/content/wedding-content.json'
+import { useThemeChapters } from '@/lib/useThemeChapters'
 
 export default function ThemesPageClient() {
   const { lang } = useLang()
@@ -18,35 +18,7 @@ export default function ThemesPageClient() {
   const [heroImgError, setHeroImgError] = useState(false)
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.3 })
-
-  // Merge factual/structural data (content/wedding-content.json — dates,
-  // palette names, art filenames) with the reviewed/translated copy
-  // (contexts/Language.tsx themesStrings) for the current locale.
-  const chapters: ThemesChapterData[] = weddingContent.chapters.map((c) => {
-    const tc = (tt.chapters as Record<string, Record<string, unknown>>)[c.id]
-    return {
-      id: c.id,
-      number: c.number,
-      date: c.date,
-      timeOfDay: c.timeOfDay,
-      art: c.art.split('/').pop()!.replace(/\.png$/, '.jpg'),
-      palette: c.palette,
-      // Prefer the reviewed/translated copy for the current locale; fall
-      // back to the English structural source when a field isn't set there.
-      dressCode: (tc?.dressCode as string | undefined)
-        ?? ('dressCode' in c ? (c as { dressCode?: string }).dressCode : undefined),
-      fabricNote: (tc?.fabricNote as string | undefined)
-        ?? ('fabricNote' in c ? (c as { fabricNote?: string }).fabricNote : undefined),
-      outfitExamples: (tc?.outfitExamples as string[] | undefined)
-        ?? ('outfitExamples' in c ? (c as { outfitExamples?: string[] }).outfitExamples : undefined),
-      event: (tc?.event as string) ?? c.event,
-      story: (tc?.story as string) ?? c.story,
-      shortLine: (tc?.shortLine as string) ?? c.shortLine,
-      men: tc?.men as string | undefined,
-      womenSourceVerbatim: tc?.womenSourceVerbatim as string | undefined,
-      note: tc?.note as string | undefined,
-    }
-  })
+  const chapters = useThemeChapters()
 
   return (
     <main className="bg-paper">

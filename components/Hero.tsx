@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import type { GuestSide } from '@/contexts/GuestSide'
+import { useRevealed } from '@/contexts/Revealed'
 
 interface HeroProps {
   onCTAClick: () => void
@@ -22,6 +23,7 @@ const fade = (delay = 0) => ({
 export default function Hero({ onCTAClick, side = null }: HeroProps) {
   const [imgError, setImgError] = useState(false)
   const { t } = useLang()
+  const { revealed } = useRevealed()
   const isBride = side === 'bride'
 
   const placeholderBg =
@@ -29,15 +31,18 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
 
   return (
     <section id="hero" className="relative bg-paper overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 md:px-14 pt-28 pb-14 md:pt-24 md:pb-20">
+      <div className="max-w-6xl mx-auto px-6 md:px-14 pt-32 pb-14 md:pt-32 md:pb-20">
         <div className="grid md:grid-cols-[58%_1fr] gap-10 md:gap-14 items-center">
 
-          {/* ── Photo — a slow Ken Burns drift, never touching the crop/face
-                framing itself (scale only, object-position untouched) ── */}
+          {/* ── Photo — a cinematic clip-path wipe reveal on first paint, then
+                a slow Ken Burns drift. Never touches the crop/face framing
+                itself (scale/clip only, object-position untouched). ── */}
           <motion.div
-            initial="hidden" animate="visible" variants={fade(0)}
             className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden"
             style={{ border: '3px solid var(--thread-border, #D8C6AD)', boxShadow: '0 18px 44px rgba(48,54,50,0.14)' }}
+            initial={{ clipPath: 'inset(0 100% 0 0)' }}
+            animate={revealed ? { clipPath: 'inset(0 0% 0 0)' } : {}}
+            transition={{ duration: 1.1, ease: [0.65, 0, 0.35, 1] }}
           >
             {!imgError ? (
               <div className="absolute inset-0 ken-burns">
@@ -54,32 +59,40 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
             ) : (
               <div className="absolute inset-0" style={{ background: placeholderBg }} />
             )}
+            {/* One-shot light sweep across the photo as it reveals */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.5) 48%, transparent 65%)' }}
+              initial={{ x: '-120%' }}
+              animate={revealed ? { x: '120%' } : {}}
+              transition={{ duration: 1.1, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+            />
           </motion.div>
 
           {/* ── Text ── */}
           <motion.div
-            initial="hidden" animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+            initial="hidden" animate={revealed ? 'visible' : 'hidden'}
+            variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.25 } } }}
           >
-            <motion.p variants={fade(0.05)}
+            <motion.p variants={fade(0)}
               className="font-sans uppercase text-burgundy/80 mb-4"
               style={{ fontSize: '0.85rem', letterSpacing: '0.3em' }}>
-              {t.saveTheDate}
+              {isBride ? t.brideEyebrow : t.saveTheDate}
             </motion.p>
 
-            <motion.h1 variants={fade(0.1)}
+            <motion.h1 variants={fade(0.05)}
               className="font-serif leading-[1.1] text-ink mb-3"
               style={{ fontSize: 'clamp(2.1rem, 5vw, 3.4rem)' }}>
               {t.namesLine}
             </motion.h1>
 
-            <motion.p variants={fade(0.15)}
+            <motion.p variants={fade(0.1)}
               className="font-sans text-stone mb-8"
               style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em' }}>
               {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
             </motion.p>
 
-            <motion.div variants={fade(0.2)} className="flex flex-col items-start gap-4">
+            <motion.div variants={fade(0.15)} className="flex flex-col items-start gap-4">
               {isBride ? (
                 <>
                   <Link
@@ -89,13 +102,13 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
                   >
                     {t.exploreCelebrationsBtn}
                   </Link>
-                  <button
-                    onClick={onCTAClick}
+                  <a
+                    href="#wardrobe"
                     className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
                     style={{ fontSize: '0.95rem' }}
                   >
-                    {t.confirmTravelBtn} &rarr;
-                  </button>
+                    {t.whatToWearShort} &rarr;
+                  </a>
                 </>
               ) : (
                 <>
@@ -117,7 +130,7 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
               )}
             </motion.div>
 
-            <motion.h2 variants={fade(0.3)}
+            <motion.h2 variants={fade(0.25)}
               className="font-display gold-glint text-burgundy leading-none mt-10 break-words"
               style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word' }}>
               #SakshiKoMilaKinara

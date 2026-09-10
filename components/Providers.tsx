@@ -9,6 +9,7 @@ import { MotionConfig } from 'framer-motion'
 import { LanguageProvider } from '@/contexts/Language'
 import { MusicProvider } from '@/contexts/Music'
 import { GuestSideProvider } from '@/contexts/GuestSide'
+import { RevealedProvider } from '@/contexts/Revealed'
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
@@ -18,7 +19,9 @@ export default function Providers({ children }: { children: ReactNode }) {
     <MotionConfig reducedMotion="user">
       <LanguageProvider>
         <MusicProvider>
-          <GuestSideProvider>{children}</GuestSideProvider>
+          <GuestSideProvider>
+            <RevealedProvider>{children}</RevealedProvider>
+          </GuestSideProvider>
         </MusicProvider>
       </LanguageProvider>
     </MotionConfig>

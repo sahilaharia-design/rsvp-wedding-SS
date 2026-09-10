@@ -8,14 +8,14 @@ import ChaptersPreview from '@/components/ChaptersPreview'
 import PersonalInterlude from '@/components/PersonalInterlude'
 import TravelGuidance from '@/components/TravelGuidance'
 import TravelDetailsSection from '@/components/TravelDetailsSection'
+import WardrobeSummary from '@/components/WardrobeSummary'
 import StickyCTA from '@/components/StickyCTA'
-import GrandReveal from '@/components/GrandReveal'
-import SideSelect from '@/components/SideSelect'
+import Reveal from '@/components/Reveal'
+import SiteHeader from '@/components/SiteHeader'
 import SectionThread from '@/components/SectionThread'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
-import MusicToggle from '@/components/MusicToggle'
 import { useLang } from '@/contexts/Language'
 import { useGuestSide } from '@/contexts/GuestSide'
+import { useThemeChapters } from '@/lib/useThemeChapters'
 
 function Footer() {
   const { t } = useLang()
@@ -37,9 +37,25 @@ function Footer() {
   )
 }
 
-export default function Home() {
-  const { side, reset } = useGuestSide()
+function WardrobeTeaser() {
   const { t } = useLang()
+  const chapters = useThemeChapters()
+  return (
+    <section id="wardrobe" className="scroll-mt-20">
+      <WardrobeSummary chapters={chapters} linkPrefix="/themes" />
+      <div className="bg-cream text-center py-10">
+        <Link href="/themes"
+          className="shimmer-btn inline-block px-8 py-3.5 border-2 border-burgundy text-burgundy font-sans uppercase hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
+          style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}>
+          {t.wardrobeTeaserLink}
+        </Link>
+      </div>
+    </section>
+  )
+}
+
+export default function Home() {
+  const { side } = useGuestSide()
   const isBride = side === 'bride'
 
   const scrollToTravelDetails = useCallback(() => {
@@ -48,48 +64,35 @@ export default function Home() {
 
   return (
     <>
-      <GrandReveal />
-      <SideSelect />
-
-      <div className="fixed top-4 right-4 md:top-5 md:right-5 z-[90] flex items-center gap-2">
-        {side !== null && (
-          <button
-            onClick={reset}
-            className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-ink/8 font-sans text-[10px] md:text-[11px] tracking-wide text-ink/60 hover:text-ink transition-colors flex-shrink-0"
-            title={t.switchSideLabel}
-          >
-            {isBride ? t.sideSwitchBrideShort : t.sideSwitchGroomShort}
-          </button>
-        )}
-        <MusicToggle />
-        <LanguageSwitcher />
-      </div>
+      <Reveal />
+      <SiteHeader />
 
       <main>
         <Hero onCTAClick={scrollToTravelDetails} side={side} />
 
-        {!isBride && (
+        {isBride ? (
+          <>
+            <SectionThread />
+            <ChaptersPreview />
+            <SectionThread />
+            <PersonalInterlude />
+            <SectionThread />
+            <WardrobeTeaser />
+          </>
+        ) : (
           <>
             <SectionThread />
             <TravelReminder onCTAClick={scrollToTravelDetails} />
-          </>
-        )}
-
-        <SectionThread />
-        <ChaptersPreview />
-
-        <SectionThread />
-        <PersonalInterlude />
-
-        {!isBride && (
-          <>
+            <SectionThread />
+            <ChaptersPreview />
+            <SectionThread />
+            <PersonalInterlude />
             <SectionThread />
             <TravelGuidance />
+            <SectionThread />
+            <TravelDetailsSection />
           </>
         )}
-
-        <SectionThread />
-        <TravelDetailsSection compact={isBride} />
 
         <Footer />
         <StickyCTA onCTAClick={scrollToTravelDetails} side={side} />
