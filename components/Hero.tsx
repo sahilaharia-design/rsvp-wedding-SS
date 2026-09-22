@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import type { Audience } from '@/lib/audience'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
+import { willShowEnvelopeIntro, ENVELOPE_SEQUENCE_MS } from '@/lib/envelopeIntro'
 
 interface HeroProps {
   onCTAClick: () => void
@@ -25,6 +26,13 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
   const { t } = useLang()
   const isBride = audience === 'bride'
 
+  // If the envelope flourish is about to play, hold this entrance until
+  // it closes so the photo wipe and text stagger become its visible
+  // payoff, rather than finishing unseen underneath it. Read once on
+  // mount — a stale or wrong read here only ever mistimes the animation,
+  // it can never leave anything stuck unrendered.
+  const [introDelay] = useState(() => (willShowEnvelopeIntro() ? ENVELOPE_SEQUENCE_MS / 1000 : 0))
+
   const placeholderBg =
     'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
 
@@ -41,7 +49,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
             style={{ border: '3px solid var(--thread-border, #D8C6AD)', boxShadow: '0 18px 44px rgba(48,54,50,0.14)' }}
             initial={{ clipPath: 'inset(0 100% 0 0)' }}
             animate={{ clipPath: 'inset(0 0% 0 0)' }}
-            transition={{ duration: 1.1, ease: [0.65, 0, 0.35, 1] }}
+            transition={{ duration: 1.1, delay: introDelay, ease: [0.65, 0, 0.35, 1] }}
           >
             {!imgError ? (
               <div className="absolute inset-0 ken-burns">
@@ -64,34 +72,35 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
               style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.5) 48%, transparent 65%)' }}
               initial={{ x: '-120%' }}
               animate={{ x: '120%' }}
-              transition={{ duration: 1.1, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+              transition={{ duration: 1.1, delay: introDelay + 0.15, ease: [0.4, 0, 0.2, 1] }}
             />
           </motion.div>
 
-          {/* ── Text ── */}
-          <motion.div
-            initial="hidden" animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.25 } } }}
-          >
-            <motion.p variants={fade(0)}
+          {/* ── Text — each child's fade() sets its own transition.delay,
+                which in Framer Motion takes precedence over a parent
+                variant's staggerChildren/delayChildren, so introDelay has
+                to be added directly into every child's own delay here for
+                it to actually hold the stagger back. ── */}
+          <motion.div initial="hidden" animate="visible">
+            <motion.p variants={fade(introDelay + 0.25)}
               className="font-sans uppercase text-burgundy/80 mb-4"
               style={{ fontSize: '0.85rem', letterSpacing: '0.3em' }}>
               {isBride ? t.brideEyebrow : t.groomEyebrow}
             </motion.p>
 
-            <motion.h1 variants={fade(0.05)}
+            <motion.h1 variants={fade(introDelay + 0.3)}
               className="font-serif leading-[1.1] text-ink mb-3"
               style={{ fontSize: 'clamp(2.1rem, 5vw, 3.4rem)' }}>
               {t.namesLine}
             </motion.h1>
 
-            <motion.p variants={fade(0.1)}
+            <motion.p variants={fade(introDelay + 0.35)}
               className="font-sans text-stone mb-8"
               style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em' }}>
               {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
             </motion.p>
 
-            <motion.div variants={fade(0.15)} className="flex flex-col items-start gap-4">
+            <motion.div variants={fade(introDelay + 0.4)} className="flex flex-col items-start gap-4">
               {isBride ? (
                 <>
                   <Link
@@ -129,7 +138,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
               )}
             </motion.div>
 
-            <motion.h2 variants={fade(0.25)}
+            <motion.h2 variants={fade(introDelay + 0.5)}
               className="font-display gold-glint text-burgundy leading-none mt-10 break-words"
               style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word' }}>
               #SakshiKoMilaKinara

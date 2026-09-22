@@ -10,25 +10,28 @@
 //  - Never shows for a deep link (any URL hash) — e.g. /groom#travel-details.
 //  - Shows at most once per browser tab session, shared across /bride and
 //    /groom, so switching guest sides doesn't repeat it.
-//  - Always skippable, immediately, no minimum wait.
-//  - A single opacity animation with full initial/animate parity in every
-//    branch (no state branch ever passes {}), and MotionConfig's
+//  - Skippable the moment it appears, no minimum wait.
+//  - Every stage's animate target has full property parity with its
+//    initial (no branch ever passes {}), and MotionConfig's
 //    reducedMotion="user" (set globally in Providers.tsx) already makes
 //    this respect the OS reduced-motion setting automatically.
+//  - Advancement between stages is driven only by plain setTimeout calls,
+//    never chained to an animation-completion callback, so a dropped
+//    frame can never leave this stuck on screen.
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { ENVELOPE_STORAGE_KEY as STORAGE_KEY, ENVELOPE_STAGE_MS } from '@/lib/envelopeIntro'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
-const STORAGE_KEY = 'std-envelope-shown'
 
 function SparkleBurst() {
-  const sparkles = Array.from({ length: 8 })
+  const sparkles = Array.from({ length: 10 })
   return (
     <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
       {sparkles.map((_, i) => {
         const angle = (i / sparkles.length) * Math.PI * 2
-        const dist = 90
+        const dist = 110
         return (
           <motion.span
             key={i}
@@ -41,7 +44,7 @@ function SparkleBurst() {
               opacity: [0, 1, 0],
               scale: [0.4, 1, 0.6],
             }}
-            transition={{ duration: 0.9, ease: EASE }}
+            transition={{ duration: 1, ease: EASE }}
           />
         )
       })}
@@ -49,7 +52,10 @@ function SparkleBurst() {
   )
 }
 
-type Stage = 'hidden' | 'sealed' | 'opening'
+type Stage = 'hidden' | 'sealed' | 'opening' | 'welcome' | 'leaving'
+
+// How long each stage stays on screen before advancing to the next.
+const STAGE_MS: Partial<Record<Stage, number>> = ENVELOPE_STAGE_MS
 
 export default function EnvelopeIntro() {
   const [stage, setStage] = useState<Stage>('hidden')
@@ -80,68 +86,102 @@ export default function EnvelopeIntro() {
 
   const skip = useCallback(() => setStage('hidden'), [])
 
-  // The definitive unmount trigger — a plain timeout, not chained to any
-  // animation-completion callback, so a dropped animation frame can never
-  // leave this stuck on screen.
+  // Single chained-timeout advancer — each stage's own duration is looked
+  // up from STAGE_MS, so adding/reordering stages never risks an infinite
+  // wait: a stage with no configured duration (sealed, hidden) simply
+  // never auto-advances, only `open()`/`skip()` move it forward.
   useEffect(() => {
-    if (stage !== 'opening') return
-    const t = setTimeout(() => setStage('hidden'), 900)
+    const ms = STAGE_MS[stage]
+    if (!ms) return
+    const next: Partial<Record<Stage, Stage>> = { opening: 'welcome', welcome: 'leaving', leaving: 'hidden' }
+    const t = setTimeout(() => setStage((s) => next[s] ?? s), ms)
     return () => clearTimeout(t)
   }, [stage])
 
   if (stage === 'hidden') return null
 
   const opening = stage === 'opening'
+  const welcome = stage === 'welcome' || stage === 'leaving'
+  const leaving = stage === 'leaving'
 
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
-      style={{ backgroundColor: '#1A0E08' }}
-      initial={{ opacity: 1 }}
-      animate={{ opacity: opening ? 0 : 1 }}
-      transition={{ duration: opening ? 0.8 : 0, delay: opening ? 0.25 : 0 }}
+      animate={{
+        backgroundColor: welcome ? '#760D25' : '#1A0E08',
+        opacity: leaving ? 0 : 1,
+      }}
+      transition={{ backgroundColor: { duration: 0.5, ease: EASE }, opacity: { duration: 0.5, ease: EASE } }}
     >
-      <div className="flex flex-col items-center gap-8 w-full px-6">
-        <motion.div
-          className="relative cursor-pointer rounded-lg overflow-hidden"
-          style={{ width: 'min(440px, 90vw)', aspectRatio: '3 / 2', boxShadow: '0 32px 72px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.35)' }}
-          onClick={open}
-          initial={{ opacity: 0, scale: 0.94, y: 0 }}
-          animate={
-            opening
-              ? { opacity: 0, scale: 1.06, y: 0, transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] } }
-              : { opacity: 1, scale: 1, y: [0, -6, 0], transition: { opacity: { duration: 0.6 }, scale: { duration: 0.6 }, y: { duration: 4, repeat: Infinity, ease: 'easeInOut' } } }
-          }
-          whileHover={opening ? {} : { scale: 1.015 }}
-        >
-          {!imgError ? (
-            <Image
-              src="/artwork/invitation-envelope.jpg"
-              alt="Illustrated wedding invitation envelope"
-              fill sizes="440px" priority
-              className="object-cover"
-              onError={() => setImgError(true)}
-            />
-          ) : (
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #760D25, #A17B3D)' }} />
-          )}
-          {opening && <SparkleBurst />}
-        </motion.div>
-
-        {!opening && (
-          <motion.p
-            className="font-sans uppercase tracking-[0.45em] text-center"
-            style={{ fontSize: '11px', color: 'rgba(221,200,165,0.75)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.85, 0.4, 0.85] }}
-            transition={{ duration: 2.5, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+      {!welcome && (
+        <div className="flex flex-col items-center gap-8 w-full px-6">
+          <motion.div
+            className="relative cursor-pointer rounded-lg overflow-hidden"
+            style={{ width: 'min(440px, 90vw)', aspectRatio: '3 / 2', boxShadow: '0 32px 72px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.35)' }}
+            onClick={open}
+            initial={{ opacity: 0, scale: 0.94, y: 0 }}
+            animate={
+              opening
+                ? { opacity: 0, scale: 1.12, y: 0, transition: { duration: 0.65, ease: [0.4, 0, 0.2, 1] } }
+                : { opacity: 1, scale: 1, y: [0, -6, 0], transition: { opacity: { duration: 0.6 }, scale: { duration: 0.6 }, y: { duration: 4, repeat: Infinity, ease: 'easeInOut' } } }
+            }
+            whileHover={opening ? {} : { scale: 1.015 }}
           >
-            Tap to Open
-          </motion.p>
-        )}
-      </div>
+            {!imgError ? (
+              <Image
+                src="/artwork/invitation-envelope.jpg"
+                alt="Illustrated wedding invitation envelope"
+                fill sizes="440px" priority
+                className="object-cover"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #760D25, #A17B3D)' }} />
+            )}
+            {opening && (
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: '#FFF9EC' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.85, 0] }}
+                transition={{ duration: 0.5, ease: EASE }}
+              />
+            )}
+            {opening && <SparkleBurst />}
+          </motion.div>
 
-      {!opening && (
+          {!opening && (
+            <motion.p
+              className="font-sans uppercase tracking-[0.45em] text-center"
+              style={{ fontSize: '11px', color: 'rgba(221,200,165,0.75)' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.85, 0.4, 0.85] }}
+              transition={{ duration: 2.5, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              Tap to Open
+            </motion.p>
+          )}
+        </div>
+      )}
+
+      {welcome && (
+        <motion.div
+          className="text-center px-6"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: leaving ? 0 : 1, y: 0 }}
+          transition={{ duration: 0.6, ease: EASE }}
+        >
+          <p className="font-display gold-glint text-champagne leading-none mb-5 break-words"
+            style={{ fontSize: 'clamp(1.8rem, 5vw, 2.6rem)' }}>
+            #SakshiKoMilaKinara
+          </p>
+          <p className="font-serif italic text-paper-light" style={{ fontSize: 'clamp(1.1rem, 2.6vw, 1.4rem)' }}>
+            Sakshi &amp; Dr. Sahil
+          </p>
+        </motion.div>
+      )}
+
+      {stage === 'sealed' && (
         <button
           onClick={skip}
           className="absolute top-6 right-6 md:top-8 md:right-8 font-sans uppercase text-champagne/70 hover:text-champagne transition-colors"
