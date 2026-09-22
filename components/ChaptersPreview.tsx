@@ -5,10 +5,11 @@ import Link from 'next/link'
 import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
+import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
-export default function ChaptersPreview() {
+export default function ChaptersPreview({ audience }: { audience: Audience }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const [imgError, setImgError] = useState(false)
@@ -31,7 +32,7 @@ export default function ChaptersPreview() {
           </p>
         </div>
 
-        <Link href="/themes" className="hover-lift group block relative rounded-xl overflow-hidden aspect-[3/1] md:aspect-[3.1/1]"
+        <Link href={AUDIENCE_CONFIG[audience].themesRoute} className="hover-lift group block relative rounded-xl overflow-hidden aspect-[3/1] md:aspect-[3.1/1]"
           style={{ border: '2px solid var(--thread-border, #D8C6AD)' }}>
           {!imgError ? (
             <Image

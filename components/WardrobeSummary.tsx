@@ -55,7 +55,7 @@ export default function WardrobeSummary({ chapters, linkPrefix = '', hideHeading
                 {tt.dowShort[c.date] ?? c.date} &middot; {tt.timeOfDay[c.timeOfDay] ?? c.timeOfDay}
               </p>
               <p className="font-serif text-ink mb-3" style={{ fontSize: '1.15rem' }}>
-                {c.dressCode ?? [c.men, c.womenSourceVerbatim].filter(Boolean).join(' / ')}
+                {c.dressCode ?? [c.men, c.women].filter(Boolean).join(' / ')}
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {c.palette.map((name) => (

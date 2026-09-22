@@ -1,7 +1,8 @@
 'use client'
 
 // Page content lives here (client component, for hooks/interactivity);
-// app/themes/page.tsx is a thin server wrapper that supplies route metadata.
+// app/bride/themes/page.tsx and app/groom/themes/page.tsx are thin server
+// wrappers that supply route metadata and the `audience` prop.
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -11,19 +12,21 @@ import ThemesChapter from '@/components/ThemesChapter'
 import WardrobeSummary from '@/components/WardrobeSummary'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { useThemeChapters } from '@/lib/useThemeChapters'
+import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
 
-export default function ThemesPageClient() {
-  const { lang } = useLang()
+export default function ThemesPageClient({ audience }: { audience: Audience }) {
+  const { t, lang } = useLang()
   const tt = themesStrings[lang]
   const [heroImgError, setHeroImgError] = useState(false)
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.3 })
   const chapters = useThemeChapters()
+  const isBride = audience === 'bride'
+  const homeRoute = AUDIENCE_CONFIG[audience].route
 
   return (
     <main className="bg-paper">
-      {/* ── Reading-progress thread — a small, genuinely-earned "wow" that
-            also doubles as a chapter progress indicator ── */}
+      {/* ── Reading-progress thread ── */}
       <motion.div
         className="fixed top-0 left-0 right-0 z-50 h-[3px] origin-left"
         style={{ scaleX: progress, background: 'linear-gradient(90deg, #A17B3D, #760D25)' }}
@@ -32,21 +35,23 @@ export default function ThemesPageClient() {
       {/* ── Nav ── */}
       <nav className="sticky top-0 z-40 bg-paper/95 backdrop-blur border-b border-thread-border/60">
         <div className="max-w-6xl mx-auto px-6 md:px-14 py-4 flex flex-wrap items-center justify-between gap-3">
-          <Link href="/" className="font-display text-burgundy" style={{ fontSize: '1.4rem' }}>
+          <Link href={homeRoute} className="font-display text-burgundy" style={{ fontSize: '1.4rem' }}>
             S&nbsp;&amp;&nbsp;S
           </Link>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 font-sans uppercase text-ink/70"
             style={{ fontSize: '0.75rem', letterSpacing: '0.14em' }}>
-            <Link href="/" className="hover:text-burgundy transition-colors">{tt.nav.home}</Link>
+            <Link href={homeRoute} className="hover:text-burgundy transition-colors">{t.navHome}</Link>
             {chapters.map((c) => (
               <a key={c.id} href={`#${c.id}`} className="hover:text-burgundy transition-colors hidden sm:inline">
                 {c.event}
               </a>
             ))}
-            <a href="#what-to-wear" className="hover:text-burgundy transition-colors">{tt.nav.wear}</a>
-            <Link href="/#travel-details" className="text-burgundy font-semibold hover:text-ink transition-colors">
-              {tt.nav.travel}
-            </Link>
+            <a href="#what-to-wear" className="hover:text-burgundy transition-colors">{t.whatToWearShort}</a>
+            {!isBride && (
+              <Link href="/groom#travel-details" className="text-burgundy font-semibold hover:text-ink transition-colors">
+                {t.navTravel}
+              </Link>
+            )}
           </div>
           <LanguageSwitcher variant="light" />
         </div>
@@ -107,24 +112,38 @@ export default function ThemesPageClient() {
       {/* ── What to Wear — practical summary ── */}
       <WardrobeSummary chapters={chapters} />
 
-      {/* ── Back to travel details ── */}
+      {/* ── Bottom CTA — audience-specific: groom returns to travel, bride downloads the guide ── */}
       <section className="bg-cream">
         <div className="max-w-2xl mx-auto px-6 md:px-14 py-14 md:py-16 text-center">
-          <h2 className="font-serif text-ink mb-4" style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2rem)' }}>
-            {tt.backHeading}
-          </h2>
-          <p className="font-sans text-stone mb-7" style={{ fontSize: '1.05rem' }}>
-            {tt.backDeadline}
-          </p>
-          <Link href="/#travel-details"
-            className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
-            style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}>
-            {tt.backCta}
-          </Link>
+          {isBride ? (
+            <>
+              <h2 className="font-serif text-ink mb-4" style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2rem)' }}>
+                {t.bridePdfHeading}
+              </h2>
+              <a href={AUDIENCE_CONFIG.bride.pdfPath} target="_blank" rel="noopener noreferrer"
+                className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+                style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}>
+                {t.brideSecondaryCTA}
+              </a>
+            </>
+          ) : (
+            <>
+              <h2 className="font-serif text-ink mb-4" style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2rem)' }}>
+                {t.travelBackHeading}
+              </h2>
+              <p className="font-sans text-stone mb-7" style={{ fontSize: '1.05rem' }}>
+                {t.groomDeadlineLine}
+              </p>
+              <Link href="/groom#travel-details"
+                className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm">
+                {t.groomPrimaryCTA}
+              </Link>
+            </>
+          )}
           <div className="mt-6">
-            <Link href="/" className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
+            <Link href={homeRoute} className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
               style={{ fontSize: '0.92rem' }}>
-              &larr; {tt.nav.home}
+              &larr; {t.navHome}
             </Link>
           </div>
         </div>

@@ -5,12 +5,12 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
-import type { GuestSide } from '@/contexts/GuestSide'
-import { useRevealed } from '@/contexts/Revealed'
+import type { Audience } from '@/lib/audience'
+import { AUDIENCE_CONFIG } from '@/lib/audience'
 
 interface HeroProps {
   onCTAClick: () => void
-  side?: GuestSide
+  audience: Audience
 }
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
@@ -20,11 +20,10 @@ const fade = (delay = 0) => ({
   visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.9, delay, ease: EASE } },
 })
 
-export default function Hero({ onCTAClick, side = null }: HeroProps) {
+export default function Hero({ onCTAClick, audience }: HeroProps) {
   const [imgError, setImgError] = useState(false)
   const { t } = useLang()
-  const { revealed } = useRevealed()
-  const isBride = side === 'bride'
+  const isBride = audience === 'bride'
 
   const placeholderBg =
     'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
@@ -41,7 +40,7 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
             className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden"
             style={{ border: '3px solid var(--thread-border, #D8C6AD)', boxShadow: '0 18px 44px rgba(48,54,50,0.14)' }}
             initial={{ clipPath: 'inset(0 100% 0 0)' }}
-            animate={revealed ? { clipPath: 'inset(0 0% 0 0)' } : {}}
+            animate={{ clipPath: 'inset(0 0% 0 0)' }}
             transition={{ duration: 1.1, ease: [0.65, 0, 0.35, 1] }}
           >
             {!imgError ? (
@@ -64,20 +63,20 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
               className="absolute inset-0 pointer-events-none"
               style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.5) 48%, transparent 65%)' }}
               initial={{ x: '-120%' }}
-              animate={revealed ? { x: '120%' } : {}}
+              animate={{ x: '120%' }}
               transition={{ duration: 1.1, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
             />
           </motion.div>
 
           {/* ── Text ── */}
           <motion.div
-            initial="hidden" animate={revealed ? 'visible' : 'hidden'}
+            initial="hidden" animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.25 } } }}
           >
             <motion.p variants={fade(0)}
               className="font-sans uppercase text-burgundy/80 mb-4"
               style={{ fontSize: '0.85rem', letterSpacing: '0.3em' }}>
-              {isBride ? t.brideEyebrow : t.saveTheDate}
+              {isBride ? t.brideEyebrow : t.groomEyebrow}
             </motion.p>
 
             <motion.h1 variants={fade(0.05)}
@@ -96,11 +95,11 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
               {isBride ? (
                 <>
                   <Link
-                    href="/themes"
+                    href={AUDIENCE_CONFIG.bride.themesRoute}
                     className="shimmer-btn px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm inline-block text-center"
                     style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
                   >
-                    {t.exploreCelebrationsBtn}
+                    {t.bridePrimaryCTA}
                   </Link>
                   <a
                     href="#wardrobe"
@@ -117,14 +116,14 @@ export default function Hero({ onCTAClick, side = null }: HeroProps) {
                     className="shimmer-btn px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
                     style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
                   >
-                    {t.confirmTravelBtn}
+                    {t.groomPrimaryCTA}
                   </button>
                   <Link
-                    href="/themes"
+                    href={AUDIENCE_CONFIG.groom.themesRoute}
                     className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
                     style={{ fontSize: '0.95rem' }}
                   >
-                    {t.themesLinkLabel} &rarr;
+                    {t.groomSecondaryCTA} &rarr;
                   </Link>
                 </>
               )}

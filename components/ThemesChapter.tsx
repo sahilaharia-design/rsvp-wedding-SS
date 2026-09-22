@@ -14,17 +14,19 @@ export interface ThemesChapterData {
   date: string
   timeOfDay: string
   art: string
+  /** Path to the full illustrated invitation card (with its own baked-in
+      text) — offered as a supplementary view/download, never the only
+      accessible source of the dress code. */
+  card?: string
   palette: string[]
   event: string
   story: string
   shortLine: string
   dressCode?: string
   men?: string
-  womenSourceVerbatim?: string
-  paletteSourceVerbatim?: string
+  women?: string
   fabricNote?: string
   outfitExamples?: string[]
-  note?: string
 }
 
 export default function ThemesChapter({
@@ -33,7 +35,7 @@ export default function ThemesChapter({
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
   const [imgError, setImgError] = useState(false)
-  const { lang } = useLang()
+  const { lang, t } = useLang()
   const tt = themesStrings[lang]
 
   return (
@@ -95,9 +97,10 @@ export default function ThemesChapter({
                 <span className="font-semibold">{tt.men}:</span> {chapter.men}
               </p>
             )}
-            {chapter.womenSourceVerbatim && (
+            {chapter.women && (
               <p className="font-sans text-ink mb-3" style={{ fontSize: '1rem' }}>
-                <span className="font-semibold">{tt.women}:</span> {chapter.womenSourceVerbatim}
+                <span className="font-semibold">{tt.women}:</span> {chapter.women}
+                {chapter.fabricNote && !chapter.dressCode && <span className="text-stone"> &nbsp;&middot;&nbsp; {chapter.fabricNote}</span>}
               </p>
             )}
 
@@ -121,10 +124,14 @@ export default function ThemesChapter({
             <p className="font-sans text-stone/70 mt-2" style={{ fontSize: '0.82rem' }}>
               {tt.paletteDisclaimer}
             </p>
-            {/* Note: chapter.note (the Promise neon-vs-jewel-tones ambiguity) is
-                intentionally not rendered here — it's an internal/organiser
-                flag, not something guests should see as an on-page caveat.
-                See the delivery notes for the full explanation. */}
+
+            {chapter.card && (
+              <a href={chapter.card} target="_blank" rel="noopener noreferrer"
+                className="inline-block mt-4 pt-4 border-t border-thread-border/50 font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
+                style={{ fontSize: '0.88rem' }}>
+                {t.viewInvitationCard} &rarr;
+              </a>
+            )}
           </div>
         </div>
       </motion.div>

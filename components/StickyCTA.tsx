@@ -1,22 +1,19 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
-import type { GuestSide } from '@/contexts/GuestSide'
 
-interface StickyCTAProps {
-  onCTAClick: () => void
-  side?: GuestSide
-}
-
-export default function StickyCTA({ onCTAClick, side = null }: StickyCTAProps) {
+/**
+ * Groom-only. Never mounted on a bride page (not just hidden) — the bride
+ * experience has no travel deadline anywhere, and a sticky bar bound to
+ * onCTAClick's travel-details scroll target has no meaning there.
+ */
+export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
   const [inTravelSection, setInTravelSection] = useState(false)
   const [pastHero, setPastHero] = useState(false)
   const [fieldFocused, setFieldFocused] = useState(false)
   const { t } = useLang()
-  const isBride = side === 'bride'
 
   useEffect(() => {
     const hero = document.getElementById('hero')
@@ -26,11 +23,9 @@ export default function StickyCTA({ onCTAClick, side = null }: StickyCTAProps) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.target === hero) {
-            // Show button once hero is out of view
             setPastHero(!entry.isIntersecting)
           }
           if (entry.target === travelDetails) {
-            // Hide while the travel details form (or its success state) is visible
             setInTravelSection(entry.isIntersecting)
           }
         })
@@ -41,8 +36,6 @@ export default function StickyCTA({ onCTAClick, side = null }: StickyCTAProps) {
     if (hero) observer.observe(hero)
     if (travelDetails) observer.observe(travelDetails)
 
-    // Hide while a form field has focus — the mobile keyboard is likely open
-    // and the bar would otherwise sit on top of it / cover error text.
     const onFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) setFieldFocused(true)
@@ -58,13 +51,7 @@ export default function StickyCTA({ onCTAClick, side = null }: StickyCTAProps) {
     }
   }, [])
 
-  // Bride-side guests aren't scrolling toward the travel form, so that
-  // section's visibility shouldn't hide their bar — only the field-focus
-  // guard still applies (in case they do open the compact form below).
-  const visible = isBride ? pastHero && !fieldFocused : pastHero && !inTravelSection && !fieldFocused
-
-  const btnCls = 'shimmer-btn w-full py-5 bg-burgundy text-paper-light font-sans uppercase shadow-lg hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm block text-center'
-  const btnStyle = { fontSize: '0.95rem', letterSpacing: '0.25em' }
+  const visible = pastHero && !inTravelSection && !fieldFocused
 
   return (
     <AnimatePresence>
@@ -80,15 +67,13 @@ export default function StickyCTA({ onCTAClick, side = null }: StickyCTAProps) {
             background: 'linear-gradient(to top, #FAF6F0 70%, transparent)',
           }}
         >
-          {isBride ? (
-            <Link href="/themes" className={btnCls} style={btnStyle}>
-              {t.exploreCelebrationsBtn}
-            </Link>
-          ) : (
-            <button onClick={onCTAClick} className={btnCls} style={btnStyle}>
-              {t.confirmTravelBtn}
-            </button>
-          )}
+          <button
+            onClick={onCTAClick}
+            className="shimmer-btn w-full py-5 bg-burgundy text-paper-light font-sans uppercase shadow-lg hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm block text-center"
+            style={{ fontSize: '0.95rem', letterSpacing: '0.25em' }}
+          >
+            {t.groomPrimaryCTA}
+          </button>
         </motion.div>
       )}
     </AnimatePresence>

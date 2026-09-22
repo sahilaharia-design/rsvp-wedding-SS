@@ -34,7 +34,7 @@ export default function TravelReminder({ onCTAClick }: TravelReminderProps) {
           className="px-8 py-3.5 border border-burgundy text-burgundy font-sans uppercase hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
           style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}
         >
-          {t.confirmTravelBtn}
+          {t.groomPrimaryCTA}
         </button>
       </motion.div>
     </section>

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 
@@ -57,6 +57,16 @@ export default function TravelDetailsSection() {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
   const { t } = useLang()
+
+  // A soft (client-side) navigation to a #travel-details link — e.g. from
+  // /groom/travel's redirect, or the sticky CTA on a different route —
+  // doesn't trigger the browser's native scroll-to-hash the way a full page
+  // load does, so it has to be done explicitly here on mount.
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#travel-details') {
+      ref.current?.scrollIntoView({ block: 'start' })
+    }
+  }, [])
 
   const [step, setStep] = useState(0)
   const [direction, setDirection] = useState(1)

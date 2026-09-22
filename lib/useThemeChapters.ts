@@ -4,10 +4,9 @@ import weddingContent from '@/content/wedding-content.json'
 
 /**
  * Merges the factual/structural chapter data (content/wedding-content.json —
- * dates, palette names, art filenames) with the reviewed/translated copy
- * (contexts/Language.tsx themesStrings) for the current locale. Shared by
- * /themes and the homepage's bride-side wardrobe teaser so both read from
- * one source of truth.
+ * dates, palette names, art/card filenames) with the reviewed/translated
+ * copy (contexts/Language.tsx themesStrings) for the current locale. Shared
+ * by every audience's themes page so both read from one source of truth.
  */
 export function useThemeChapters(): ThemesChapterData[] {
   const { lang } = useLang()
@@ -21,6 +20,7 @@ export function useThemeChapters(): ThemesChapterData[] {
       date: c.date,
       timeOfDay: c.timeOfDay,
       art: c.art.split('/').pop()!.replace(/\.png$/, '.jpg'),
+      card: 'card' in c ? (c as { card?: string }).card : undefined,
       palette: c.palette,
       dressCode: (tc?.dressCode as string | undefined)
         ?? ('dressCode' in c ? (c as { dressCode?: string }).dressCode : undefined),
@@ -31,9 +31,8 @@ export function useThemeChapters(): ThemesChapterData[] {
       event: (tc?.event as string) ?? c.event,
       story: (tc?.story as string) ?? c.story,
       shortLine: (tc?.shortLine as string) ?? c.shortLine,
-      men: tc?.men as string | undefined,
-      womenSourceVerbatim: tc?.womenSourceVerbatim as string | undefined,
-      note: tc?.note as string | undefined,
+      men: (tc?.men as string | undefined) ?? ('men' in c ? (c as { men?: string }).men : undefined),
+      women: (tc?.women as string | undefined) ?? ('women' in c ? (c as { women?: string }).women : undefined),
     }
   })
 }

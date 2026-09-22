@@ -6,7 +6,7 @@
   "areaAsSeenOnWebsite": "Pitampura",
   "weddingStart": "2027-01-20",
   "checkout": "2027-01-22",
-  "travelDeadline": "2026-10-31",
+  "travelDeadline": "2026-10-20",
   "timezone": "Asia/Kolkata",
   "themesHeading": "From a solo journey to a shared forever.",
   "themesIntro": "What began as a solo trip to the hills of Bir became a journey neither of us would take alone.",
@@ -29,10 +29,11 @@
         "Ivory"
       ],
       "outfitExamples": [
-        "Floral or pastel kurta sets",
-        "Floral lehengas, sarees or easy festive sets"
+        "Pastel kurta sets or a floral jacket",
+        "Floral lehengas or sarees"
       ],
-      "art": "assets/artwork/chapter-01-bloom.png"
+      "art": "assets/artwork/chapter-01-bloom.png",
+      "card": "/artwork/theme-cards/01-bloom.jpg"
     },
     {
       "id": "promise",
@@ -44,7 +45,7 @@
       "story": "Two lives choose a shared forever.",
       "shortLine": "A toast to what’s ahead.",
       "men": "Tuxedos & Suits",
-      "womenSourceVerbatim": "Neon Gowns & Evening Indian",
+      "women": "Gowns only",
       "paletteSourceVerbatim": "Cocktail Formal · Jewel Tones",
       "palette": [
         "Navy",
@@ -52,8 +53,12 @@
         "Plum",
         "Ruby"
       ],
-      "approvalNote": "Neon versus jewel tones unresolved. Palette and wardrobe examples are provisional; preserve source wording pending owner clarification.",
-      "art": "assets/artwork/chapter-02-promise.png"
+      "outfitExamples": [
+        "A tuxedo or tailored suit",
+        "An evening gown — no saree, lehenga or Indian separates for this one"
+      ],
+      "art": "assets/artwork/chapter-02-promise.png",
+      "card": "/artwork/theme-cards/02-promise-gowns-only.jpg"
     },
     {
       "id": "romance",
@@ -64,7 +69,8 @@
       "timeOfDay": "Morning",
       "story": "Every call, trip and moment in between.",
       "shortLine": "Colours of love.",
-      "dressCode": "Hot pink",
+      "women": "Hot pink",
+      "men": "Shades of pink — blush, rose or deeper pink",
       "fabricNote": "Easy, Haldi-friendly fabrics",
       "palette": [
         "Hot pink"
@@ -73,7 +79,8 @@
         "Light hot-pink kurta sets",
         "Easy hot-pink salwar suits or sarees"
       ],
-      "art": "assets/artwork/chapter-03-romance.png"
+      "art": "assets/artwork/chapter-03-romance.png",
+      "card": "/artwork/theme-cards/03-romance.jpg"
     },
     {
       "id": "legacy",
@@ -94,7 +101,8 @@
         "Ivory or champagne sherwanis and formal Indian sets",
         "Ivory, champagne or gold sarees and lehengas"
       ],
-      "art": "assets/artwork/chapter-04-legacy.png"
+      "art": "assets/artwork/chapter-04-legacy.png",
+      "card": "/artwork/theme-cards/04-legacy.jpg"
     }
   ]
 }
