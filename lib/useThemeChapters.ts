@@ -26,8 +26,12 @@ export function useThemeChapters(): ThemesChapterData[] {
         ?? ('dressCode' in c ? (c as { dressCode?: string }).dressCode : undefined),
       fabricNote: (tc?.fabricNote as string | undefined)
         ?? ('fabricNote' in c ? (c as { fabricNote?: string }).fabricNote : undefined),
-      outfitExamples: (tc?.outfitExamples as string[] | undefined)
-        ?? ('outfitExamples' in c ? (c as { outfitExamples?: string[] }).outfitExamples : undefined),
+      menLooks: (tc?.menLooks as string[] | undefined)
+        ?? ('menLooks' in c ? (c as { menLooks?: string[] }).menLooks : undefined),
+      womenLooks: (tc?.womenLooks as string[] | undefined)
+        ?? ('womenLooks' in c ? (c as { womenLooks?: string[] }).womenLooks : undefined),
+      womenLooksNote: (tc?.womenLooksNote as string | undefined)
+        ?? ('womenLooksNote' in c ? (c as { womenLooksNote?: string }).womenLooksNote : undefined),
       event: (tc?.event as string) ?? c.event,
       story: (tc?.story as string) ?? c.story,
       shortLine: (tc?.shortLine as string) ?? c.shortLine,

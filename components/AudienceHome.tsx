@@ -10,12 +10,10 @@ import ChaptersPreview from '@/components/ChaptersPreview'
 import PersonalInterlude from '@/components/PersonalInterlude'
 import TravelGuidance from '@/components/TravelGuidance'
 import TravelDetailsSection from '@/components/TravelDetailsSection'
-import WardrobeSummary from '@/components/WardrobeSummary'
 import StickyCTA from '@/components/StickyCTA'
 import SiteHeader from '@/components/SiteHeader'
 import SectionThread from '@/components/SectionThread'
 import { useLang } from '@/contexts/Language'
-import { useThemeChapters } from '@/lib/useThemeChapters'
 import { AUDIENCE_CONFIG, OTHER_AUDIENCE, type Audience } from '@/lib/audience'
 
 function Footer({ audience }: { audience: Audience }) {
@@ -54,20 +52,19 @@ function Footer({ audience }: { audience: Audience }) {
   )
 }
 
-function WardrobeTeaser({ audience }: { audience: Audience }) {
+function WardrobeCTA({ audience }: { audience: Audience }) {
   const { t } = useLang()
-  const chapters = useThemeChapters()
   const themesRoute = AUDIENCE_CONFIG[audience].themesRoute
   return (
-    <section id="wardrobe" className="scroll-mt-20">
-      <WardrobeSummary chapters={chapters} linkPrefix={themesRoute} />
-      <div className="bg-cream text-center py-10">
-        <Link href={themesRoute}
-          className="shimmer-btn inline-block px-8 py-3.5 border-2 border-burgundy text-burgundy font-sans uppercase hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
-          style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}>
-          {t.brideSecondaryCTA}
-        </Link>
-      </div>
+    <section id="wardrobe" className="scroll-mt-20 bg-cream text-center py-14">
+      <p className="font-serif text-ink mb-5" style={{ fontSize: 'clamp(1.3rem, 3vw, 1.7rem)' }}>
+        {t.wardrobeCTAHeading}
+      </p>
+      <Link href={themesRoute}
+        className="shimmer-btn inline-block px-8 py-3.5 border-2 border-burgundy text-burgundy font-sans uppercase hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
+        style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}>
+        {t.brideSecondaryCTA}
+      </Link>
     </section>
   )
 }
@@ -93,7 +90,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
             <SectionThread />
             <PersonalInterlude />
             <SectionThread />
-            <WardrobeTeaser audience={audience} />
+            <WardrobeCTA audience={audience} />
           </>
         ) : (
           <>

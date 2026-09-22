@@ -9,7 +9,6 @@ import { useState } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { useLang, themesStrings } from '@/contexts/Language'
 import ThemesChapter from '@/components/ThemesChapter'
-import WardrobeSummary from '@/components/WardrobeSummary'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { useThemeChapters } from '@/lib/useThemeChapters'
 import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
@@ -108,9 +107,6 @@ export default function ThemesPageClient({ audience }: { audience: Audience }) {
           {tt.closing}
         </p>
       </div>
-
-      {/* ── What to Wear — practical summary ── */}
-      <WardrobeSummary chapters={chapters} />
 
       {/* ── Bottom CTA — audience-specific: groom returns to travel, bride downloads the guide ── */}
       <section className="bg-cream">

@@ -26,7 +26,9 @@ export interface ThemesChapterData {
   men?: string
   women?: string
   fabricNote?: string
-  outfitExamples?: string[]
+  menLooks?: string[]
+  womenLooks?: string[]
+  womenLooksNote?: string
 }
 
 export default function ThemesChapter({
@@ -104,10 +106,34 @@ export default function ThemesChapter({
               </p>
             )}
 
-            {chapter.outfitExamples && chapter.outfitExamples.length > 0 && (
-              <ul className="font-sans text-stone list-disc pl-5 space-y-1 mb-4" style={{ fontSize: '0.98rem' }}>
-                {chapter.outfitExamples.map((ex) => <li key={ex}>{ex}</li>)}
-              </ul>
+            {((chapter.menLooks && chapter.menLooks.length > 0) || (chapter.womenLooks && chapter.womenLooks.length > 0)) && (
+              <div className="grid sm:grid-cols-2 gap-5 mb-4">
+                {chapter.menLooks && chapter.menLooks.length > 0 && (
+                  <div>
+                    <p className="font-sans uppercase text-ink/50 mb-1.5" style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}>
+                      {t.forMen}
+                    </p>
+                    <ul className="font-sans text-stone list-disc pl-5 space-y-1" style={{ fontSize: '0.95rem' }}>
+                      {chapter.menLooks.map((look) => <li key={look}>{look}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {chapter.womenLooks && chapter.womenLooks.length > 0 && (
+                  <div>
+                    <p className="font-sans uppercase text-ink/50 mb-1.5" style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}>
+                      {t.forWomen}
+                    </p>
+                    <ul className="font-sans text-stone list-disc pl-5 space-y-1" style={{ fontSize: '0.95rem' }}>
+                      {chapter.womenLooks.map((look) => <li key={look}>{look}</li>)}
+                    </ul>
+                    {chapter.womenLooksNote && (
+                      <p className="font-sans text-burgundy/80 italic mt-2" style={{ fontSize: '0.85rem' }}>
+                        {chapter.womenLooksNote}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Palette — decorative, named explicitly so it's never mistaken for a dress-code instruction */}
