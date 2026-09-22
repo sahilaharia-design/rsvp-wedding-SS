@@ -18,7 +18,7 @@ export const strings = {
     rootIntro:         'From a solo journey to a shared forever.',
     rootBrideChoice:   'Sakshi’s Guests',
     rootBrideChoiceBody: 'Explore the four celebrations and what to wear.',
-    rootGroomChoice:   'Sahil’s Guests',
+    rootGroomChoice:   'Dr. Sahil’s Guests',
     rootGroomChoiceBody: 'Confirm your travel details and explore the celebrations.',
     rootContinueAs:    'Continue as {name} →',
 
@@ -48,7 +48,7 @@ export const strings = {
     navThemes:          'Themes & What to Wear',
     navTravel:          'Travel Details',
     switchToBride:      'Switch to Sakshi’s guests',
-    switchToGroom:      'Switch to Sahil’s guests',
+    switchToGroom:      'Switch to Dr. Sahil’s guests',
 
     // Chapters preview (homepage)
     chaptersPreviewHeading: 'Four celebrations. One shared forever.',
@@ -96,7 +96,6 @@ export const strings = {
     backBtn:           'Back',
     nextBtn:           'Continue',
     whatToWearShort:   'What to Wear',
-    viewInvitationCard: 'View the invitation card',
     travelBackHeading: 'Ready to Confirm Your Travel?',
     bridePdfHeading:   'Keep the Full Guide Handy',
     forMen:            'For Men',
@@ -114,7 +113,7 @@ export const strings = {
     rootIntro:         'एक अकेली यात्रा से एक साझा भविष्य तक।',
     rootBrideChoice:   'साक्षी के मेहमान',
     rootBrideChoiceBody: 'चारों उत्सव और पहनावा देखें।',
-    rootGroomChoice:   'सहिल के मेहमान',
+    rootGroomChoice:   'डॉ. सहिल के मेहमान',
     rootGroomChoiceBody: 'अपनी यात्रा विवरण की पुष्टि करें और उत्सव देखें।',
     rootContinueAs:    '{name} के रूप में जारी रखें →',
 
@@ -141,7 +140,7 @@ export const strings = {
     navThemes:          'थीम्स और पहनावा',
     navTravel:          'यात्रा विवरण',
     switchToBride:      'साक्षी के मेहमानों पर जाएं',
-    switchToGroom:      'सहिल के मेहमानों पर जाएं',
+    switchToGroom:      'डॉ. सहिल के मेहमानों पर जाएं',
 
     chaptersPreviewHeading: 'चार उत्सव। एक साझा भविष्य।',
     chaptersPreviewBody:    'हर उत्सव की कहानी जानें — और क्या पहनना है।',
@@ -186,7 +185,6 @@ export const strings = {
     backBtn:           'पीछे',
     nextBtn:           'आगे बढ़ें',
     whatToWearShort:   'क्या पहनें',
-    viewInvitationCard: 'निमंत्रण कार्ड देखें',
     travelBackHeading: 'यात्रा की पुष्टि करने के लिए तैयार हैं?',
     bridePdfHeading:   'पूरी गाइड अपने पास रखें',
     forMen:            'पुरुषों के लिए',
@@ -204,7 +202,7 @@ export const strings = {
     rootIntro:         'એકલી મુસાફરીથી એક સહિયારા ભવિષ્ય સુધી.',
     rootBrideChoice:   'સાક્ષીના મહેમાનો',
     rootBrideChoiceBody: 'ચારેય ઉત્સવો અને શું પહેરવું તે જુઓ.',
-    rootGroomChoice:   'સહિલના મહેમાનો',
+    rootGroomChoice:   'ડૉ. સહિલના મહેમાનો',
     rootGroomChoiceBody: 'તમારી મુસાફરીની વિગતોની પુષ્ટિ કરો અને ઉત્સવો જુઓ.',
     rootContinueAs:    '{name} તરીકે ચાલુ રાખો →',
 
@@ -231,7 +229,7 @@ export const strings = {
     navThemes:          'થીમ્સ અને પોશાક',
     navTravel:          'મુસાફરીની વિગતો',
     switchToBride:      'સાક્ષીના મહેમાનો પર જાઓ',
-    switchToGroom:      'સહિલના મહેમાનો પર જાઓ',
+    switchToGroom:      'ડૉ. સહિલના મહેમાનો પર જાઓ',
 
     chaptersPreviewHeading: 'ચાર ઉત્સવો. એક સહિયારું ભવિષ્ય.',
     chaptersPreviewBody:    'દરેક ઉત્સવની વાર્તા જાણો — અને શું પહેરવું.',
@@ -276,7 +274,6 @@ export const strings = {
     backBtn:           'પાછળ',
     nextBtn:           'આગળ વધો',
     whatToWearShort:   'શું પહેરવું',
-    viewInvitationCard: 'આમંત્રણ કાર્ડ જુઓ',
     travelBackHeading: 'મુસાફરીની પુષ્ટિ કરવા તૈયાર છો?',
     bridePdfHeading:   'સંપૂર્ણ ગાઇડ તમારી પાસે રાખો',
     forMen:            'પુરુષો માટે',

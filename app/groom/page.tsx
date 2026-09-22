@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import AudienceHome from '@/components/AudienceHome'
 
 export const metadata: Metadata = {
-  title: 'Sakshi & Dr. Sahil — Sahil’s Guests',
+  title: 'Sakshi & Dr. Sahil — Dr. Sahil’s Guests',
   description: 'Please share your travel details by 20 October 2026. Wed 20 – Fri 22 January 2027 · Pitampura, Delhi.',
   openGraph: {
     title: 'Sakshi & Dr. Sahil — #SakshiKoMilaKinara',

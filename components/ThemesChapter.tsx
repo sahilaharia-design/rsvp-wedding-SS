@@ -37,6 +37,7 @@ export default function ThemesChapter({
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
   const [imgError, setImgError] = useState(false)
+  const [cardError, setCardError] = useState(false)
   const { lang, t } = useLang()
   const tt = themesStrings[lang]
 
@@ -151,14 +152,23 @@ export default function ThemesChapter({
               {tt.paletteDisclaimer}
             </p>
 
-            {chapter.card && (
-              <a href={chapter.card} target="_blank" rel="noopener noreferrer"
-                className="inline-block mt-4 pt-4 border-t border-thread-border/50 font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
-                style={{ fontSize: '0.88rem' }}>
-                {t.viewInvitationCard} &rarr;
-              </a>
-            )}
           </div>
+
+          {/* Invitation card — shown in full, directly on the page, so the
+              actual illustrated reference never requires a click or a new
+              tab to see. */}
+          {chapter.card && !cardError && (
+            <div className="relative mt-6 rounded-2xl overflow-hidden"
+              style={{ aspectRatio: '561 / 701', border: '2px solid var(--thread-border, #D8C6AD)', boxShadow: '0 16px 40px rgba(48,54,50,0.12)' }}>
+              <Image
+                src={chapter.card}
+                alt={`${chapter.event} illustrated invitation card — dress code, palette and outfit reference`}
+                fill sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                onError={() => setCardError(true)}
+              />
+            </div>
+          )}
         </div>
       </motion.div>
     </section>
