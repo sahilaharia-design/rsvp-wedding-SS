@@ -9,6 +9,13 @@ export const metadata: Metadata = {
     description: 'Explore our four celebrations and what to wear.',
     type: 'website',
     url: 'https://sakshisahil.com/bride',
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Sakshi & Dr. Sahil — #SakshiKoMilaKinara',
+    description: 'Explore our four celebrations and what to wear.',
+    images: ['/opengraph-image'],
   },
 }
 

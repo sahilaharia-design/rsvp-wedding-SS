@@ -10,11 +10,13 @@ export const metadata: Metadata = {
     description: 'The story behind each celebration, and what to wear. 20–22 January 2027 · Delhi.',
     type: 'website',
     url: 'https://sakshisahil.com/groom/themes',
+    images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'The Four Chapters & What to Wear — Sakshi & Dr. Sahil',
     description: 'The story behind each celebration, and what to wear. 20–22 January 2027 · Delhi.',
+    images: ['/opengraph-image'],
   },
 }
 

@@ -9,6 +9,13 @@ export const metadata: Metadata = {
     description: 'Confirm your travel details and explore our celebrations.',
     type: 'website',
     url: 'https://sakshisahil.com/groom',
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Sakshi & Dr. Sahil — #SakshiKoMilaKinara',
+    description: 'Confirm your travel details and explore our celebrations.',
+    images: ['/opengraph-image'],
   },
 }
 
