@@ -106,7 +106,15 @@ export default function TravelDetailsSection() {
     setFiles((prev) => prev.filter((_, i) => i !== idx))
   }
 
+  // Blocks a second Continue/Back tap from landing on the next step's
+  // button while the slide transition is still animating in — a fast
+  // double-tap right on the transition boundary could otherwise hit
+  // whatever button ends up underneath the finger next, including the
+  // final step's real submit button.
+  const [transitioning, setTransitioning] = useState(false)
+
   function goNext() {
+    if (transitioning) return
     if (step === 0) {
       if (!fields.full_name.trim() || !fields.mobile_number.trim() || !arrivalMode) {
         setStepError(t.arrivalModeLabel)
@@ -121,17 +129,29 @@ export default function TravelDetailsSection() {
     }
     setStepError('')
     setDirection(1)
+    setTransitioning(true)
     setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
+    setTimeout(() => setTransitioning(false), 400)
   }
 
   function goBack() {
+    if (transitioning) return
     setStepError('')
     setDirection(-1)
+    setTransitioning(true)
     setStep((s) => Math.max(s - 1, 0))
+    setTimeout(() => setTransitioning(false), 400)
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    // The submit button only renders on the final step, but the <form>'s
+    // onSubmit is wired once for the whole wizard — guard here too so a
+    // submit event arriving from any other path (a stray double-tap that
+    // lands on the final step's button right as it mounts underneath an
+    // earlier click, browser autofill, etc.) can never save the record
+    // before the guest has actually reached and reviewed the last step.
+    if (step !== TOTAL_STEPS - 1) return
     if (!arrivalMode) return
     setFormState('submitting')
     setErrorMsg('')
@@ -442,20 +462,20 @@ export default function TravelDetailsSection() {
                     {/* ── Step navigation ── */}
                     <div className="flex items-center gap-3 pt-8">
                       {step > 0 && (
-                        <button type="button" onClick={goBack}
-                          className="hover-lift px-6 py-4 border-2 border-thread-border/60 text-charcoal font-sans uppercase rounded-sm hover:border-burgundy transition-colors duration-300"
+                        <button type="button" onClick={goBack} disabled={transitioning}
+                          className="hover-lift px-6 py-4 border-2 border-thread-border/60 text-charcoal font-sans uppercase rounded-sm hover:border-burgundy disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
                           style={{ fontSize: '0.85rem', letterSpacing: '0.2em' }}>
                           {t.backBtn}
                         </button>
                       )}
                       {step < TOTAL_STEPS - 1 ? (
-                        <button type="button" onClick={goNext}
-                          className="shimmer-btn flex-1 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+                        <button type="button" onClick={goNext} disabled={transitioning}
+                          className="shimmer-btn flex-1 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
                           style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
                           {t.nextBtn}
                         </button>
                       ) : (
-                        <button type="submit" disabled={formState === 'submitting'}
+                        <button type="submit" disabled={formState === 'submitting' || transitioning}
                           className="shimmer-btn flex-1 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
                           style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
                           {formState === 'submitting' ? t.sending : t.travelConfirmBtn}
