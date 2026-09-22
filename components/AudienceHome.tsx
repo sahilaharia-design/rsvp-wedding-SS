@@ -4,6 +4,7 @@
 // configured by audience, rather than two independently maintained sites.
 import { useCallback } from 'react'
 import Link from 'next/link'
+import EnvelopeIntro from '@/components/EnvelopeIntro'
 import Hero from '@/components/Hero'
 import TravelReminder from '@/components/TravelReminder'
 import ChaptersPreview from '@/components/ChaptersPreview'
@@ -78,6 +79,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
 
   return (
     <>
+      <EnvelopeIntro />
       <SiteHeader audience={audience} />
 
       <main>
