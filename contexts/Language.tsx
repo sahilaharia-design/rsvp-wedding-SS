@@ -40,7 +40,7 @@ export const strings = {
     reminderBody:      'Please share your travel details with us by',
     travelHeading:     'Getting Here',
     travelBody1:       'Fly into Delhi (DEL) or take the train — we’ll arrange your pickup once you share your arrival details below.',
-    travelBody2:       'We’ll take care of your stay and transfers between venues — just let us know how you’re arriving.',
+    travelBody2:       'We’ll have your pickup arranged if you’re arriving on 20 January. Arriving on 21 January instead? Please plan your own transport to the venue — we’ll take care of everything once you’re there.',
 
     // Navigation
     navHome:           'Home',
@@ -133,7 +133,7 @@ export const strings = {
     reminderBody:      'कृपया अपनी यात्रा जानकारी हमें इस तारीख तक साझा करें:',
     travelHeading:     'यहाँ कैसे पहुँचें',
     travelBody1:       'दिल्ली (DEL) के लिए फ़्लाइट लें या ट्रेन से आएं — नीचे अपनी आगमन जानकारी साझा करते ही हम आपकी पिकअप व्यवस्था करेंगे।',
-    travelBody2:       'हम आपके ठहरने और स्थलों के बीच आवागमन का ध्यान रखेंगे — बस हमें बताएं कि आप कैसे पहुँच रहे हैं।',
+    travelBody2:       '20 जनवरी को पहुँचने पर हम आपकी पिकअप व्यवस्था करेंगे। 21 जनवरी को पहुँच रहे हैं? कृपया वेन्यू तक की अपनी यात्रा स्वयं व्यवस्थित करें — वहाँ पहुँचने के बाद बाकी सब हम संभाल लेंगे।',
 
     navHome:           'होम',
     navCelebrations:    'उत्सव',
@@ -222,7 +222,7 @@ export const strings = {
     reminderBody:      'કૃપા કરી તમારી મુસાફરીની વિગતો અમને આ તારીખ સુધીમાં શેર કરો:',
     travelHeading:     'અહીં કેવી રીતે પહોંચવું',
     travelBody1:       'દિલ્હી (DEL) માટે ફ્લાઇટ લો અથવા ટ્રેનથી આવો — નીચે તમારી આગમનની વિગતો શેર કરતાં જ અમે તમારું પિકઅપ ગોઠવીશું.',
-    travelBody2:       'અમે તમારા રોકાણ અને સ્થળો વચ્ચેની અવરજવરની કાળજી લઈશું — ફક્ત અમને જણાવો કે તમે કેવી રીતે પહોંચી રહ્યા છો.',
+    travelBody2:       '20 જાન્યુઆરીએ પહોંચવા પર અમે તમારું પિકઅપ ગોઠવીશું. 21 જાન્યુઆરીએ પહોંચી રહ્યા છો? કૃપા કરી વેન્યુ સુધીની તમારી મુસાફરી જાતે ગોઠવો — ત્યાં પહોંચ્યા પછી બાકીનું બધું અમે સંભાળી લઈશું.',
 
     navHome:           'હોમ',
     navCelebrations:    'ઉત્સવો',

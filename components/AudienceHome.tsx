@@ -95,13 +95,14 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
             <WardrobeCTA audience={audience} />
           </>
         ) : (
+          // Groom's guests have one job here: confirm travel, with as
+          // little between them and the form as possible. The chapter
+          // story and Roka photo belong to the bride's experience — a
+          // small text link (in Hero, and again in the footer) is enough
+          // for anyone who also wants the themes/wardrobe guide.
           <>
             <SectionThread />
             <TravelReminder onCTAClick={scrollToTravelDetails} />
-            <SectionThread />
-            <ChaptersPreview audience={audience} />
-            <SectionThread />
-            <PersonalInterlude />
             <SectionThread />
             <TravelGuidance />
             <SectionThread />
