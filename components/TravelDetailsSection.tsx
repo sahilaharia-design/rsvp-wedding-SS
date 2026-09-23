@@ -11,12 +11,13 @@ type ArrivalMode = 'flight' | 'train' | 'road'
 const EASE = [0.25, 0.1, 0.25, 1] as const
 const MAX_FILES = 4
 const MAX_FILE_BYTES = 3.2 * 1024 * 1024 // ~3.2MB raw — keeps base64 well under the API's cap
-const TOTAL_STEPS = 3
 
 const labelCls = 'block font-sans uppercase text-charcoal/70'
 const labelStyle = { fontSize: '0.85rem', letterSpacing: '0.12em' }
 const inputCls = 'w-full bg-white/70 border-2 border-thread-border/50 focus:border-burgundy outline-none rounded-xl px-4 py-4 font-sans text-charcoal placeholder:text-stone/40 transition-colors duration-200 min-h-[52px]'
 const inputStyle = { fontSize: '1.05rem' }
+const sectionLabelCls = 'font-sans uppercase text-burgundy'
+const sectionLabelStyle = { fontSize: '0.78rem', letterSpacing: '0.16em' }
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -53,6 +54,12 @@ const EMPTY_FIELDS: FieldsState = {
   travel_number: '', departure_date: '', guest_names: '', notes: '',
 }
 
+// One continuous form, no steps — every field is visible and fillable in
+// any order, one submit at the end. Previously a 3-step wizard requiring a
+// "Continue" tap between each group; flattened per direct feedback that
+// taking travel details should be a single, seamless page with no extra
+// clicks. The three groups (About You / Your Arrival / ID & Notes) remain
+// as plain labelled sections for scannability, not gated steps.
 export default function TravelDetailsSection() {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
@@ -68,11 +75,9 @@ export default function TravelDetailsSection() {
     }
   }, [])
 
-  const [step, setStep] = useState(0)
-  const [direction, setDirection] = useState(1)
   const [fields, setFields] = useState<FieldsState>(EMPTY_FIELDS)
   const [arrivalMode, setArrivalMode] = useState<ArrivalMode | null>(null)
-  const [stepError, setStepError] = useState('')
+  const [arrivalModeError, setArrivalModeError] = useState('')
 
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -106,53 +111,17 @@ export default function TravelDetailsSection() {
     setFiles((prev) => prev.filter((_, i) => i !== idx))
   }
 
-  // Blocks a second Continue/Back tap from landing on the next step's
-  // button while the slide transition is still animating in — a fast
-  // double-tap right on the transition boundary could otherwise hit
-  // whatever button ends up underneath the finger next, including the
-  // final step's real submit button.
-  const [transitioning, setTransitioning] = useState(false)
-
-  function goNext() {
-    if (transitioning) return
-    if (step === 0) {
-      if (!fields.full_name.trim() || !fields.mobile_number.trim() || !arrivalMode) {
-        setStepError(t.arrivalModeLabel)
-        return
-      }
-    }
-    if (step === 1) {
-      if (!fields.arrival_date || !fields.arrival_time) {
-        setStepError(t.arrivalDate)
-        return
-      }
-    }
-    setStepError('')
-    setDirection(1)
-    setTransitioning(true)
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
-    setTimeout(() => setTransitioning(false), 400)
-  }
-
-  function goBack() {
-    if (transitioning) return
-    setStepError('')
-    setDirection(-1)
-    setTransitioning(true)
-    setStep((s) => Math.max(s - 1, 0))
-    setTimeout(() => setTransitioning(false), 400)
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // The submit button only renders on the final step, but the <form>'s
-    // onSubmit is wired once for the whole wizard — guard here too so a
-    // submit event arriving from any other path (a stray double-tap that
-    // lands on the final step's button right as it mounts underneath an
-    // earlier click, browser autofill, etc.) can never save the record
-    // before the guest has actually reached and reviewed the last step.
-    if (step !== TOTAL_STEPS - 1) return
-    if (!arrivalMode) return
+    // Every native field is validated by the browser via `required` (it
+    // will focus and explain whichever one is empty). Arrival mode is a
+    // custom control, not a native input, so it needs its own check.
+    if (!arrivalMode) {
+      setArrivalModeError(t.arrivalModeLabel)
+      document.getElementById('arrival-mode-group')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+    setArrivalModeError('')
     setFormState('submitting')
     setErrorMsg('')
     setUploadProgress('')
@@ -210,16 +179,9 @@ export default function TravelDetailsSection() {
     }
   }
 
-  const stepTitle = [t.stepAboutTitle, t.stepArrivalTitle, t.stepFinalTitle][step]
   const travelNumberLabel = arrivalMode === 'train' ? t.trainNumberLabel
     : arrivalMode === 'road' ? t.roadDetailsLabel
     : t.flightNumberLabel
-
-  const slideVariants = {
-    enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 28 : -28 }),
-    center: { opacity: 1, x: 0 },
-    exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -28 : 28 }),
-  }
 
   return (
     <section id="travel-details" ref={ref} className="bg-cream relative overflow-hidden">
@@ -254,234 +216,185 @@ export default function TravelDetailsSection() {
                     style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)' }}>
                     {t.travelConfirmHeading}
                   </h2>
-                  <p className="font-sans leading-[1.85] text-stone mb-8"
+                  <p className="font-sans leading-[1.85] text-stone mb-10"
                     style={{ fontSize: '1.1rem' }}>
                     {t.travelConfirmIntro}
                   </p>
 
-                  {/* ── Step progress ── */}
-                  <div className="mb-8">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-sans uppercase text-burgundy" style={{ fontSize: '0.78rem', letterSpacing: '0.16em' }}>
-                        {stepTitle}
-                      </span>
-                      <span className="font-sans text-stone/70" style={{ fontSize: '0.8rem' }}>
-                        {t.stepOf.replace('{n}', String(step + 1))}
-                      </span>
-                    </div>
-                    <div className="h-[3px] bg-thread-border/40 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full"
-                        style={{ background: 'linear-gradient(90deg, #A17B3D, #760D25)' }}
-                        animate={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
-                        transition={{ duration: 0.5, ease: EASE }}
-                      />
-                    </div>
-                  </div>
+                  <form onSubmit={handleSubmit} className="space-y-10">
+                    {/* ── About you ── */}
+                    <div className="space-y-7">
+                      <p className={sectionLabelCls} style={sectionLabelStyle}>{t.stepAboutTitle}</p>
 
-                  <form onSubmit={handleSubmit}>
-                    <div className="overflow-hidden">
-                      <AnimatePresence mode="wait" custom={direction} initial={false}>
-                        <motion.div
-                          key={step}
-                          custom={direction}
-                          variants={slideVariants}
-                          initial="enter" animate="center" exit="exit"
-                          transition={{ duration: 0.35, ease: EASE }}
-                          className="space-y-7"
-                        >
-                          {step === 0 && (
-                            <>
-                              <div className="space-y-2">
-                                <label className={labelCls} style={labelStyle}>{t.fullName}</label>
-                                <input type="text" value={fields.full_name} onChange={setField('full_name')} required
-                                  placeholder="Your name" className={inputCls} style={inputStyle} />
-                              </div>
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>{t.fullName}</label>
+                        <input type="text" value={fields.full_name} onChange={setField('full_name')} required
+                          placeholder="Your name" className={inputCls} style={inputStyle} />
+                      </div>
 
-                              <div className="space-y-2">
-                                <label className={labelCls} style={labelStyle}>{t.mobile}</label>
-                                <input type="tel" value={fields.mobile_number} onChange={setField('mobile_number')} required
-                                  placeholder="10-digit mobile number" className={inputCls} style={inputStyle} />
-                              </div>
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>{t.mobile}</label>
+                        <input type="tel" value={fields.mobile_number} onChange={setField('mobile_number')} required
+                          placeholder="10-digit mobile number" className={inputCls} style={inputStyle} />
+                      </div>
 
-                              {/* Arrival mode — segmented control with a sliding active pill */}
-                              <div className="space-y-3">
-                                <label className={labelCls} style={labelStyle}>{t.arrivalModeLabel}</label>
-                                <div className="grid grid-cols-3 gap-3">
-                                  {(['flight', 'train', 'road'] as ArrivalMode[]).map((mode) => {
-                                    const label = mode === 'flight' ? t.byFlight : mode === 'train' ? t.byTrain : t.byRoad
-                                    const active = arrivalMode === mode
-                                    return (
-                                      <button
-                                        key={mode} type="button"
-                                        onClick={() => setArrivalMode(mode)}
-                                        className="relative flex flex-col items-center gap-2 rounded-xl py-4 border-2 transition-colors duration-200 overflow-hidden"
-                                        style={{ borderColor: active ? '#760D25' : 'rgba(216,198,173,0.6)' }}
-                                      >
-                                        {active && (
-                                          <motion.div
-                                            layoutId="arrivalModeFill"
-                                            className="absolute inset-0 bg-burgundy"
-                                            transition={{ duration: 0.3, ease: EASE }}
-                                          />
-                                        )}
-                                        <Image src={ARRIVAL_ICONS[mode]} alt="" width={22} height={22}
-                                          className="relative z-10"
-                                          style={{ filter: active ? 'invert(1) brightness(2)' : 'none' }} />
-                                        <span className="relative z-10 font-sans" style={{ fontSize: '0.85rem', color: active ? '#FFF9F1' : '#303632' }}>
-                                          {label}
-                                        </span>
-                                      </button>
-                                    )
-                                  })}
-                                </div>
-                              </div>
-                            </>
-                          )}
-
-                          {step === 1 && (
-                            <>
-                              <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <label className={labelCls} style={labelStyle}>{t.arrivalDate}</label>
-                                  <input type="date" value={fields.arrival_date} onChange={setField('arrival_date')} required
-                                    className={inputCls} style={inputStyle} />
-                                </div>
-                                <div className="space-y-2">
-                                  <label className={labelCls} style={labelStyle}>
-                                    {t.arrivalTime}
-                                  </label>
-                                  <input type="time" value={fields.arrival_time} onChange={setField('arrival_time')} required
-                                    className={inputCls} style={inputStyle} />
-                                  <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
-                                </div>
-                              </div>
-
-                              <div className="space-y-2">
-                                <label className={labelCls} style={labelStyle}>
-                                  {travelNumberLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
-                                </label>
-                                <input type="text" value={fields.travel_number} onChange={setField('travel_number')} autoComplete="off"
-                                  placeholder="e.g. AI-2401" className={inputCls} style={inputStyle} />
-                              </div>
-
-                              <div className="space-y-2">
-                                <label className={labelCls} style={labelStyle}>
-                                  {t.departureDate} <span className="normal-case tracking-normal">{t.optionalTag}</span>
-                                </label>
-                                <input type="date" value={fields.departure_date} onChange={setField('departure_date')}
-                                  className={inputCls} style={inputStyle} />
-                              </div>
-
-                              <div className="space-y-2">
-                                <label className={labelCls} style={labelStyle}>
-                                  {t.guestNamesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
-                                </label>
-                                <input type="text" value={fields.guest_names} onChange={setField('guest_names')} autoComplete="off"
-                                  className={inputCls} style={inputStyle} />
-                              </div>
-                            </>
-                          )}
-
-                          {step === 2 && (
-                            <>
-                              {/* ID upload — dropzone */}
-                              <div className="space-y-3">
-                                <label className={labelCls} style={labelStyle}>{t.idUploadLabel}</label>
-                                <p className="font-sans text-stone leading-[1.6]" style={{ fontSize: '0.88rem' }}>
-                                  {t.idUploadHint}
-                                </p>
-
-                                <div className="space-y-2">
-                                  {files.map((f, i) => (
-                                    <div key={`${f.name}-${i}`}
-                                      className="flex items-center justify-between bg-white/70 border border-thread-border/50 px-4 py-3 rounded-xl">
-                                      <span className="font-sans text-charcoal truncate pr-3" style={{ fontSize: '0.9rem' }}>
-                                        {f.name}
-                                      </span>
-                                      <button type="button" onClick={() => removeFile(i)}
-                                        className="font-sans text-charcoal/50 hover:text-burgundy flex-shrink-0 transition-colors"
-                                        style={{ fontSize: '0.85rem' }} aria-label={`Remove ${f.name}`}>
-                                        ✕
-                                      </button>
-                                    </div>
-                                  ))}
-                                </div>
-
-                                {files.length < MAX_FILES && (
-                                  <label
-                                    onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
-                                    onDragLeave={() => setDragOver(false)}
-                                    onDrop={(e) => { e.preventDefault(); setDragOver(false); if (e.dataTransfer.files) addFiles(e.dataTransfer.files) }}
-                                    className="flex flex-col items-center justify-center gap-2 cursor-pointer rounded-2xl px-6 py-8 text-center transition-colors duration-200"
-                                    style={{
-                                      border: `2px dashed ${dragOver ? '#760D25' : 'rgba(216,198,173,0.8)'}`,
-                                      background: dragOver ? 'rgba(161,123,61,0.08)' : 'rgba(255,255,255,0.5)',
-                                    }}
-                                  >
-                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#760D25" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                                      <path d="M12 16V4M12 4 7 9M12 4l5 5" />
-                                      <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
-                                    </svg>
-                                    <span className="font-sans uppercase text-charcoal" style={{ fontSize: '0.82rem', letterSpacing: '0.15em' }}>
-                                      {t.chooseFiles}
-                                    </span>
-                                    <input type="file" accept="image/*,.pdf" multiple
-                                      onChange={handleFilesSelected} className="hidden" />
-                                  </label>
+                      {/* Arrival mode — segmented control with a sliding active pill */}
+                      <div id="arrival-mode-group" className="space-y-3 scroll-mt-24">
+                        <label className={labelCls} style={labelStyle}>{t.arrivalModeLabel}</label>
+                        <div className="grid grid-cols-3 gap-3">
+                          {(['flight', 'train', 'road'] as ArrivalMode[]).map((mode) => {
+                            const label = mode === 'flight' ? t.byFlight : mode === 'train' ? t.byTrain : t.byRoad
+                            const active = arrivalMode === mode
+                            return (
+                              <button
+                                key={mode} type="button"
+                                onClick={() => { setArrivalMode(mode); setArrivalModeError('') }}
+                                className="relative flex flex-col items-center gap-2 rounded-xl py-4 border-2 transition-colors duration-200 overflow-hidden"
+                                style={{ borderColor: active ? '#760D25' : 'rgba(216,198,173,0.6)' }}
+                              >
+                                {active && (
+                                  <motion.div
+                                    layoutId="arrivalModeFill"
+                                    className="absolute inset-0 bg-burgundy"
+                                    transition={{ duration: 0.3, ease: EASE }}
+                                  />
                                 )}
-
-                                {fileError && (
-                                  <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{fileError}</p>
-                                )}
-                              </div>
-
-                              <div className="space-y-2">
-                                <label className={labelCls} style={labelStyle}>
-                                  {t.notesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
-                                </label>
-                                <textarea value={fields.notes} onChange={setField('notes')} rows={3} autoComplete="off"
-                                  className={inputCls} style={inputStyle} />
-                              </div>
-                            </>
-                          )}
-                        </motion.div>
-                      </AnimatePresence>
+                                <Image src={ARRIVAL_ICONS[mode]} alt="" width={22} height={22}
+                                  className="relative z-10"
+                                  style={{ filter: active ? 'invert(1) brightness(2)' : 'none' }} />
+                                <span className="relative z-10 font-sans" style={{ fontSize: '0.85rem', color: active ? '#FFF9F1' : '#303632' }}>
+                                  {label}
+                                </span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                        {arrivalModeError && (
+                          <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{arrivalModeError}</p>
+                        )}
+                      </div>
                     </div>
 
-                    {stepError && (
-                      <p className="font-sans text-rose-700 mt-4" style={{ fontSize: '0.95rem' }}>{stepError}</p>
-                    )}
+                    {/* ── Your arrival ── */}
+                    <div className="space-y-7 pt-2 border-t border-thread-border/50">
+                      <p className={sectionLabelCls} style={{ ...sectionLabelStyle, display: 'block', marginTop: '1.5rem' }}>{t.stepArrivalTitle}</p>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className={labelCls} style={labelStyle}>{t.arrivalDate}</label>
+                          <input type="date" value={fields.arrival_date} onChange={setField('arrival_date')} required
+                            className={inputCls} style={inputStyle} />
+                        </div>
+                        <div className="space-y-2">
+                          <label className={labelCls} style={labelStyle}>
+                            {t.arrivalTime}
+                          </label>
+                          <input type="time" value={fields.arrival_time} onChange={setField('arrival_time')} required
+                            className={inputCls} style={inputStyle} />
+                          <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>
+                          {travelNumberLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
+                        </label>
+                        <input type="text" value={fields.travel_number} onChange={setField('travel_number')} autoComplete="off"
+                          placeholder="e.g. AI-2401" className={inputCls} style={inputStyle} />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>
+                          {t.departureDate} <span className="normal-case tracking-normal">{t.optionalTag}</span>
+                        </label>
+                        <input type="date" value={fields.departure_date} onChange={setField('departure_date')}
+                          className={inputCls} style={inputStyle} />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>
+                          {t.guestNamesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
+                        </label>
+                        <input type="text" value={fields.guest_names} onChange={setField('guest_names')} autoComplete="off"
+                          className={inputCls} style={inputStyle} />
+                      </div>
+                    </div>
+
+                    {/* ── ID & notes ── */}
+                    <div className="space-y-7 pt-2 border-t border-thread-border/50">
+                      <p className={sectionLabelCls} style={{ ...sectionLabelStyle, display: 'block', marginTop: '1.5rem' }}>{t.stepFinalTitle}</p>
+
+                      <div className="space-y-3">
+                        <label className={labelCls} style={labelStyle}>{t.idUploadLabel}</label>
+                        <p className="font-sans text-stone leading-[1.6]" style={{ fontSize: '0.88rem' }}>
+                          {t.idUploadHint}
+                        </p>
+
+                        <div className="space-y-2">
+                          {files.map((f, i) => (
+                            <div key={`${f.name}-${i}`}
+                              className="flex items-center justify-between bg-white/70 border border-thread-border/50 px-4 py-3 rounded-xl">
+                              <span className="font-sans text-charcoal truncate pr-3" style={{ fontSize: '0.9rem' }}>
+                                {f.name}
+                              </span>
+                              <button type="button" onClick={() => removeFile(i)}
+                                className="font-sans text-charcoal/50 hover:text-burgundy flex-shrink-0 transition-colors"
+                                style={{ fontSize: '0.85rem' }} aria-label={`Remove ${f.name}`}>
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        {files.length < MAX_FILES && (
+                          <label
+                            onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+                            onDragLeave={() => setDragOver(false)}
+                            onDrop={(e) => { e.preventDefault(); setDragOver(false); if (e.dataTransfer.files) addFiles(e.dataTransfer.files) }}
+                            className="flex flex-col items-center justify-center gap-2 cursor-pointer rounded-2xl px-6 py-8 text-center transition-colors duration-200"
+                            style={{
+                              border: `2px dashed ${dragOver ? '#760D25' : 'rgba(216,198,173,0.8)'}`,
+                              background: dragOver ? 'rgba(161,123,61,0.08)' : 'rgba(255,255,255,0.5)',
+                            }}
+                          >
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#760D25" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 16V4M12 4 7 9M12 4l5 5" />
+                              <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                            </svg>
+                            <span className="font-sans uppercase text-charcoal" style={{ fontSize: '0.82rem', letterSpacing: '0.15em' }}>
+                              {t.chooseFiles}
+                            </span>
+                            <input type="file" accept="image/*,.pdf" multiple
+                              onChange={handleFilesSelected} className="hidden" />
+                          </label>
+                        )}
+
+                        {fileError && (
+                          <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{fileError}</p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>
+                          {t.notesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
+                        </label>
+                        <textarea value={fields.notes} onChange={setField('notes')} rows={3} autoComplete="off"
+                          className={inputCls} style={inputStyle} />
+                      </div>
+                    </div>
+
                     {formState === 'error' && errorMsg && (
-                      <p className="font-sans text-rose-700 mt-4" style={{ fontSize: '1rem' }}>{errorMsg}</p>
+                      <p className="font-sans text-rose-700" style={{ fontSize: '1rem' }}>{errorMsg}</p>
                     )}
                     {uploadProgress && (
-                      <p className="font-sans text-stone mt-4" style={{ fontSize: '0.9rem' }}>{uploadProgress}</p>
+                      <p className="font-sans text-stone" style={{ fontSize: '0.9rem' }}>{uploadProgress}</p>
                     )}
 
-                    {/* ── Step navigation ── */}
-                    <div className="flex items-center gap-3 pt-8">
-                      {step > 0 && (
-                        <button type="button" onClick={goBack} disabled={transitioning}
-                          className="hover-lift px-6 py-4 border-2 border-thread-border/60 text-charcoal font-sans uppercase rounded-sm hover:border-burgundy disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
-                          style={{ fontSize: '0.85rem', letterSpacing: '0.2em' }}>
-                          {t.backBtn}
-                        </button>
-                      )}
-                      {step < TOTAL_STEPS - 1 ? (
-                        <button type="button" onClick={goNext} disabled={transitioning}
-                          className="shimmer-btn flex-1 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
-                          style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
-                          {t.nextBtn}
-                        </button>
-                      ) : (
-                        <button type="submit" disabled={formState === 'submitting' || transitioning}
-                          className="shimmer-btn flex-1 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
-                          style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
-                          {formState === 'submitting' ? t.sending : t.travelConfirmBtn}
-                        </button>
-                      )}
-                    </div>
+                    <button type="submit" disabled={formState === 'submitting'}
+                      className="shimmer-btn w-full py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
+                      style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
+                      {formState === 'submitting' ? t.sending : t.travelConfirmBtn}
+                    </button>
                   </form>
                 </motion.div>
               )}

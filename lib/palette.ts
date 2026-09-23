@@ -12,6 +12,7 @@ export const PALETTE_HEX: Record<string, string> = {
   Plum: '#562447',
   Ruby: '#8A1530',
   'Hot pink': '#ED237A',
+  Rose: '#C36A83',
   Champagne: '#DDC8A5',
   Gold: '#A17B3D',
 }
