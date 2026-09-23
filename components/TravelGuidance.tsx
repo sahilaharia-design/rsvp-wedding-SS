@@ -7,7 +7,7 @@ import { useLang } from '@/contexts/Language'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
-export default function TravelGuidance() {
+export default function TravelGuidance({ onCTAClick }: { onCTAClick: () => void }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const [artError, setArtError] = useState(false)
@@ -66,6 +66,14 @@ export default function TravelGuidance() {
                 {t.travelBody2}
               </p>
             </div>
+
+            <button
+              onClick={onCTAClick}
+              className="shimmer-btn mt-8 px-8 py-3.5 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+              style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}
+            >
+              {t.groomPrimaryCTA}
+            </button>
           </div>
 
           {/* ── Decorative art (symbolic, not the booked property) ── */}

@@ -13,10 +13,11 @@ import { AUDIENCE_CONFIG, OTHER_AUDIENCE, type Audience } from '@/lib/audience'
  * other audience's route — correcting a mistaken choice without requiring
  * anyone to re-answer a question on every page.
  */
-export default function SiteHeader({ audience }: { audience: Audience }) {
+export default function SiteHeader({ audience, onCTAClick }: { audience: Audience; onCTAClick?: () => void }) {
   const { t } = useLang()
   const [scrolled, setScrolled] = useState(false)
   const other = OTHER_AUDIENCE[audience]
+  const isGroom = audience === 'groom'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -38,7 +39,16 @@ export default function SiteHeader({ audience }: { audience: Audience }) {
           S&nbsp;&amp;&nbsp;S
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:gap-3">
+          {isGroom && onCTAClick && (
+            <button
+              onClick={onCTAClick}
+              className="hidden md:inline-block px-5 py-2 rounded-full bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 flex-shrink-0"
+              style={{ fontSize: '0.68rem', letterSpacing: '0.14em' }}
+            >
+              {t.groomPrimaryCTA}
+            </button>
+          )}
           <Link
             href={AUDIENCE_CONFIG[other].route}
             className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-ink/8 font-sans text-[10px] md:text-[11px] tracking-wide text-ink/60 hover:text-ink transition-colors flex-shrink-0"

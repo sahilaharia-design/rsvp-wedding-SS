@@ -17,7 +17,7 @@ import SectionThread from '@/components/SectionThread'
 import { useLang } from '@/contexts/Language'
 import { AUDIENCE_CONFIG, OTHER_AUDIENCE, type Audience } from '@/lib/audience'
 
-function Footer({ audience }: { audience: Audience }) {
+function Footer({ audience, onCTAClick }: { audience: Audience; onCTAClick?: () => void }) {
   const { t } = useLang()
   const isBride = audience === 'bride'
   const config = AUDIENCE_CONFIG[audience]
@@ -25,6 +25,20 @@ function Footer({ audience }: { audience: Audience }) {
 
   return (
     <footer className="px-7 md:px-14 py-12 border-t border-thread-border/60 text-center bg-paper">
+      {!isBride && onCTAClick && (
+        <div className="mb-10">
+          <p className="font-serif text-ink mb-5" style={{ fontSize: 'clamp(1.2rem, 3vw, 1.5rem)' }}>
+            {t.travelBackHeading}
+          </p>
+          <button
+            onClick={onCTAClick}
+            className="shimmer-btn px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+            style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
+          >
+            {t.groomPrimaryCTA}
+          </button>
+        </div>
+      )}
       <p className="font-display gold-glint text-burgundy leading-none mb-4 break-words"
         style={{ fontSize: 'clamp(1.6rem, 5vw, 2.4rem)' }}>
         #SakshiKoMilaKinara
@@ -80,7 +94,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
   return (
     <>
       <EnvelopeIntro />
-      <SiteHeader audience={audience} />
+      <SiteHeader audience={audience} onCTAClick={!isBride ? scrollToTravelDetails : undefined} />
 
       <main>
         <Hero onCTAClick={scrollToTravelDetails} audience={audience} />
@@ -104,13 +118,13 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
             <SectionThread />
             <TravelReminder onCTAClick={scrollToTravelDetails} />
             <SectionThread />
-            <TravelGuidance />
+            <TravelGuidance onCTAClick={scrollToTravelDetails} />
             <SectionThread />
             <TravelDetailsSection />
           </>
         )}
 
-        <Footer audience={audience} />
+        <Footer audience={audience} onCTAClick={!isBride ? scrollToTravelDetails : undefined} />
         {!isBride && <StickyCTA onCTAClick={scrollToTravelDetails} />}
       </main>
     </>

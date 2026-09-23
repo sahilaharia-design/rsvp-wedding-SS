@@ -7,7 +7,10 @@ import { useLang } from '@/contexts/Language'
 /**
  * Groom-only. Never mounted on a bride page (not just hidden) — the bride
  * experience has no travel deadline anywhere, and a sticky bar bound to
- * onCTAClick's travel-details scroll target has no meaning there.
+ * onCTAClick's travel-details scroll target has no meaning there. Shown on
+ * both mobile and desktop — travel confirmation is the one thing every
+ * groom-side guest needs to do, so the nudge should follow them everywhere
+ * they scroll, not just on small screens.
  */
 export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
   const [inTravelSection, setInTravelSection] = useState(false)
@@ -61,19 +64,21 @@ export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
           transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as const }}
-          className="fixed bottom-0 left-0 right-0 z-50 px-6 pt-3 md:hidden"
+          className="fixed bottom-0 left-0 right-0 z-50 px-6 pt-3"
           style={{
             paddingBottom: 'max(1.5rem, calc(env(safe-area-inset-bottom) + 0.75rem))',
             background: 'linear-gradient(to top, #FAF6F0 70%, transparent)',
           }}
         >
-          <button
-            onClick={onCTAClick}
-            className="shimmer-btn w-full py-5 bg-burgundy text-paper-light font-sans uppercase shadow-lg hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm block text-center"
-            style={{ fontSize: '0.95rem', letterSpacing: '0.25em' }}
-          >
-            {t.groomPrimaryCTA}
-          </button>
+          <div className="max-w-xs md:mx-auto">
+            <button
+              onClick={onCTAClick}
+              className="shimmer-btn w-full py-5 md:py-4 bg-burgundy text-paper-light font-sans uppercase shadow-lg hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm block text-center"
+              style={{ fontSize: '0.95rem', letterSpacing: '0.25em' }}
+            >
+              {t.groomPrimaryCTA}
+            </button>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
