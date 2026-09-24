@@ -25,6 +25,7 @@ export const strings = {
     // Audience — bride
     bridePrimaryCTA:   'Explore Our Celebrations',
     brideSecondaryCTA: 'Download Themes & What to Wear',
+    wardrobeExploreCTA: 'Explore Themes & What to Wear',
     brideEyebrow:      'The Celebrations',
     brideDownloadLabel: 'Download the Guest Guide',
 
@@ -116,6 +117,7 @@ export const strings = {
 
     bridePrimaryCTA:   'हमारे उत्सव देखें',
     brideSecondaryCTA: 'थीम्स और पहनावा डाउनलोड करें',
+    wardrobeExploreCTA: 'थीम्स और पहनावा देखें',
     brideEyebrow:      'उत्सव',
     brideDownloadLabel: 'गेस्ट गाइड डाउनलोड करें',
 
@@ -202,6 +204,7 @@ export const strings = {
 
     bridePrimaryCTA:   'અમારા ઉત્સવો જુઓ',
     brideSecondaryCTA: 'થીમ્સ અને પોશાક ડાઉનલોડ કરો',
+    wardrobeExploreCTA: 'થીમ્સ અને પોશાક જુઓ',
     brideEyebrow:      'ઉત્સવો',
     brideDownloadLabel: 'ગેસ્ટ ગાઇડ ડાઉનલોડ કરો',
 

@@ -78,7 +78,7 @@ function WardrobeCTA({ audience }: { audience: Audience }) {
       <Link href={themesRoute}
         className="shimmer-btn inline-block px-8 py-3.5 border-2 border-burgundy text-burgundy font-sans uppercase hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
         style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}>
-        {t.brideSecondaryCTA}
+        {t.wardrobeExploreCTA}
       </Link>
     </section>
   )
