@@ -22,6 +22,12 @@ export const strings = {
     rootGroomChoiceBody: 'Confirm your travel details and explore the celebrations.',
     rootContinueAs:    'Continue as {name} →',
 
+    // Countdown (Hero)
+    countdownDays:     'Days',
+    countdownHours:    'Hours',
+    countdownMinutes:  'Min',
+    countdownSeconds:  'Sec',
+
     // Audience — bride
     bridePrimaryCTA:   'Explore Our Celebrations',
     brideSecondaryCTA: 'Download Themes & What to Wear',
@@ -115,6 +121,11 @@ export const strings = {
     rootGroomChoiceBody: 'अपनी यात्रा विवरण की पुष्टि करें और उत्सव देखें।',
     rootContinueAs:    '{name} के रूप में जारी रखें →',
 
+    countdownDays:     'दिन',
+    countdownHours:    'घंटे',
+    countdownMinutes:  'मिनट',
+    countdownSeconds:  'सेकंड',
+
     bridePrimaryCTA:   'हमारे उत्सव देखें',
     brideSecondaryCTA: 'थीम्स और पहनावा डाउनलोड करें',
     wardrobeExploreCTA: 'थीम्स और पहनावा देखें',
@@ -201,6 +212,11 @@ export const strings = {
     rootGroomChoice:   'ડૉ. સહિલના મહેમાનો',
     rootGroomChoiceBody: 'તમારી મુસાફરીની વિગતોની પુષ્ટિ કરો અને ઉત્સવો જુઓ.',
     rootContinueAs:    '{name} તરીકે ચાલુ રાખો →',
+
+    countdownDays:     'દિવસ',
+    countdownHours:    'કલાક',
+    countdownMinutes:  'મિનિટ',
+    countdownSeconds:  'સેકન્ડ',
 
     bridePrimaryCTA:   'અમારા ઉત્સવો જુઓ',
     brideSecondaryCTA: 'થીમ્સ અને પોશાક ડાઉનલોડ કરો',

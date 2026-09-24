@@ -33,7 +33,7 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
       <div className="max-w-6xl mx-auto px-5 md:px-14 py-3.5 flex items-center justify-between">
         <Link
           href={AUDIENCE_CONFIG[audience].route}
-          className="font-display text-burgundy hover:opacity-80 transition-opacity flex-shrink-0"
+          className={`font-display hover:opacity-80 transition-colors flex-shrink-0 ${scrolled ? 'text-burgundy' : 'text-paper-light'}`}
           style={{ fontSize: '1.3rem' }}
         >
           S&nbsp;&amp;&nbsp;S
@@ -51,7 +51,9 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
           )}
           <Link
             href={AUDIENCE_CONFIG[other].route}
-            className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-ink/8 font-sans text-[10px] md:text-[11px] tracking-wide text-ink/60 hover:text-ink transition-colors flex-shrink-0"
+            className={`px-2.5 py-1 md:px-3 md:py-1.5 rounded-full font-sans text-[10px] md:text-[11px] tracking-wide transition-colors flex-shrink-0 ${
+              scrolled ? 'bg-ink/8 text-ink/60 hover:text-ink' : 'bg-black/25 backdrop-blur-sm text-white/70 hover:text-white/90'
+            }`}
           >
             {other === 'bride' ? t.switchToBride : t.switchToGroom}
           </Link>

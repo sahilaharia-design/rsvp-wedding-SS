@@ -8,6 +8,7 @@ import { useLang } from '@/contexts/Language'
 import type { Audience } from '@/lib/audience'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
 import { willShowEnvelopeIntro, ENVELOPE_SEQUENCE_MS } from '@/lib/envelopeIntro'
+import Countdown from '@/components/Countdown'
 
 interface HeroProps {
   onCTAClick: () => void
@@ -37,115 +38,134 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
     'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
 
   return (
-    <section id="hero" className="relative bg-paper overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 md:px-14 pt-32 pb-14 md:pt-32 md:pb-20">
-        <div className="grid md:grid-cols-[58%_1fr] gap-10 md:gap-14 items-center">
-
-          {/* ── Photo — a cinematic clip-path wipe reveal on first paint, then
-                a slow Ken Burns drift. Never touches the crop/face framing
-                itself (scale/clip only, object-position untouched). ── */}
-          <motion.div
-            className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden"
-            style={{ border: '3px solid var(--thread-border, #D8C6AD)', boxShadow: '0 18px 44px rgba(48,54,50,0.14)' }}
-            initial={{ clipPath: 'inset(0 100% 0 0)' }}
-            animate={{ clipPath: 'inset(0 0% 0 0)' }}
-            transition={{ duration: 1.1, delay: introDelay, ease: [0.65, 0, 0.35, 1] }}
-          >
-            {!imgError ? (
-              <div className="absolute inset-0 ken-burns">
-                <Image
-                  src="/photos/couple-closeup.jpg"
-                  alt="Sakshi and Dr. Sahil, foreheads together, smiling"
-                  fill priority
-                  sizes="(max-width: 768px) 100vw, 58vw"
-                  className="object-cover"
-                  style={{ objectPosition: '50% 40%' }}
-                  onError={() => setImgError(true)}
-                />
-              </div>
-            ) : (
-              <div className="absolute inset-0" style={{ background: placeholderBg }} />
-            )}
-            {/* One-shot light sweep across the photo as it reveals */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.5) 48%, transparent 65%)' }}
-              initial={{ x: '-120%' }}
-              animate={{ x: '120%' }}
-              transition={{ duration: 1.1, delay: introDelay + 0.15, ease: [0.4, 0, 0.2, 1] }}
+    <section id="hero" className="relative min-h-[100svh] overflow-hidden bg-ink">
+      {/* ── Full-bleed photo — a cinematic clip-path wipe reveal on first
+            paint, then a slow Ken Burns drift. Never touches the crop/face
+            framing itself (scale/clip only, object-position untouched). ── */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ clipPath: 'inset(0 100% 0 0)' }}
+        animate={{ clipPath: 'inset(0 0% 0 0)' }}
+        transition={{ duration: 1.1, delay: introDelay, ease: [0.65, 0, 0.35, 1] }}
+      >
+        {!imgError ? (
+          <div className="absolute inset-0 ken-burns">
+            <Image
+              src="/photos/couple-closeup.jpg"
+              alt="Sakshi and Dr. Sahil, foreheads together, smiling"
+              fill priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: '50% 35%' }}
+              onError={() => setImgError(true)}
             />
+          </div>
+        ) : (
+          <div className="absolute inset-0" style={{ background: placeholderBg }} />
+        )}
+
+        {/* Legibility gradient — heavy at the bottom where the text sits,
+            clear through the middle so the photo still reads, and a bit
+            more coverage at the very top so the always-transparent header
+            (logo, switch-audience pill) stays readable regardless of what
+            part of the photo lands behind it. */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(to top, rgba(20,16,14,0.92) 0%, rgba(20,16,14,0.55) 38%, rgba(20,16,14,0.05) 62%, rgba(20,16,14,0.48) 100%)' }} />
+
+        {/* One-shot light sweep across the photo as it reveals */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.35) 48%, transparent 65%)' }}
+          initial={{ x: '-120%' }}
+          animate={{ x: '120%' }}
+          transition={{ duration: 1.1, delay: introDelay + 0.15, ease: [0.4, 0, 0.2, 1] }}
+        />
+      </motion.div>
+
+      {/* ── Content — anchored to the bottom of the full-height frame ── */}
+      <div className="relative z-10 min-h-[100svh] flex flex-col justify-end max-w-6xl mx-auto px-6 md:px-14 pt-28 pb-14 md:pb-20">
+        <motion.div initial="hidden" animate="visible">
+          <motion.p variants={fade(introDelay + 0.25)}
+            className="font-sans uppercase text-gold mb-4"
+            style={{ fontSize: '0.85rem', letterSpacing: '0.3em' }}>
+            {isBride ? t.brideEyebrow : t.groomEyebrow}
+          </motion.p>
+
+          <motion.h1 variants={fade(introDelay + 0.3)}
+            className="font-serif leading-[1.05] text-paper-light mb-4"
+            style={{ fontSize: 'clamp(2.6rem, 7vw, 5rem)' }}>
+            {t.namesLine}
+          </motion.h1>
+
+          <motion.p variants={fade(introDelay + 0.35)}
+            className="font-sans text-paper-light/85 mb-9"
+            style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em' }}>
+            {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
+          </motion.p>
+
+          <motion.div variants={fade(introDelay + 0.4)} className="mb-9">
+            <Countdown light />
           </motion.div>
 
-          {/* ── Text — each child's fade() sets its own transition.delay,
-                which in Framer Motion takes precedence over a parent
-                variant's staggerChildren/delayChildren, so introDelay has
-                to be added directly into every child's own delay here for
-                it to actually hold the stagger back. ── */}
-          <motion.div initial="hidden" animate="visible">
-            <motion.p variants={fade(introDelay + 0.25)}
-              className="font-sans uppercase text-burgundy/80 mb-4"
-              style={{ fontSize: '0.85rem', letterSpacing: '0.3em' }}>
-              {isBride ? t.brideEyebrow : t.groomEyebrow}
-            </motion.p>
-
-            <motion.h1 variants={fade(introDelay + 0.3)}
-              className="font-serif leading-[1.1] text-ink mb-3"
-              style={{ fontSize: 'clamp(2.1rem, 5vw, 3.4rem)' }}>
-              {t.namesLine}
-            </motion.h1>
-
-            <motion.p variants={fade(introDelay + 0.35)}
-              className="font-sans text-stone mb-8"
-              style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em' }}>
-              {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
-            </motion.p>
-
-            <motion.div variants={fade(introDelay + 0.4)} className="flex flex-col items-start gap-4">
-              {isBride ? (
-                <>
-                  <Link
-                    href={AUDIENCE_CONFIG.bride.themesRoute}
-                    className="shimmer-btn px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm inline-block text-center"
-                    style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
-                  >
-                    {t.bridePrimaryCTA}
-                  </Link>
-                  <a
-                    href="#wardrobe"
-                    className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
-                    style={{ fontSize: '0.95rem' }}
-                  >
-                    {t.whatToWearShort} &rarr;
-                  </a>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={onCTAClick}
-                    className="shimmer-btn px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
-                    style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
-                  >
-                    {t.groomPrimaryCTA}
-                  </button>
-                  <Link
-                    href={AUDIENCE_CONFIG.groom.themesRoute}
-                    className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
-                    style={{ fontSize: '0.95rem' }}
-                  >
-                    {t.groomSecondaryCTA} &rarr;
-                  </Link>
-                </>
-              )}
-            </motion.div>
-
-            <motion.h2 variants={fade(introDelay + 0.5)}
-              className="font-display gold-glint text-burgundy leading-none mt-10 break-words"
-              style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word' }}>
-              #SakshiKoMilaKinara
-            </motion.h2>
+          <motion.div variants={fade(introDelay + 0.45)} className="flex flex-col items-start gap-4">
+            {isBride ? (
+              <>
+                <Link
+                  href={AUDIENCE_CONFIG.bride.themesRoute}
+                  className="shimmer-btn shadow-xl px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm inline-block text-center"
+                  style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
+                >
+                  {t.bridePrimaryCTA}
+                </Link>
+                <a
+                  href="#wardrobe"
+                  className="font-sans text-paper-light/90 underline decoration-gold/60 underline-offset-4 hover:text-paper-light transition-colors"
+                  style={{ fontSize: '0.95rem' }}
+                >
+                  {t.whatToWearShort} &rarr;
+                </a>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={onCTAClick}
+                  className="shimmer-btn shadow-xl px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+                  style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}
+                >
+                  {t.groomPrimaryCTA}
+                </button>
+                <Link
+                  href={AUDIENCE_CONFIG.groom.themesRoute}
+                  className="font-sans text-paper-light/90 underline decoration-gold/60 underline-offset-4 hover:text-paper-light transition-colors"
+                  style={{ fontSize: '0.95rem' }}
+                >
+                  {t.groomSecondaryCTA} &rarr;
+                </Link>
+              </>
+            )}
           </motion.div>
-        </div>
+
+          <motion.h2 variants={fade(introDelay + 0.55)}
+            className="font-display gold-glint text-paper-light leading-none mt-10 break-words"
+            style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word' }}>
+            #SakshiKoMilaKinara
+          </motion.h2>
+        </motion.div>
       </div>
+
+      {/* ── Scroll cue ── */}
+      <motion.button
+        onClick={() => window.scrollTo({ top: window.innerHeight * 0.92, behavior: 'smooth' })}
+        aria-label="Scroll down"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: introDelay + 1.2 }}
+        className="gentle-float absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 text-paper-light/70 hover:text-paper-light transition-colors"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </motion.button>
     </section>
   )
 }
