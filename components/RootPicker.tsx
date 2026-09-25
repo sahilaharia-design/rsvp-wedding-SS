@@ -5,6 +5,7 @@
 // must never override an explicit invitation link, so this page simply
 // doesn't read any stored preference at all.
 import Link from 'next/link'
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { useLang } from '@/contexts/Language'
@@ -14,6 +15,15 @@ const EASE = [0.25, 0.1, 0.25, 1] as const
 
 export default function RootPicker() {
   const { t } = useLang()
+
+  // The makeup guide PDF's Mehndi button was printed with the old root
+  // link (sakshisahil.com/#mehndi-rsvp) — forward it to the real form so
+  // that already-printed/downloaded copies keep working.
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#mehndi-rsvp') {
+      window.location.replace('/groom#mehndi-rsvp')
+    }
+  }, [])
 
   return (
     <main className="min-h-screen bg-paper flex flex-col">

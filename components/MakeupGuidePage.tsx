@@ -1,0 +1,70 @@
+'use client'
+
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useLang } from '@/contexts/Language'
+import { MAKEUP_GUIDE_PDF_PATH } from '@/lib/audience'
+
+const EASE = [0.25, 0.1, 0.25, 1] as const
+
+// Groom-side only route (/groom/makeup) — never linked from /bride. The PDF
+// itself is the actual salon directory (contacts, maps, Instagram links);
+// this page only introduces it and hands off to Open/Download, per direct
+// instruction not to hand-recreate an unverified directory on the site.
+export default function MakeupGuidePage() {
+  const { t } = useLang()
+
+  return (
+    <main className="min-h-screen bg-paper">
+      <nav className="sticky top-0 z-40 bg-paper/95 backdrop-blur border-b border-thread-border/60">
+        <div className="max-w-3xl mx-auto px-6 md:px-14 py-4 flex items-center justify-between">
+          <Link href="/groom" className="font-display text-burgundy" style={{ fontSize: '1.4rem' }}>
+            S&nbsp;&amp;&nbsp;S
+          </Link>
+          <LanguageSwitcher variant="light" />
+        </div>
+      </nav>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: EASE }}
+        className="max-w-2xl mx-auto px-7 md:px-14 py-14 md:py-20 text-center"
+      >
+        <p className="font-sans uppercase text-gold mb-4" style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}>
+          {t.makeupEyebrow}
+        </p>
+        <h1 className="font-serif text-ink mb-6" style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)' }}>
+          {t.makeupHeading}
+        </h1>
+        <p className="font-sans leading-[1.85] text-stone mb-8" style={{ fontSize: '1.05rem' }}>
+          {t.makeupBody1}
+        </p>
+
+        <div className="rounded-2xl border-2 border-thread-border/60 bg-blush/15 p-7 mb-8 text-left">
+          <p className="font-serif text-ink mb-3" style={{ fontSize: '1.15rem' }}>
+            {t.makeupTimingHeading}
+          </p>
+          <p className="font-sans leading-[1.8] text-stone" style={{ fontSize: '0.98rem' }}>
+            {t.makeupTimingBody}
+          </p>
+        </div>
+
+        <a href={MAKEUP_GUIDE_PDF_PATH} target="_blank" rel="noopener noreferrer"
+          className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm mb-6"
+          style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}>
+          {t.makeupOpenBtn}
+        </a>
+
+        <p className="font-sans text-stone/70 italic mb-10" style={{ fontSize: '0.85rem' }}>
+          {t.makeupDisclaimer}
+        </p>
+
+        <Link href="/groom" className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors" style={{ fontSize: '0.92rem' }}>
+          &larr; {t.navHome}
+        </Link>
+      </motion.div>
+    </main>
+  )
+}

@@ -10,6 +10,8 @@ import ChaptersPreview from '@/components/ChaptersPreview'
 import PersonalInterlude from '@/components/PersonalInterlude'
 import TravelGuidance from '@/components/TravelGuidance'
 import TravelDetailsSection from '@/components/TravelDetailsSection'
+import LovelyLadiesSection from '@/components/LovelyLadiesSection'
+import MehndiRSVPSection from '@/components/MehndiRSVPSection'
 import StickyCTA from '@/components/StickyCTA'
 import SiteHeader from '@/components/SiteHeader'
 import SectionThread from '@/components/SectionThread'
@@ -119,6 +121,10 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
             <TravelGuidance onCTAClick={scrollToTravelDetails} />
             <SectionThread />
             <TravelDetailsSection />
+            <SectionThread />
+            <LovelyLadiesSection />
+            <SectionThread />
+            <MehndiRSVPSection />
           </>
         )}
 

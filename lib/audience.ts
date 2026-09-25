@@ -11,8 +11,11 @@ interface AudienceConfig {
 }
 
 export const AUDIENCE_CONFIG: Record<Audience, AudienceConfig> = {
-  bride: { route: '/bride', themesRoute: '/bride/themes', pdfPath: '/guides/bride-guide.pdf', travelEnabled: false },
-  groom: { route: '/groom', themesRoute: '/groom/themes', pdfPath: '/guides/groom-guide.pdf', travelEnabled: true },
+  bride: { route: '/bride', themesRoute: '/bride/themes', pdfPath: '/guides/bride-guide-v2.pdf', travelEnabled: false },
+  groom: { route: '/groom', themesRoute: '/groom/themes', pdfPath: '/guides/groom-guide-v2.pdf', travelEnabled: true },
 }
+
+// Groom-only, "for the lovely ladies" guide — never referenced from /bride.
+export const MAKEUP_GUIDE_PDF_PATH = '/guides/makeup-guide.pdf'
 
 export const OTHER_AUDIENCE: Record<Audience, Audience> = { bride: 'groom', groom: 'bride' }

@@ -134,6 +134,13 @@ export default function ThemesPageClient({ audience }: { audience: Audience }) {
                 className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm">
                 {t.groomPrimaryCTA}
               </Link>
+              <div className="mt-5">
+                <a href={AUDIENCE_CONFIG.groom.pdfPath} target="_blank" rel="noopener noreferrer"
+                  className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
+                  style={{ fontSize: '0.92rem' }}>
+                  {t.groomDownloadLabel}
+                </a>
+              </div>
             </>
           )}
           <div className="mt-6">

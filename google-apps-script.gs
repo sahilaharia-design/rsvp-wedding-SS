@@ -30,11 +30,31 @@
  * "Guest Names" into cell K1 so the column is labelled. No other columns
  * move or change. If you skip this, the data still saves correctly — the
  * column is just unlabelled until you add the header.
+ *
+ * UPDATE — Mehndi RSVP (groom-side "for the lovely ladies" section)
+ * ────────────────────────────────────────────────────────────────────────
+ * Adds a new 'mehndi_rsvp' action, writing one row per named guest into a
+ * new "Mehndi RSVP" tab (auto-created on first submission, same as every
+ * other tab this script manages) — entirely separate from Travel Details
+ * and from salon bookings, per direct instruction. Re-paste this whole
+ * file into the same Apps Script project and redeploy (Deploy → Manage
+ * deployments → pencil icon → New version) — the existing /exec URL and
+ * TRAVEL_APPS_SCRIPT_URL env var stay the same, no new setup needed.
+ *
+ * Usable counts for planning the afternoon — paste any of these into an
+ * empty cell on the "Mehndi RSVP" tab once it exists:
+ *   Total guests named:  =COUNTA(D2:D)
+ *   Joining:              =COUNTIF(E2:E,"joining")
+ *   Unable to join:       =COUNTIF(E2:E,"unable")
+ *   Not sure yet:         =COUNTIF(E2:E,"not_sure")
+ *   One hand:             =COUNTIF(F2:F,"one_hand")
+ *   Both hands:           =COUNTIF(F2:F,"both_hands")
  */
 
 const SPREADSHEET_ID = '1SQHdH67JLTLATJyyARYHhIli3nBrg-0PtMPNSEGiTcU' // "Guest Confirmations" sheet
 const ID_DOCS_FOLDER_ID = '1FQUpbA-mxWc1BOfy182xMW3sHj4bx52E'         // "Guest confirmations" Drive folder
 const TRAVEL_SHEET_NAME = 'Travel Details'
+const MEHNDI_SHEET_NAME = 'Mehndi RSVP'
 
 function doPost(e) {
   try {
@@ -43,6 +63,7 @@ function doPost(e) {
 
     if (action === 'travel_info') return handleTravelInfo_(payload)
     if (action === 'travel_file') return handleTravelFile_(payload)
+    if (action === 'mehndi_rsvp') return handleMehndiRsvp_(payload)
 
     return jsonResponse_({ ok: false, error: 'Unknown action: ' + action })
   } catch (err) {
@@ -126,6 +147,29 @@ function handleTravelFile_(payload) {
       cell.setValue(existing ? existing + ', ' + fileUrl : fileUrl)
     }
     return jsonResponse_({ ok: true, url: fileUrl })
+  } finally {
+    lock.releaseLock()
+  }
+}
+
+// ── Mehndi RSVP (one row per named guest, grouped by group_id) ────────
+function handleMehndiRsvp_(payload) {
+  const lock = LockService.getScriptLock()
+  lock.waitLock(30000)
+  try {
+    const sheet = getOrCreateSheet_(MEHNDI_SHEET_NAME,
+      ['Timestamp', 'Submitted By', 'Submitted Mobile', 'Guest Name', 'Status', 'Hand Preference', 'Group ID'])
+
+    const guests = payload.guests || []
+    const submittedBy = payload.submitted_by_name || ''
+    const submittedMobile = payload.submitted_by_mobile || ''
+    const groupId = payload.group_id || Utilities.getUuid()
+    const now = new Date()
+
+    guests.forEach(function (g) {
+      sheet.appendRow([now, submittedBy, submittedMobile, g.name || '', g.status || '', g.hand_preference || '', groupId])
+    })
+    return jsonResponse_({ ok: true })
   } finally {
     lock.releaseLock()
   }
