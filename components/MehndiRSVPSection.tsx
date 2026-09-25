@@ -63,7 +63,6 @@ export default function MehndiRSVPSection() {
   const [submittedByName, setSubmittedByName] = useState('')
   const [submittedByMobile, setSubmittedByMobile] = useState('')
   const [guests, setGuests] = useState<Guest[]>([newGuest()])
-  const [reviewing, setReviewing] = useState(false)
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const isSubmittingRef = useRef(false)
@@ -78,9 +77,9 @@ export default function MehndiRSVPSection() {
     setGuests((prev) => (prev.length > 1 ? prev.filter((g) => g.id !== id) : prev))
   }
 
-  function goToReview(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!submittedByName.trim() || !submittedByMobile.trim()) {
+    if (!submittedByName.trim()) {
       setErrorMsg(t.mehndiMissingNameError)
       return
     }
@@ -90,11 +89,6 @@ export default function MehndiRSVPSection() {
         return
       }
     }
-    setErrorMsg('')
-    setReviewing(true)
-  }
-
-  async function handleSubmit() {
     if (isSubmittingRef.current) return
     isSubmittingRef.current = true
     setFormState('submitting')
@@ -166,120 +160,77 @@ export default function MehndiRSVPSection() {
                     {t.mehndiIntro}
                   </p>
 
-                  {!reviewing ? (
-                    <form onSubmit={goToReview} className="space-y-8">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className={labelCls} style={labelStyle}>{t.mehndiYourName}</label>
-                          <input type="text" value={submittedByName} onChange={(e) => setSubmittedByName(e.target.value)}
-                            required placeholder="Your name" className={inputCls} style={inputStyle} />
-                        </div>
-                        <div className="space-y-2">
-                          <label className={labelCls} style={labelStyle}>{t.mehndiYourMobile}</label>
-                          <input type="tel" value={submittedByMobile} onChange={(e) => setSubmittedByMobile(e.target.value)}
-                            required placeholder="10-digit mobile number" className={inputCls} style={inputStyle} />
-                        </div>
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>{t.mehndiYourName}</label>
+                        <input type="text" value={submittedByName} onChange={(e) => setSubmittedByName(e.target.value)}
+                          required placeholder="Your name" className={inputCls} style={inputStyle} />
                       </div>
-
-                      <div className="space-y-6">
-                        {guests.map((g, idx) => (
-                          <div key={g.id} className="rounded-2xl border-2 border-thread-border/50 bg-white/50 p-5 space-y-4">
-                            <div className="flex items-center justify-between">
-                              <span className="font-sans uppercase text-burgundy" style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}>
-                                {t.mehndiGuestNameLabel} {idx + 1}
-                              </span>
-                              {guests.length > 1 && (
-                                <button type="button" onClick={() => removeGuest(g.id)}
-                                  className="font-sans text-charcoal/50 hover:text-burgundy transition-colors" style={{ fontSize: '0.85rem' }}>
-                                  {t.mehndiRemoveGuest} ✕
-                                </button>
-                              )}
-                            </div>
-
-                            <input type="text" value={g.name} onChange={(e) => updateGuest(g.id, { name: e.target.value })}
-                              required placeholder={t.mehndiGuestNameLabel} className={inputCls} style={inputStyle} />
-
-                            <div className="space-y-2">
-                              <label className={labelCls} style={labelStyle}>{t.mehndiStatusLabel}</label>
-                              <SegmentedControl
-                                options={statusOptions}
-                                value={g.status}
-                                onChange={(v) => updateGuest(g.id, { status: v, hand: v === 'joining' ? g.hand : null })}
-                                layoutId={`status-${g.id}`}
-                              />
-                            </div>
-
-                            {g.status === 'joining' && (
-                              <div className="space-y-2">
-                                <label className={labelCls} style={labelStyle}>{t.mehndiHandLabel}</label>
-                                <SegmentedControl
-                                  options={handOptions}
-                                  value={g.hand}
-                                  onChange={(v) => updateGuest(g.id, { hand: v })}
-                                  layoutId={`hand-${g.id}`}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-
-                      <button type="button" onClick={addGuest}
-                        className="font-sans uppercase text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-[#5c0a1c] transition-colors"
-                        style={{ fontSize: '0.82rem', letterSpacing: '0.14em' }}>
-                        {t.mehndiAddGuest}
-                      </button>
-
-                      {errorMsg && <p className="font-sans text-rose-700" style={{ fontSize: '0.95rem' }}>{errorMsg}</p>}
-
-                      <button type="submit"
-                        className="shimmer-btn w-full py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
-                        style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
-                        {t.mehndiReviewBtn}
-                      </button>
-                    </form>
-                  ) : (
-                    <div className="space-y-8">
-                      <p className="font-serif italic text-charcoal" style={{ fontSize: '1.2rem' }}>
-                        {t.mehndiReviewHeading}
-                      </p>
-                      <p className="font-sans text-stone" style={{ fontSize: '0.95rem' }}>{t.mehndiReviewIntro}</p>
-
-                      <div className="rounded-2xl border-2 border-thread-border/50 bg-white/60 p-5 space-y-1">
-                        <p className="font-sans text-charcoal" style={{ fontSize: '1rem' }}>{submittedByName}</p>
-                        <p className="font-sans text-stone" style={{ fontSize: '0.9rem' }}>{submittedByMobile}</p>
-                      </div>
-
-                      <div className="space-y-3">
-                        {guests.map((g) => (
-                          <div key={g.id} className="flex items-center justify-between rounded-xl border border-thread-border/50 bg-white/60 px-4 py-3">
-                            <div>
-                              <p className="font-sans text-charcoal" style={{ fontSize: '0.98rem' }}>{g.name}</p>
-                              <p className="font-sans text-stone" style={{ fontSize: '0.85rem' }}>
-                                {statusOptions.find((o) => o.value === g.status)?.label}
-                                {g.status === 'joining' && g.hand && ` · ${handOptions.find((o) => o.value === g.hand)?.label}`}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="flex flex-col gap-3">
-                        {errorMsg && formState === 'error' && (
-                          <p className="font-sans text-rose-700" style={{ fontSize: '0.95rem' }}>{errorMsg}</p>
-                        )}
-                        <button type="button" onClick={handleSubmit} disabled={formState === 'submitting'}
-                          className="shimmer-btn w-full py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
-                          style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
-                          {formState === 'submitting' ? t.mehndiSending : t.mehndiSubmitBtn}
-                        </button>
-                        <button type="button" onClick={() => setReviewing(false)}
-                          className="font-sans uppercase text-charcoal/60 hover:text-burgundy transition-colors" style={{ fontSize: '0.8rem', letterSpacing: '0.14em' }}>
-                          {t.mehndiEditBtn}
-                        </button>
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>{t.mehndiYourMobile}</label>
+                        <input type="tel" value={submittedByMobile} onChange={(e) => setSubmittedByMobile(e.target.value)}
+                          placeholder="10-digit mobile number" className={inputCls} style={inputStyle} />
                       </div>
                     </div>
-                  )}
+
+                    <div className="space-y-6">
+                      {guests.map((g, idx) => (
+                        <div key={g.id} className="rounded-2xl border-2 border-thread-border/50 bg-white/50 p-5 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="font-sans uppercase text-burgundy" style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}>
+                              {t.mehndiGuestNameLabel} {idx + 1}
+                            </span>
+                            {guests.length > 1 && (
+                              <button type="button" onClick={() => removeGuest(g.id)}
+                                className="font-sans text-charcoal/50 hover:text-burgundy transition-colors" style={{ fontSize: '0.85rem' }}>
+                                {t.mehndiRemoveGuest} ✕
+                              </button>
+                            )}
+                          </div>
+
+                          <input type="text" value={g.name} onChange={(e) => updateGuest(g.id, { name: e.target.value })}
+                            required placeholder={t.mehndiGuestNameLabel} className={inputCls} style={inputStyle} />
+
+                          <div className="space-y-2">
+                            <label className={labelCls} style={labelStyle}>{t.mehndiStatusLabel}</label>
+                            <SegmentedControl
+                              options={statusOptions}
+                              value={g.status}
+                              onChange={(v) => updateGuest(g.id, { status: v, hand: v === 'joining' ? g.hand : null })}
+                              layoutId={`status-${g.id}`}
+                            />
+                          </div>
+
+                          {g.status === 'joining' && (
+                            <div className="space-y-2">
+                              <label className={labelCls} style={labelStyle}>{t.mehndiHandLabel}</label>
+                              <SegmentedControl
+                                options={handOptions}
+                                value={g.hand}
+                                onChange={(v) => updateGuest(g.id, { hand: v })}
+                                layoutId={`hand-${g.id}`}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <button type="button" onClick={addGuest}
+                      className="font-sans uppercase text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-[#5c0a1c] transition-colors"
+                      style={{ fontSize: '0.82rem', letterSpacing: '0.14em' }}>
+                      {t.mehndiAddGuest}
+                    </button>
+
+                    {errorMsg && <p className="font-sans text-rose-700" style={{ fontSize: '0.95rem' }}>{errorMsg}</p>}
+
+                    <button type="submit" disabled={formState === 'submitting'}
+                      className="shimmer-btn w-full py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
+                      style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
+                      {formState === 'submitting' ? t.mehndiSending : t.mehndiSubmitBtn}
+                    </button>
+                  </form>
                 </motion.div>
               )}
             </AnimatePresence>

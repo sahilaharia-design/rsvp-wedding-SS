@@ -46,12 +46,17 @@ export async function POST(request: NextRequest) {
 
   const { submitted_by_name, submitted_by_mobile, guests } = body
 
-  if (!submitted_by_name?.trim() || !submitted_by_mobile?.trim()) {
-    return NextResponse.json({ error: 'Please share your name and mobile number.' }, { status: 400 })
+  if (!submitted_by_name?.trim()) {
+    return NextResponse.json({ error: 'Please share your name.' }, { status: 400 })
   }
-  const normalisedMobile = submitted_by_mobile.replace(/\D/g, '').slice(-10)
-  if (normalisedMobile.length < 10) {
-    return NextResponse.json({ error: 'Please enter a valid mobile number.' }, { status: 400 })
+  // Mobile is optional — only validated (and normalised) when provided.
+  const rawMobile = submitted_by_mobile?.trim() ?? ''
+  let normalisedMobile = ''
+  if (rawMobile) {
+    normalisedMobile = rawMobile.replace(/\D/g, '').slice(-10)
+    if (normalisedMobile.length < 10) {
+      return NextResponse.json({ error: 'Please enter a valid mobile number, or leave it blank.' }, { status: 400 })
+    }
   }
   if (!Array.isArray(guests) || guests.length === 0) {
     return NextResponse.json({ error: 'Please add at least one guest.' }, { status: 400 })

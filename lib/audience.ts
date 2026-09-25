@@ -16,6 +16,8 @@ export const AUDIENCE_CONFIG: Record<Audience, AudienceConfig> = {
 }
 
 // Groom-only, "for the lovely ladies" guide — never referenced from /bride.
-export const MAKEUP_GUIDE_PDF_PATH = '/guides/makeup-guide.pdf'
+// Versioned filename so a re-upload never serves a stale cached copy under
+// the same URL (mirrors the bride/groom guide pattern above).
+export const MAKEUP_GUIDE_PDF_PATH = '/guides/makeup-guide-v2.pdf'
 
 export const OTHER_AUDIENCE: Record<Audience, Audience> = { bride: 'groom', groom: 'bride' }
