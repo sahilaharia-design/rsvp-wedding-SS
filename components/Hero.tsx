@@ -37,6 +37,15 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
   const placeholderBg =
     'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
 
+  // Groom hero uses a different photo (from an earlier celebration, not the
+  // wedding itself) — the object-position is tuned specifically to it: both
+  // faces sit in the upper-left-of-centre third of this particular frame,
+  // so a plain 50/50 centre crop would cut the groom's face out entirely on
+  // a narrow mobile viewport. Never reuse this position for another image.
+  const heroImage = isBride
+    ? { src: '/photos/couple-closeup.jpg', alt: 'Sakshi and Dr. Sahil, foreheads together, smiling', position: '50% 35%' }
+    : { src: '/photos/couple-celebration.webp', alt: 'Sakshi and Dr. Sahil smiling together at an earlier celebration, foreheads touching, amid floral and candlelit decor', position: '38% 28%' }
+
   return (
     <section id="hero" className="relative min-h-[100svh] overflow-hidden bg-ink">
       {/* ── Full-bleed photo — a cinematic clip-path wipe reveal on first
@@ -51,12 +60,12 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
         {!imgError ? (
           <div className="absolute inset-0 ken-burns">
             <Image
-              src="/photos/couple-closeup.jpg"
-              alt="Sakshi and Dr. Sahil, foreheads together, smiling"
+              src={heroImage.src}
+              alt={heroImage.alt}
               fill priority
               sizes="100vw"
               className="object-cover"
-              style={{ objectPosition: '50% 35%' }}
+              style={{ objectPosition: heroImage.position }}
               onError={() => setImgError(true)}
             />
           </div>
@@ -93,15 +102,23 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
 
           <motion.h1 variants={fade(introDelay + 0.3)}
             className="font-serif leading-[1.05] text-paper-light mb-4"
-            style={{ fontSize: 'clamp(2.6rem, 7vw, 5rem)' }}>
-            {t.namesLine}
+            style={{ fontSize: isBride ? 'clamp(2.6rem, 7vw, 5rem)' : 'clamp(2.1rem, 5.6vw, 3.8rem)' }}>
+            {isBride ? t.namesLine : t.weddingHeroHeading}
           </motion.h1>
 
           <motion.p variants={fade(introDelay + 0.35)}
-            className="font-sans text-paper-light/85 mb-9"
+            className={`font-sans text-paper-light/85 ${isBride ? 'mb-9' : 'mb-2'}`}
             style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em' }}>
-            {t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi
+            {isBride ? <>{t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi</> : t.groomHeroDates}
           </motion.p>
+
+          {!isBride && (
+            <motion.p variants={fade(introDelay + 0.38)}
+              className="font-sans text-gold mb-9"
+              style={{ fontSize: 'clamp(0.9rem, 1.9vw, 1.02rem)', letterSpacing: '0.02em' }}>
+              {t.groomDeadlineLine}
+            </motion.p>
+          )}
 
           <motion.div variants={fade(introDelay + 0.4)} className="mb-9">
             <Countdown light />
