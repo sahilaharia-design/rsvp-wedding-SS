@@ -10,6 +10,7 @@ import ChaptersPreview from '@/components/ChaptersPreview'
 import PersonalInterlude from '@/components/PersonalInterlude'
 import TravelGuidance from '@/components/TravelGuidance'
 import TravelDetailsSection from '@/components/TravelDetailsSection'
+import LadiesPopupTeaser from '@/components/LadiesPopupTeaser'
 import LovelyLadiesTeaser from '@/components/LovelyLadiesTeaser'
 import LadiesSignpost from '@/components/LadiesSignpost'
 import LovelyLadiesSection from '@/components/LovelyLadiesSection'
@@ -100,6 +101,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
 
       <main>
         <Hero onCTAClick={scrollToTravelDetails} audience={audience} />
+        <LadiesPopupTeaser />
 
         {isBride ? (
           <>

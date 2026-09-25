@@ -22,35 +22,9 @@ import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ENVELOPE_STORAGE_KEY as STORAGE_KEY, ENVELOPE_STAGE_MS } from '@/lib/envelopeIntro'
+import SparkleBurst from '@/components/SparkleBurst'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
-
-function SparkleBurst() {
-  const sparkles = Array.from({ length: 10 })
-  return (
-    <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-      {sparkles.map((_, i) => {
-        const angle = (i / sparkles.length) * Math.PI * 2
-        const dist = 110
-        return (
-          <motion.span
-            key={i}
-            className="absolute rounded-full"
-            style={{ width: 5, height: 5, background: '#F3D9A4', boxShadow: '0 0 8px 2px rgba(243,217,164,0.6)' }}
-            initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
-            animate={{
-              x: Math.cos(angle) * dist,
-              y: Math.sin(angle) * dist,
-              opacity: [0, 1, 0],
-              scale: [0.4, 1, 0.6],
-            }}
-            transition={{ duration: 1, ease: EASE }}
-          />
-        )
-      })}
-    </div>
-  )
-}
 
 type Stage = 'hidden' | 'sealed' | 'opening' | 'welcome' | 'leaving'
 
