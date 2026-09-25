@@ -23,6 +23,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ENVELOPE_STORAGE_KEY as STORAGE_KEY, ENVELOPE_STAGE_MS } from '@/lib/envelopeIntro'
 import SparkleBurst from '@/components/SparkleBurst'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { useLang } from '@/contexts/Language'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
@@ -158,13 +159,22 @@ export default function EnvelopeIntro() {
       )}
 
       {stage === 'sealed' && (
-        <button
-          onClick={skip}
-          className="absolute top-6 right-6 md:top-8 md:right-8 font-sans uppercase text-champagne/70 hover:text-champagne transition-colors"
-          style={{ fontSize: '0.75rem', letterSpacing: '0.2em' }}
-        >
-          {t.envelopeSkip}
-        </button>
+        <>
+          {/* Language must be choosable here — this overlay sits above the
+              site header (z-100 vs z-80), so the switcher there is
+              unreachable until the envelope is skipped or opened, and
+              language never persists across a fresh page load either. */}
+          <div className="absolute top-6 left-6 md:top-8 md:left-8">
+            <LanguageSwitcher />
+          </div>
+          <button
+            onClick={skip}
+            className="absolute top-6 right-6 md:top-8 md:right-8 font-sans uppercase text-champagne/70 hover:text-champagne transition-colors"
+            style={{ fontSize: '0.75rem', letterSpacing: '0.2em' }}
+          >
+            {t.envelopeSkip}
+          </button>
+        </>
       )}
     </motion.div>
   )
