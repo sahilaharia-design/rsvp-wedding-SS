@@ -7,7 +7,6 @@ import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import type { Audience } from '@/lib/audience'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
-import { willShowEnvelopeIntro, ENVELOPE_SEQUENCE_MS } from '@/lib/envelopeIntro'
 import Countdown from '@/components/Countdown'
 
 interface HeroProps {
@@ -22,17 +21,15 @@ const fade = (delay = 0) => ({
   visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.9, delay, ease: EASE } },
 })
 
+// Safety-net shadow so every hero text element stays readable regardless of
+// what part of the photo lands behind it — the gradient below is tuned for
+// this specific photo, but a photo swap should never make text unreadable.
+const textShadow = { textShadow: '0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.85)' }
+
 export default function Hero({ onCTAClick, audience }: HeroProps) {
   const [imgError, setImgError] = useState(false)
   const { t } = useLang()
   const isBride = audience === 'bride'
-
-  // If the envelope flourish is about to play, hold this entrance until
-  // it closes so the photo wipe and text stagger become its visible
-  // payoff, rather than finishing unseen underneath it. Read once on
-  // mount — a stale or wrong read here only ever mistimes the animation,
-  // it can never leave anything stuck unrendered.
-  const [introDelay] = useState(() => (willShowEnvelopeIntro() ? ENVELOPE_SEQUENCE_MS / 1000 : 0))
 
   const placeholderBg =
     'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
@@ -55,7 +52,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
         className="absolute inset-0"
         initial={{ clipPath: 'inset(0 100% 0 0)' }}
         animate={{ clipPath: 'inset(0 0% 0 0)' }}
-        transition={{ duration: 1.1, delay: introDelay, ease: [0.65, 0, 0.35, 1] }}
+        transition={{ duration: 1.1, ease: [0.65, 0, 0.35, 1] }}
       >
         {!imgError ? (
           <div className="absolute inset-0 ken-burns">
@@ -73,13 +70,13 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
           <div className="absolute inset-0" style={{ background: placeholderBg }} />
         )}
 
-        {/* Legibility gradient — heavy at the bottom where the text sits,
-            clear through the middle so the photo still reads, and a bit
-            more coverage at the very top so the always-transparent header
-            (logo, switch-audience pill) stays readable regardless of what
-            part of the photo lands behind it. */}
+        {/* Legibility gradient — dark through the whole zone the text sits
+            in (not just a thin band at the very bottom), so busy areas of
+            the photo — candlelight, gold drapery, floral highlights —
+            never wash the text out. Only clears in the upper third, above
+            where any hero copy ever renders. */}
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(20,16,14,0.92) 0%, rgba(20,16,14,0.55) 38%, rgba(20,16,14,0.05) 62%, rgba(20,16,14,0.48) 100%)' }} />
+          style={{ background: 'linear-gradient(to top, rgba(10,8,7,0.96) 0%, rgba(10,8,7,0.9) 22%, rgba(10,8,7,0.68) 42%, rgba(10,8,7,0.28) 60%, rgba(10,8,7,0.5) 100%)' }} />
 
         {/* One-shot light sweep across the photo as it reveals */}
         <motion.div
@@ -87,44 +84,44 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
           style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.35) 48%, transparent 65%)' }}
           initial={{ x: '-120%' }}
           animate={{ x: '120%' }}
-          transition={{ duration: 1.1, delay: introDelay + 0.15, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 1.1, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
         />
       </motion.div>
 
       {/* ── Content — anchored to the bottom of the full-height frame ── */}
       <div className="relative z-10 min-h-[100svh] flex flex-col justify-end max-w-6xl mx-auto px-6 md:px-14 pt-28 pb-14 md:pb-20">
         <motion.div initial="hidden" animate="visible">
-          <motion.p variants={fade(introDelay + 0.25)}
+          <motion.p variants={fade(0.15)}
             className="font-sans uppercase text-gold mb-4"
-            style={{ fontSize: '0.85rem', letterSpacing: '0.3em' }}>
+            style={{ fontSize: '0.85rem', letterSpacing: '0.3em', ...textShadow }}>
             {isBride ? t.brideEyebrow : t.groomEyebrow}
           </motion.p>
 
-          <motion.h1 variants={fade(introDelay + 0.3)}
+          <motion.h1 variants={fade(0.2)}
             className="font-serif leading-[1.05] text-paper-light mb-4"
-            style={{ fontSize: isBride ? 'clamp(2.6rem, 7vw, 5rem)' : 'clamp(2.1rem, 5.6vw, 3.8rem)' }}>
-            {isBride ? t.namesLine : t.weddingHeroHeading}
+            style={{ fontSize: 'clamp(2.6rem, 7vw, 5rem)', ...textShadow }}>
+            {t.namesLine}
           </motion.h1>
 
-          <motion.p variants={fade(introDelay + 0.35)}
-            className={`font-sans text-paper-light/85 ${isBride ? 'mb-9' : 'mb-2'}`}
-            style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em' }}>
-            {isBride ? <>{t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi</> : t.groomHeroDates}
+          <motion.p variants={fade(0.25)}
+            className={`font-sans text-paper-light/90 ${isBride ? 'mb-9' : 'mb-3'}`}
+            style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em', ...textShadow }}>
+            {isBride ? <>{t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi</> : t.groomHeroTagline}
           </motion.p>
 
           {!isBride && (
-            <motion.p variants={fade(introDelay + 0.38)}
-              className="font-sans text-gold mb-9"
-              style={{ fontSize: 'clamp(0.9rem, 1.9vw, 1.02rem)', letterSpacing: '0.02em' }}>
+            <motion.p variants={fade(0.3)}
+              className="inline-block font-sans text-paper-light font-medium mb-9 px-4 py-2.5 rounded-md"
+              style={{ fontSize: 'clamp(0.9rem, 1.9vw, 1.02rem)', letterSpacing: '0.01em', background: 'rgba(10,8,7,0.55)', backdropFilter: 'blur(2px)' }}>
               {t.groomDeadlineLine}
             </motion.p>
           )}
 
-          <motion.div variants={fade(introDelay + 0.4)} className="mb-9">
+          <motion.div variants={fade(0.35)} className="mb-9">
             <Countdown light />
           </motion.div>
 
-          <motion.div variants={fade(introDelay + 0.45)} className="flex flex-col items-start gap-4">
+          <motion.div variants={fade(0.4)} className="flex flex-col items-start gap-4">
             {isBride ? (
               <>
                 <Link
@@ -137,7 +134,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
                 <a
                   href="#wardrobe"
                   className="font-sans text-paper-light/90 underline decoration-gold/60 underline-offset-4 hover:text-paper-light transition-colors"
-                  style={{ fontSize: '0.95rem' }}
+                  style={{ fontSize: '0.95rem', ...textShadow }}
                 >
                   {t.whatToWearShort} &rarr;
                 </a>
@@ -154,7 +151,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
                 <Link
                   href={AUDIENCE_CONFIG.groom.themesRoute}
                   className="font-sans text-paper-light/90 underline decoration-gold/60 underline-offset-4 hover:text-paper-light transition-colors"
-                  style={{ fontSize: '0.95rem' }}
+                  style={{ fontSize: '0.95rem', ...textShadow }}
                 >
                   {t.groomSecondaryCTA} &rarr;
                 </Link>
@@ -162,9 +159,9 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
             )}
           </motion.div>
 
-          <motion.h2 variants={fade(introDelay + 0.55)}
+          <motion.h2 variants={fade(0.5)}
             className="font-display gold-glint text-paper-light leading-none mt-10 break-words"
-            style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word' }}>
+            style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word', ...textShadow }}>
             #SakshiKoMilaKinara
           </motion.h2>
         </motion.div>
@@ -176,7 +173,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
         aria-label="Scroll down"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: introDelay + 1.2 }}
+        transition={{ duration: 1, delay: 1.1 }}
         className="gentle-float absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 text-paper-light/70 hover:text-paper-light transition-colors"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">

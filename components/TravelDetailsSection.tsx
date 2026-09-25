@@ -85,6 +85,11 @@ export default function TravelDetailsSection() {
   const [fileError, setFileError] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
+  // Belt-and-suspenders against a double-click or Enter-key repeat firing
+  // handleSubmit twice before React re-renders the button's `disabled`
+  // state — this ref is synchronous, so the second call bails immediately
+  // regardless of render timing.
+  const isSubmittingRef = useRef(false)
 
   const setField = (key: keyof FieldsState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFields((prev) => ({ ...prev, [key]: e.target.value }))
@@ -113,6 +118,7 @@ export default function TravelDetailsSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (isSubmittingRef.current) return
     // Every native field is validated by the browser via `required` (it
     // will focus and explain whichever one is empty). Arrival mode is a
     // custom control, not a native input, so it needs its own check.
@@ -121,6 +127,7 @@ export default function TravelDetailsSection() {
       document.getElementById('arrival-mode-group')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
+    isSubmittingRef.current = true
     setArrivalModeError('')
     setFormState('submitting')
     setErrorMsg('')
@@ -176,6 +183,8 @@ export default function TravelDetailsSection() {
     } catch {
       setErrorMsg(t.travelDetailsError)
       setFormState('error')
+    } finally {
+      isSubmittingRef.current = false
     }
   }
 

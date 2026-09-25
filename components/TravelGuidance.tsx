@@ -33,7 +33,7 @@ export default function TravelGuidance({ onCTAClick }: { onCTAClick: () => void 
             <div className="mb-6">
               <p className="font-sans uppercase text-stone mb-2"
                 style={{ fontSize: '0.85rem', letterSpacing: '0.15em' }}>
-                Step 1 — Getting to Delhi
+                {t.stepGettingToDelhi}
               </p>
               <p className="font-sans leading-[1.85] text-stone" style={{ fontSize: '1.05rem' }}>
                 {t.travelBody1}
@@ -60,7 +60,7 @@ export default function TravelGuidance({ onCTAClick }: { onCTAClick: () => void 
             <div>
               <p className="font-sans uppercase text-stone mb-2"
                 style={{ fontSize: '0.85rem', letterSpacing: '0.15em' }}>
-                Step 2 — Once you&rsquo;re in Delhi
+                {t.stepOnceInDelhi}
               </p>
               <p className="font-sans leading-[1.85] text-stone" style={{ fontSize: '1.05rem' }}>
                 {t.travelBody2}
@@ -76,13 +76,18 @@ export default function TravelGuidance({ onCTAClick }: { onCTAClick: () => void 
             </button>
           </div>
 
-          {/* ── Decorative art (symbolic, not the booked property) ── */}
-          <div className="hidden md:block relative aspect-[4/5] rounded-2xl overflow-hidden mt-10 md:mt-0"
+          {/* ── Decorative art (symbolic, not the booked property) — the
+                source illustration is a 3:2 landscape panorama (plane →
+                train → India Gate → hotel entrance). It was previously
+                forced into a 4:5 portrait box, which cropped both ends off
+                and left mostly blank sky visible — matching the container
+                to its native aspect shows the whole illustration intact. ── */}
+          <div className="hidden md:block relative aspect-[3/2] rounded-2xl overflow-hidden mt-10 md:mt-0"
             style={{ border: '2px solid var(--thread-border, #D8C6AD)' }}>
             {!artError ? (
               <Image
                 src="/artwork/travel-delhi-welcome.jpg"
-                alt="Illustrated, symbolic welcome-to-Delhi artwork"
+                alt="Illustrated, symbolic journey from the airport, by train, past India Gate, to the hotel"
                 fill sizes="480px"
                 className="object-cover"
                 onError={() => setArtError(true)}
