@@ -34,14 +34,17 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
   const placeholderBg =
     'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
 
-  // Groom hero uses a different photo (from an earlier celebration, not the
-  // wedding itself) — the object-position is tuned specifically to it: both
-  // faces sit in the upper-left-of-centre third of this particular frame,
-  // so a plain 50/50 centre crop would cut the groom's face out entirely on
-  // a narrow mobile viewport. Never reuse this position for another image.
-  const heroImage = isBride
-    ? { src: '/photos/couple-closeup.jpg', alt: 'Sakshi and Dr. Sahil, foreheads together, smiling', position: '50% 35%' }
-    : { src: '/photos/couple-celebration.webp', alt: 'Sakshi and Dr. Sahil smiling together at an earlier celebration, foreheads touching, amid floral and candlelit decor', position: '38% 28%' }
+  // Both audiences now share the same hero photo (from an earlier
+  // celebration, not the wedding itself) — the object-position is tuned
+  // specifically to it: both faces sit in the upper-left-of-centre third of
+  // this particular frame, so a plain 50/50 centre crop would cut a face
+  // out entirely on a narrow mobile viewport. Never reuse this position for
+  // another image.
+  const heroImage = {
+    src: '/photos/couple-celebration.webp',
+    alt: 'Sakshi and Dr. Sahil smiling together, foreheads touching, amid floral and candlelit decor',
+    position: '38% 28%',
+  }
 
   return (
     <section id="hero" className="relative min-h-[100svh] overflow-hidden bg-ink">

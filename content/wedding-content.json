@@ -29,12 +29,12 @@
         "Ivory"
       ],
       "menLooks": [
-        "A sage-green floral-embroidered jacket, ivory kurta and white pants",
-        "A solid blush kurta with white pants"
+        "A sage-green kurta with ivory pants",
+        "A soft blush kurta, kept simple"
       ],
       "womenLooks": [
-        "A blush lehenga with floral embroidery and a sage dupatta",
-        "An ivory floral-print saree with a sage border"
+        "A blush lehenga with delicate floral work",
+        "An ivory floral-print saree"
       ],
       "art": "assets/artwork/chapter-01-bloom.png",
       "card": "/artwork/theme-cards/01-bloom.jpg"
@@ -59,11 +59,11 @@
       ],
       "menLooks": [
         "A classic navy tuxedo",
-        "A deep plum three-piece suit"
+        "A deep plum suit"
       ],
       "womenLooks": [
-        "A hot-pink tiered evening gown",
-        "An emerald sequinned evening gown"
+        "A ruby velvet evening gown",
+        "An emerald sequinned gown"
       ],
       "womenLooksNote": "No saree, lehenga or Indian separates for this one — gowns only.",
       "art": "assets/artwork/chapter-02-promise.png",
@@ -87,12 +87,12 @@
         "Hot pink"
       ],
       "menLooks": [
-        "A blush-pink embroidered kurta with white pants",
-        "A deeper rose kurta with white pants"
+        "A blush-pink kurta",
+        "A deeper rose kurta"
       ],
       "womenLooks": [
-        "A hot-pink embroidered salwar suit",
-        "A hot-pink saree with gold border work"
+        "A hot-pink embroidered suit",
+        "A hot-pink saree with gold detailing"
       ],
       "art": "assets/artwork/chapter-03-romance.png",
       "card": "/artwork/theme-cards/03-romance.jpg"
@@ -113,12 +113,12 @@
         "Gold"
       ],
       "menLooks": [
-        "An ivory-and-gold embroidered sherwani with a matching dupatta",
-        "An ivory bandhgala jacket with churidar"
+        "An ivory-and-gold sherwani",
+        "An ivory bandhgala jacket"
       ],
       "womenLooks": [
-        "An ivory-and-gold embroidered saree",
-        "An ivory-and-gold embroidered lehenga"
+        "An ivory-and-gold saree",
+        "An ivory-and-gold lehenga"
       ],
       "art": "assets/artwork/chapter-04-legacy.png",
       "card": "/artwork/theme-cards/04-legacy.jpg"

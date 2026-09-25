@@ -52,10 +52,26 @@ export default function MakeupGuidePage() {
         </div>
 
         <a href={MAKEUP_GUIDE_PDF_PATH} target="_blank" rel="noopener noreferrer"
-          className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm mb-6"
+          className="shimmer-btn inline-block px-9 py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm mb-4"
           style={{ fontSize: '0.82rem', letterSpacing: '0.28em' }}>
           {t.makeupOpenBtn}
         </a>
+
+        {/* The full guide shown in place — one click from the Lovely Ladies
+            card lands here with the whole PDF already visible, no second
+            click required to see the salon directory. */}
+        <div className="rounded-2xl overflow-hidden border-2 border-thread-border/60 mb-3"
+          style={{ height: 'min(82vh, 900px)', boxShadow: '0 16px 40px rgba(48,54,50,0.12)' }}>
+          <iframe
+            src={`${MAKEUP_GUIDE_PDF_PATH}#view=FitH`}
+            title="Makeup Guide"
+            className="w-full h-full"
+            style={{ border: 'none' }}
+          />
+        </div>
+        <p className="font-sans text-stone/70 mb-10" style={{ fontSize: '0.82rem' }}>
+          {t.makeupViewerCaption}
+        </p>
 
         <p className="font-sans text-stone/70 italic mb-10" style={{ fontSize: '0.85rem' }}>
           {t.makeupDisclaimer}

@@ -16,7 +16,7 @@ export default function LovelyLadiesSection() {
   const { t } = useLang()
 
   return (
-    <section ref={ref} className="bg-paper relative overflow-hidden">
+    <section id="lovely-ladies" ref={ref} className="bg-paper relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-7 md:px-14 py-14 md:py-16">
         <motion.div
           initial={{ opacity: 0, y: 24 }}

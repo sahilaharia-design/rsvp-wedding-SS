@@ -108,7 +108,11 @@ export default function ThemesChapter({
             )}
 
             {((chapter.menLooks && chapter.menLooks.length > 0) || (chapter.womenLooks && chapter.womenLooks.length > 0)) && (
-              <div className="grid sm:grid-cols-2 gap-5 mb-4">
+              <>
+                <p className="font-sans italic text-stone/80 mb-3" style={{ fontSize: '0.85rem' }}>
+                  {tt.looksInspirationNote}
+                </p>
+                <div className="grid sm:grid-cols-2 gap-5 mb-4">
                 {chapter.menLooks && chapter.menLooks.length > 0 && (
                   <div>
                     <p className="font-sans uppercase text-ink/50 mb-1.5" style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}>
@@ -134,7 +138,8 @@ export default function ThemesChapter({
                     )}
                   </div>
                 )}
-              </div>
+                </div>
+              </>
             )}
 
             {/* Palette — decorative, named explicitly so it's never mistaken for a dress-code instruction */}
