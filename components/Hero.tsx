@@ -2,11 +2,12 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import type { Audience } from '@/lib/audience'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
+import { willShowEnvelopeIntro, ENVELOPE_SEQUENCE_MS } from '@/lib/envelopeIntro'
 import Countdown from '@/components/Countdown'
 
 interface HeroProps {
@@ -28,8 +29,23 @@ const textShadow = { textShadow: '0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0
 
 export default function Hero({ onCTAClick, audience }: HeroProps) {
   const [imgError, setImgError] = useState(false)
+  // Groom-only: when EnvelopeIntro is about to play over this same page,
+  // hold the hero copy's entrance until the envelope sequence finishes,
+  // so it reads as the envelope's payoff rather than something that
+  // silently finished underneath it. Pure client-side read (see
+  // lib/envelopeIntro.ts) — the worst case if this is ever wrong is a
+  // slightly mistimed entrance, never a broken one.
+  const [entranceDelay, setEntranceDelay] = useState(0)
   const { t } = useLang()
   const isBride = audience === 'bride'
+
+  useEffect(() => {
+    if (!isBride && willShowEnvelopeIntro()) {
+      setEntranceDelay(ENVELOPE_SEQUENCE_MS / 1000)
+    }
+  }, [isBride])
+
+  const heroFade = (delay: number) => fade(delay + entranceDelay)
 
   const placeholderBg =
     'linear-gradient(160deg, #C4956A 0%, #D4A99A 35%, #E8C5BE 70%, #F2EDE4 100%)'
@@ -94,37 +110,37 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
       {/* ── Content — anchored to the bottom of the full-height frame ── */}
       <div className="relative z-10 min-h-[100svh] flex flex-col justify-end max-w-6xl mx-auto px-6 md:px-14 pt-28 pb-14 md:pb-20">
         <motion.div initial="hidden" animate="visible">
-          <motion.p variants={fade(0.15)}
+          <motion.p variants={heroFade(0.15)}
             className="font-sans uppercase text-gold mb-4"
             style={{ fontSize: '0.85rem', letterSpacing: '0.3em', ...textShadow }}>
             {isBride ? t.brideEyebrow : t.groomEyebrow}
           </motion.p>
 
-          <motion.h1 variants={fade(0.2)}
+          <motion.h1 variants={heroFade(0.2)}
             className="font-serif leading-[1.05] text-paper-light mb-4"
             style={{ fontSize: 'clamp(2.6rem, 7vw, 5rem)', ...textShadow }}>
             {t.namesLine}
           </motion.h1>
 
-          <motion.p variants={fade(0.25)}
+          <motion.p variants={heroFade(0.25)}
             className={`font-sans text-paper-light/90 ${isBride ? 'mb-9' : 'mb-3'}`}
             style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em', ...textShadow }}>
             {isBride ? <>{t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi</> : t.groomHeroTagline}
           </motion.p>
 
           {!isBride && (
-            <motion.p variants={fade(0.3)}
+            <motion.p variants={heroFade(0.3)}
               className="inline-block font-sans text-paper-light font-medium mb-9 px-4 py-2.5 rounded-md"
               style={{ fontSize: 'clamp(0.9rem, 1.9vw, 1.02rem)', letterSpacing: '0.01em', background: 'rgba(10,8,7,0.55)', backdropFilter: 'blur(2px)' }}>
               {t.groomDeadlineLine}
             </motion.p>
           )}
 
-          <motion.div variants={fade(0.35)} className="mb-9">
+          <motion.div variants={heroFade(0.35)} className="mb-9">
             <Countdown light />
           </motion.div>
 
-          <motion.div variants={fade(0.4)} className="flex flex-col items-start gap-4">
+          <motion.div variants={heroFade(0.4)} className="flex flex-col items-start gap-4">
             {isBride ? (
               <>
                 <Link
@@ -167,7 +183,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
               Mehndi RSVP and makeup guide exist. Shown on both audiences —
               each page has its own Lovely Ladies section further down. */}
           <motion.button
-            variants={fade(0.45)}
+            variants={heroFade(0.45)}
             onClick={() => document.getElementById('lovely-ladies')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
             className="hover-lift inline-flex items-center gap-2 rounded-full border border-gold/60 bg-blush/20 backdrop-blur-sm px-4 py-2 mt-5 font-sans text-paper-light hover:border-gold hover:bg-blush/30 transition-colors duration-300"
             style={{ fontSize: '0.85rem', letterSpacing: '0.02em', ...textShadow }}
@@ -175,7 +191,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
             <span className="text-gold">&#10022;</span> {t.heroLovelyLadiesLink} <span>&rarr;</span>
           </motion.button>
 
-          <motion.h2 variants={fade(0.5)}
+          <motion.h2 variants={heroFade(0.5)}
             className="font-display gold-glint text-paper-light leading-none mt-10 break-words"
             style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.6rem)', wordBreak: 'break-word', ...textShadow }}>
             #SakshiKoMilaKinara

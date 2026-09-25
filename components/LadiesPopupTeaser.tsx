@@ -9,56 +9,122 @@
 // rule as the envelope). Never appears on a deep link, same reasoning as
 // the envelope — a guest arriving at a specific anchor already knows where
 // they're going.
-import { useCallback, useEffect, useState } from 'react'
+//
+// Deliberately NOT time-triggered on page load: the primary objective on
+// /groom is travel confirmation, and this must never compete with it. It
+// only arms once the guest has scrolled past that objective (Travel
+// Details on groom; a generic "they're engaged" depth on bride, which has
+// no travel form of its own) — and even then it waits for an exit-intent
+// signal (desktop: cursor leaving toward the browser chrome; mobile: a
+// fast upward flick, the closest touch equivalent) before it actually
+// fires, with a generous fallback timer as a last resort so an engaged
+// guest who never triggers either heuristic still eventually sees it.
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import SparkleBurst from '@/components/SparkleBurst'
 import { useLang } from '@/contexts/Language'
+import type { Audience } from '@/lib/audience'
 
 const STORAGE_KEY = 'std-ladies-popup-shown'
-const INITIAL_DELAY_MS = 2200 // let Hero's own entrance settle first
-const PEEK_MS = 1600 // how long the peek badge waits before auto-opening
-const OPENING_MS = 550 // sparkle-burst flash duration
+const OPENING_MS = 550 // sparkle-burst flash duration before the card appears
+const ARM_FALLBACK_MS = 13000 // last-resort timer once armed
+const FAST_SCROLL_UP_PX = 60
+const FAST_SCROLL_WINDOW_MS = 220
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 const SPRING = { type: 'spring', stiffness: 260, damping: 20 } as const
 
-type Stage = 'idle' | 'peek' | 'opening' | 'reveal' | 'hidden'
+type Stage = 'idle' | 'opening' | 'reveal' | 'hidden'
 
-export default function LadiesPopupTeaser() {
+export default function LadiesPopupTeaser({ audience }: { audience: Audience }) {
   const [stage, setStage] = useState<Stage>('idle')
+  const stageRef = useRef<Stage>('idle')
   const { t } = useLang()
+
+  useEffect(() => {
+    stageRef.current = stage
+  }, [stage])
+
+  const fire = useCallback(() => {
+    if (stageRef.current !== 'idle') return
+    try {
+      sessionStorage.setItem(STORAGE_KEY, '1')
+    } catch {
+      // ignore — in-memory stage still fires for this visit
+    }
+    setStage('opening')
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
     if (window.location.hash.length > 0) return
     try {
       if (sessionStorage.getItem(STORAGE_KEY) === '1') return
-      sessionStorage.setItem(STORAGE_KEY, '1')
     } catch {
       // sessionStorage unavailable — the flourish just plays every visit
       // rather than erroring out, same fallback as EnvelopeIntro.
     }
-    const t1 = setTimeout(() => setStage('peek'), INITIAL_DELAY_MS)
-    return () => clearTimeout(t1)
-  }, [])
 
-  // Auto-advance peek → opening → reveal, driven by plain timeouts (never
-  // chained to an animation-completion callback) so a dropped frame can
-  // never leave this stuck mid-sequence.
-  useEffect(() => {
-    if (stage === 'peek') {
-      const t = setTimeout(() => setStage('opening'), PEEK_MS)
-      return () => clearTimeout(t)
+    let cleanupTrigger: (() => void) | undefined
+
+    const armAndListen = () => {
+      const onMouseLeave = (e: MouseEvent) => {
+        if (e.clientY <= 0 && !e.relatedTarget) fire()
+      }
+      let lastY = window.scrollY
+      let lastT = Date.now()
+      const onFastScroll = () => {
+        const y = window.scrollY
+        const now = Date.now()
+        const dy = y - lastY
+        const dt = now - lastT
+        if (dy < -FAST_SCROLL_UP_PX && dt < FAST_SCROLL_WINDOW_MS) fire()
+        lastY = y
+        lastT = now
+      }
+      document.addEventListener('mouseleave', onMouseLeave)
+      window.addEventListener('scroll', onFastScroll, { passive: true })
+      const fallback = setTimeout(fire, ARM_FALLBACK_MS)
+      cleanupTrigger = () => {
+        document.removeEventListener('mouseleave', onMouseLeave)
+        window.removeEventListener('scroll', onFastScroll)
+        clearTimeout(fallback)
+      }
     }
+
+    let armed = false
+    const onScrollArm = () => {
+      if (armed) return
+      const pastObjective =
+        audience === 'groom'
+          ? (() => {
+              const el = document.getElementById('travel-details')
+              return !!el && el.getBoundingClientRect().bottom <= 0
+            })()
+          : window.scrollY > window.innerHeight * 0.85
+      if (!pastObjective) return
+      armed = true
+      window.removeEventListener('scroll', onScrollArm)
+      armAndListen()
+    }
+    window.addEventListener('scroll', onScrollArm, { passive: true })
+    onScrollArm() // covers a reload that restores an already-scrolled position
+
+    return () => {
+      window.removeEventListener('scroll', onScrollArm)
+      cleanupTrigger?.()
+    }
+  }, [audience, fire])
+
+  // opening → reveal, driven by a plain timeout (never chained to an
+  // animation-completion callback) so a dropped frame can never leave
+  // this stuck mid-sequence.
+  useEffect(() => {
     if (stage === 'opening') {
       const t = setTimeout(() => setStage('reveal'), OPENING_MS)
       return () => clearTimeout(t)
     }
   }, [stage])
-
-  const openNow = useCallback(() => {
-    setStage((s) => (s === 'peek' ? 'opening' : s))
-  }, [])
 
   const dismiss = useCallback(() => setStage('hidden'), [])
 
@@ -71,56 +137,17 @@ export default function LadiesPopupTeaser() {
 
   return (
     <>
-      {/* ── Peek badge — a small tag pinned near the top of the viewport ── */}
-      {/* Centering lives on this static wrapper, not on the motion element
-          below — Framer Motion owns the `transform` CSS property on
-          anything it animates (y/scale here), so a static translateX
-          placed on the motion node itself would be clobbered every frame. */}
-      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[90]">
-        <AnimatePresence>
-          {(stage === 'peek' || stage === 'opening') && (
-            <motion.button
-              onClick={openNow}
-              className="hover-lift flex flex-col items-center gap-0.5 rounded-2xl px-5 py-2.5 mx-6"
-              style={{
-                background: 'linear-gradient(135deg, #FCEEE3, #F6DCC8)',
-                border: '1.5px solid rgba(161,123,61,0.55)',
-                boxShadow: '0 10px 30px rgba(48,54,50,0.22)',
-                maxWidth: 'min(88vw, 280px)',
-              }}
-              initial={{ opacity: 0, y: -30, scale: 0.85 }}
-              animate={
-                stage === 'opening'
-                  ? { opacity: 0, scale: 1.15, transition: { duration: 0.35, ease: EASE } }
-                  : { opacity: 1, y: [0, -5, 0], scale: 1, transition: { opacity: { duration: 0.5 }, scale: { ...SPRING }, y: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' } } }
-              }
-              exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.2 } }}
-            >
-              <span className="flex items-center gap-1.5 whitespace-nowrap">
-                <span className="text-gold" style={{ fontSize: '0.95rem' }}>&#10022;</span>
-                <span className="font-sans text-burgundy" style={{ fontSize: '0.8rem', letterSpacing: '0.04em' }}>
-                  {t.ladiesPopupEyebrow}
-                </span>
-              </span>
-              <span className="font-sans uppercase text-burgundy/60 whitespace-nowrap" style={{ fontSize: '0.62rem', letterSpacing: '0.1em' }}>
-                {t.ladiesPopupTapHint}
-              </span>
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* ── Flash + sparkle burst at the badge's position ── */}
+      {/* ── Flash + sparkle burst, centred, right as the card appears ── */}
       {stage === 'opening' && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[91] pointer-events-none" style={{ width: 1, height: 1 }}>
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[91] pointer-events-none" style={{ width: 1, height: 1 }}>
           <motion.div
             className="absolute rounded-full"
-            style={{ width: 60, height: 60, left: -30, top: -30, background: '#FFF9EC' }}
+            style={{ width: 70, height: 70, left: -35, top: -35, background: '#FFF9EC' }}
             initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: [0, 0.9, 0], scale: [0.6, 2.2, 2.6] }}
+            animate={{ opacity: [0, 0.9, 0], scale: [0.6, 2.4, 2.8] }}
             transition={{ duration: 0.5, ease: EASE }}
           />
-          <SparkleBurst count={12} distance={70} />
+          <SparkleBurst count={12} distance={90} />
         </div>
       )}
 

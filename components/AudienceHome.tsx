@@ -5,6 +5,7 @@
 import { useCallback } from 'react'
 import Link from 'next/link'
 import Hero from '@/components/Hero'
+import EnvelopeIntro from '@/components/EnvelopeIntro'
 import TravelReminder from '@/components/TravelReminder'
 import ChaptersPreview from '@/components/ChaptersPreview'
 import PersonalInterlude from '@/components/PersonalInterlude'
@@ -100,8 +101,11 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
       <SiteHeader audience={audience} onCTAClick={!isBride ? scrollToTravelDetails : undefined} />
 
       <main>
+        {/* Groom-only wow-factor opening flourish — bride's experience never
+            had this "gate" feel and doesn't get it reintroduced here. */}
+        {!isBride && <EnvelopeIntro />}
         <Hero onCTAClick={scrollToTravelDetails} audience={audience} />
-        <LadiesPopupTeaser />
+        <LadiesPopupTeaser audience={audience} />
 
         {isBride ? (
           <>
