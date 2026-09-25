@@ -4,22 +4,25 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { useLang } from '@/contexts/Language'
-import { MAKEUP_GUIDE_PDF_PATH } from '@/lib/audience'
+import { AUDIENCE_CONFIG, MAKEUP_GUIDE_PDF_PATH, type Audience } from '@/lib/audience'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
-// Groom-side only route (/groom/makeup) — never linked from /bride. The PDF
-// itself is the actual salon directory (contacts, maps, Instagram links);
-// this page only introduces it and hands off to Open/Download, per direct
-// instruction not to hand-recreate an unverified directory on the site.
-export default function MakeupGuidePage() {
+// Reached from either /bride/makeup or /groom/makeup — same guide, same
+// copy (it's addressed to "the lovely ladies" on either side), only the
+// back link differs. The PDF itself is the actual salon directory (contacts,
+// maps, Instagram links); this page only introduces it and hands off to
+// Open/Download, per direct instruction not to hand-recreate an unverified
+// directory on the site.
+export default function MakeupGuidePage({ audience }: { audience: Audience }) {
   const { t } = useLang()
+  const homeRoute = AUDIENCE_CONFIG[audience].route
 
   return (
     <main className="min-h-screen bg-paper">
       <nav className="sticky top-0 z-40 bg-paper/95 backdrop-blur border-b border-thread-border/60">
         <div className="max-w-3xl mx-auto px-6 md:px-14 py-4 flex items-center justify-between">
-          <Link href="/groom" className="font-display text-burgundy" style={{ fontSize: '1.4rem' }}>
+          <Link href={homeRoute} className="font-display text-burgundy" style={{ fontSize: '1.4rem' }}>
             S&nbsp;&amp;&nbsp;S
           </Link>
           <LanguageSwitcher variant="light" />
@@ -77,7 +80,7 @@ export default function MakeupGuidePage() {
           {t.makeupDisclaimer}
         </p>
 
-        <Link href="/groom" className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors" style={{ fontSize: '0.92rem' }}>
+        <Link href={homeRoute} className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors" style={{ fontSize: '0.92rem' }}>
           &larr; {t.navHome}
         </Link>
       </motion.div>

@@ -164,17 +164,16 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
 
           {/* Visible in the first viewport, no scrolling needed — otherwise
               a guest who never scrolls past the hero has no way to know the
-              Mehndi RSVP and makeup guide exist. */}
-          {!isBride && (
-            <motion.button
-              variants={fade(0.45)}
-              onClick={() => document.getElementById('lovely-ladies')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-              className="hover-lift inline-flex items-center gap-2 rounded-full border border-gold/60 bg-blush/20 backdrop-blur-sm px-4 py-2 mt-5 font-sans text-paper-light hover:border-gold hover:bg-blush/30 transition-colors duration-300"
-              style={{ fontSize: '0.85rem', letterSpacing: '0.02em', ...textShadow }}
-            >
-              <span className="text-gold">&#10022;</span> {t.heroLovelyLadiesLink} <span>&rarr;</span>
-            </motion.button>
-          )}
+              Mehndi RSVP and makeup guide exist. Shown on both audiences —
+              each page has its own Lovely Ladies section further down. */}
+          <motion.button
+            variants={fade(0.45)}
+            onClick={() => document.getElementById('lovely-ladies')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="hover-lift inline-flex items-center gap-2 rounded-full border border-gold/60 bg-blush/20 backdrop-blur-sm px-4 py-2 mt-5 font-sans text-paper-light hover:border-gold hover:bg-blush/30 transition-colors duration-300"
+            style={{ fontSize: '0.85rem', letterSpacing: '0.02em', ...textShadow }}
+          >
+            <span className="text-gold">&#10022;</span> {t.heroLovelyLadiesLink} <span>&rarr;</span>
+          </motion.button>
 
           <motion.h2 variants={fade(0.5)}
             className="font-display gold-glint text-paper-light leading-none mt-10 break-words"

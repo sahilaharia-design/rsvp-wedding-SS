@@ -33,6 +33,7 @@ type GuestInput = {
 
 export async function POST(request: NextRequest) {
   let body: {
+    audience?: 'bride' | 'groom'
     submitted_by_name?: string
     submitted_by_mobile?: string
     guests?: GuestInput[]
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
   }
 
-  const { submitted_by_name, submitted_by_mobile, guests } = body
+  const { audience, submitted_by_name, submitted_by_mobile, guests } = body
 
   if (!submitted_by_name?.trim()) {
     return NextResponse.json({ error: 'Please share your name.' }, { status: 400 })
@@ -83,6 +84,7 @@ export async function POST(request: NextRequest) {
 
   const result = await postToSheet({
     action: 'mehndi_rsvp',
+    audience: audience === 'bride' || audience === 'groom' ? audience : '',
     submitted_by_name: submitted_by_name.trim(),
     submitted_by_mobile: normalisedMobile,
     group_id: crypto.randomUUID(),

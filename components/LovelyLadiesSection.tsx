@@ -4,16 +4,18 @@ import Link from 'next/link'
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
+import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
-// Groom-side only — surfaced after the main travel confirmation, never on
-// /bride. Two equally-weighted cards, neither trying to outrank "Confirm
-// Travel Details" above.
-export default function LovelyLadiesSection() {
+// Shown on both /bride and /groom. On groom's page it's surfaced after the
+// main travel confirmation, never trying to outrank "Confirm Travel
+// Details" above it; on bride's page it follows the wardrobe CTA instead.
+export default function LovelyLadiesSection({ audience }: { audience: Audience }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
   const { t } = useLang()
+  const makeupRoute = AUDIENCE_CONFIG[audience].makeupRoute
 
   return (
     <section id="lovely-ladies" ref={ref} className="bg-paper relative overflow-hidden">
@@ -49,7 +51,7 @@ export default function LovelyLadiesSection() {
               </span>
             </a>
 
-            <Link href="/groom/makeup"
+            <Link href={makeupRoute}
               className="hover-lift group block rounded-2xl border-2 border-thread-border/60 hover:border-burgundy bg-champagne/20 p-7 transition-colors duration-300">
               <p className="font-sans uppercase text-gold mb-3" style={{ fontSize: '0.72rem', letterSpacing: '0.18em' }}>
                 Makeup

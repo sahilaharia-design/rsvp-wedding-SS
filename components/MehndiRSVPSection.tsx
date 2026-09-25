@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
+import type { Audience } from '@/lib/audience'
 
 type Status = 'joining' | 'unable' | 'not_sure'
 type Hand = 'one_hand' | 'both_hands'
@@ -55,7 +56,7 @@ function SegmentedControl<T extends string>({
   )
 }
 
-export default function MehndiRSVPSection() {
+export default function MehndiRSVPSection({ audience }: { audience: Audience }) {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
   const { t } = useLang()
@@ -98,6 +99,7 @@ export default function MehndiRSVPSection() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          audience,
           submitted_by_name: submittedByName,
           submitted_by_mobile: submittedByMobile,
           guests: guests.map((g) => ({ name: g.name, status: g.status, hand_preference: g.hand })),

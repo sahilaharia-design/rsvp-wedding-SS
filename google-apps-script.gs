@@ -31,7 +31,8 @@
  * move or change. If you skip this, the data still saves correctly — the
  * column is just unlabelled until you add the header.
  *
- * UPDATE — Mehndi RSVP (groom-side "for the lovely ladies" section)
+ * UPDATE — Mehndi RSVP ("for the lovely ladies" section, both bride and
+ * groom sides link to the same form)
  * ────────────────────────────────────────────────────────────────────────
  * Adds a new 'mehndi_rsvp' action, writing one row per named guest into a
  * new "Mehndi RSVP" tab (auto-created on first submission, same as every
@@ -43,12 +44,14 @@
  *
  * Usable counts for planning the afternoon — paste any of these into an
  * empty cell on the "Mehndi RSVP" tab once it exists:
- *   Total guests named:  =COUNTA(D2:D)
- *   Joining:              =COUNTIF(E2:E,"joining")
- *   Unable to join:       =COUNTIF(E2:E,"unable")
- *   Not sure yet:         =COUNTIF(E2:E,"not_sure")
- *   One hand:             =COUNTIF(F2:F,"one_hand")
- *   Both hands:           =COUNTIF(F2:F,"both_hands")
+ *   Total guests named:  =COUNTA(E2:E)
+ *   From bride's side:    =COUNTIF(B2:B,"bride")
+ *   From groom's side:    =COUNTIF(B2:B,"groom")
+ *   Joining:              =COUNTIF(F2:F,"joining")
+ *   Unable to join:       =COUNTIF(F2:F,"unable")
+ *   Not sure yet:         =COUNTIF(F2:F,"not_sure")
+ *   One hand:             =COUNTIF(G2:G,"one_hand")
+ *   Both hands:           =COUNTIF(G2:G,"both_hands")
  */
 
 const SPREADSHEET_ID = '1SQHdH67JLTLATJyyARYHhIli3nBrg-0PtMPNSEGiTcU' // "Guest Confirmations" sheet
@@ -158,16 +161,17 @@ function handleMehndiRsvp_(payload) {
   lock.waitLock(30000)
   try {
     const sheet = getOrCreateSheet_(MEHNDI_SHEET_NAME,
-      ['Timestamp', 'Submitted By', 'Submitted Mobile', 'Guest Name', 'Status', 'Hand Preference', 'Group ID'])
+      ['Timestamp', 'Audience', 'Submitted By', 'Submitted Mobile', 'Guest Name', 'Status', 'Hand Preference', 'Group ID'])
 
     const guests = payload.guests || []
+    const audience = payload.audience || ''
     const submittedBy = payload.submitted_by_name || ''
     const submittedMobile = payload.submitted_by_mobile || ''
     const groupId = payload.group_id || Utilities.getUuid()
     const now = new Date()
 
     guests.forEach(function (g) {
-      sheet.appendRow([now, submittedBy, submittedMobile, g.name || '', g.status || '', g.hand_preference || '', groupId])
+      sheet.appendRow([now, audience, submittedBy, submittedMobile, g.name || '', g.status || '', g.hand_preference || '', groupId])
     })
     return jsonResponse_({ ok: true })
   } finally {

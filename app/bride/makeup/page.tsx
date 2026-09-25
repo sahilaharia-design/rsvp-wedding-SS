@@ -8,11 +8,11 @@ export const metadata: Metadata = {
     title: 'For the Lovely Ladies — Makeup Guide',
     description: 'A few nearby Pitampura salons to make getting ready easier.',
     type: 'website',
-    url: 'https://sakshisahil.com/groom/makeup',
+    url: 'https://sakshisahil.com/bride/makeup',
     images: ['/opengraph-image'],
   },
 }
 
-export default function GroomMakeupPage() {
-  return <MakeupGuidePage audience="groom" />
+export default function BrideMakeupPage() {
+  return <MakeupGuidePage audience="bride" />
 }

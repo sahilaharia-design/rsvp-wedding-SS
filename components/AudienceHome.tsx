@@ -109,6 +109,10 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
             <PersonalInterlude />
             <SectionThread />
             <WardrobeCTA audience={audience} />
+            <SectionThread />
+            <LovelyLadiesSection audience={audience} />
+            <SectionThread />
+            <MehndiRSVPSection audience={audience} />
           </>
         ) : (
           // Groom's guests have one job here: confirm travel, with as
@@ -125,9 +129,9 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
             <SectionThread />
             <TravelDetailsSection />
             <LadiesSignpost />
-            <LovelyLadiesSection />
+            <LovelyLadiesSection audience={audience} />
             <SectionThread />
-            <MehndiRSVPSection />
+            <MehndiRSVPSection audience={audience} />
           </>
         )}
 
