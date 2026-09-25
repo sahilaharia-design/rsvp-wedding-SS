@@ -14,6 +14,10 @@ import { useLang } from '@/contexts/Language'
  */
 export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
   const [inTravelSection, setInTravelSection] = useState(false)
+  // Also suppressed inside the Mehndi RSVP section — it has its own
+  // submit button fixed at the same viewport edge, and this bar would
+  // otherwise float on top of it, hiding it entirely.
+  const [inMehndiSection, setInMehndiSection] = useState(false)
   const [pastHero, setPastHero] = useState(false)
   const [fieldFocused, setFieldFocused] = useState(false)
   const { t } = useLang()
@@ -21,6 +25,7 @@ export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
   useEffect(() => {
     const hero = document.getElementById('hero')
     const travelDetails = document.getElementById('travel-details')
+    const mehndiRsvp = document.getElementById('mehndi-rsvp')
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -31,6 +36,9 @@ export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
           if (entry.target === travelDetails) {
             setInTravelSection(entry.isIntersecting)
           }
+          if (entry.target === mehndiRsvp) {
+            setInMehndiSection(entry.isIntersecting)
+          }
         })
       },
       { threshold: 0.15 }
@@ -38,6 +46,7 @@ export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
 
     if (hero) observer.observe(hero)
     if (travelDetails) observer.observe(travelDetails)
+    if (mehndiRsvp) observer.observe(mehndiRsvp)
 
     const onFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement
@@ -54,7 +63,7 @@ export default function StickyCTA({ onCTAClick }: { onCTAClick: () => void }) {
     }
   }, [])
 
-  const visible = pastHero && !inTravelSection && !fieldFocused
+  const visible = pastHero && !inTravelSection && !inMehndiSection && !fieldFocused
 
   return (
     <AnimatePresence>
