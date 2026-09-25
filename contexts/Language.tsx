@@ -55,6 +55,8 @@ export const strings = {
     // "For the lovely ladies" — groom side only
     lovelyLadiesHeading: 'For the Lovely Ladies',
     lovelyLadiesIntro: 'A little extra, just for you.',
+    lovelyLadiesMehndiEyebrow: 'Mehndi',
+    lovelyLadiesMakeupEyebrow: 'Makeup',
     lovelyLadiesMehndiCardTitle: 'Share Your Mehndi Preference',
     lovelyLadiesMehndiCardBody: 'Joining us on 20 January? Let us know your hand preference.',
     lovelyLadiesMehndiCardCTA: 'Share Your Preference',
@@ -73,6 +75,8 @@ export const strings = {
     ladiesPopupMakeupLabel: 'Makeup Guide',
     ladiesPopupCTA: 'Take Me There',
     ladiesPopupDismiss: 'Maybe Later',
+    envelopeTapToOpen: 'Tap to Open',
+    envelopeSkip: 'Skip',
 
     // Mehndi RSVP (groom side, #mehndi-rsvp)
     mehndiEyebrow:     'Mehndi · 20 January 2027 · 11 am–2 pm',
@@ -207,6 +211,8 @@ export const strings = {
 
     lovelyLadiesHeading: 'प्रिय महिला मेहमानों के लिए',
     lovelyLadiesIntro: 'आपके लिए कुछ खास।',
+    lovelyLadiesMehndiEyebrow: 'मेहंदी',
+    lovelyLadiesMakeupEyebrow: 'मेकअप',
     lovelyLadiesMehndiCardTitle: 'अपनी मेहंदी पसंद बताएं',
     lovelyLadiesMehndiCardBody: '20 जनवरी को शामिल हो रही हैं? अपनी हाथ की पसंद बताएं।',
     lovelyLadiesMehndiCardCTA: 'अपनी पसंद बताएं',
@@ -225,6 +231,8 @@ export const strings = {
     ladiesPopupMakeupLabel: 'मेकअप गाइड',
     ladiesPopupCTA: 'मुझे वहाँ ले चलें',
     ladiesPopupDismiss: 'बाद में',
+    envelopeTapToOpen: 'खोलने के लिए टैप करें',
+    envelopeSkip: 'छोड़ें',
 
     mehndiEyebrow:     'मेहंदी · 20 जनवरी 2027 · सुबह 11 – दोपहर 2 बजे',
     mehndiIntro:       'प्रिय महिला मेहमानों के लिए: कृपया अपनी मेहंदी पसंद बताएं ताकि हम सभी के लिए एक सुंदर दोपहर की योजना बना सकें।',
@@ -353,6 +361,8 @@ export const strings = {
 
     lovelyLadiesHeading: 'પ્રિય મહિલા મહેમાનો માટે',
     lovelyLadiesIntro: 'તમારા માટે કંઈક ખાસ.',
+    lovelyLadiesMehndiEyebrow: 'મહેંદી',
+    lovelyLadiesMakeupEyebrow: 'મેકઅપ',
     lovelyLadiesMehndiCardTitle: 'તમારી મહેંદી પસંદગી જણાવો',
     lovelyLadiesMehndiCardBody: '20 જાન્યુઆરીએ જોડાઈ રહ્યા છો? તમારી હાથની પસંદગી જણાવો.',
     lovelyLadiesMehndiCardCTA: 'તમારી પસંદગી જણાવો',
@@ -371,6 +381,8 @@ export const strings = {
     ladiesPopupMakeupLabel: 'મેકઅપ ગાઇડ',
     ladiesPopupCTA: 'મને ત્યાં લઈ જાઓ',
     ladiesPopupDismiss: 'પછી',
+    envelopeTapToOpen: 'ખોલવા માટે ટેપ કરો',
+    envelopeSkip: 'છોડો',
 
     mehndiEyebrow:     'મહેંદી · 20 જાન્યુઆરી 2027 · સવારે 11 – બપોરે 2 વાગ્યા',
     mehndiIntro:       'પ્રિય મહિલા મહેમાનો માટે: કૃપા કરી તમારી મહેંદી પસંદગી જણાવો જેથી અમે બધા માટે એક સુંદર બપોર ગોઠવી શકીએ.',

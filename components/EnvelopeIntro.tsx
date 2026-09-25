@@ -23,6 +23,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ENVELOPE_STORAGE_KEY as STORAGE_KEY, ENVELOPE_STAGE_MS } from '@/lib/envelopeIntro'
 import SparkleBurst from '@/components/SparkleBurst'
+import { useLang } from '@/contexts/Language'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
@@ -34,6 +35,7 @@ const STAGE_MS: Partial<Record<Stage, number>> = ENVELOPE_STAGE_MS
 export default function EnvelopeIntro() {
   const [stage, setStage] = useState<Stage>('hidden')
   const [imgError, setImgError] = useState(false)
+  const { t } = useLang()
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -132,7 +134,7 @@ export default function EnvelopeIntro() {
               animate={{ opacity: [0, 0.85, 0.4, 0.85] }}
               transition={{ duration: 2.5, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
             >
-              Tap to Open
+              {t.envelopeTapToOpen}
             </motion.p>
           )}
         </div>
@@ -161,7 +163,7 @@ export default function EnvelopeIntro() {
           className="absolute top-6 right-6 md:top-8 md:right-8 font-sans uppercase text-champagne/70 hover:text-champagne transition-colors"
           style={{ fontSize: '0.75rem', letterSpacing: '0.2em' }}
         >
-          Skip
+          {t.envelopeSkip}
         </button>
       )}
     </motion.div>

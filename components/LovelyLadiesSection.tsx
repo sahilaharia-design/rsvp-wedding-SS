@@ -38,7 +38,7 @@ export default function LovelyLadiesSection({ audience }: { audience: Audience }
             <a href="#mehndi-rsvp"
               className="hover-lift group block rounded-2xl border-2 border-thread-border/60 hover:border-burgundy bg-blush/15 p-7 transition-colors duration-300">
               <p className="font-sans uppercase text-gold mb-3" style={{ fontSize: '0.72rem', letterSpacing: '0.18em' }}>
-                Mehndi
+                {t.lovelyLadiesMehndiEyebrow}
               </p>
               <h3 className="font-serif text-ink mb-2" style={{ fontSize: '1.25rem' }}>
                 {t.lovelyLadiesMehndiCardTitle}
@@ -54,7 +54,7 @@ export default function LovelyLadiesSection({ audience }: { audience: Audience }
             <Link href={makeupRoute}
               className="hover-lift group block rounded-2xl border-2 border-thread-border/60 hover:border-burgundy bg-champagne/20 p-7 transition-colors duration-300">
               <p className="font-sans uppercase text-gold mb-3" style={{ fontSize: '0.72rem', letterSpacing: '0.18em' }}>
-                Makeup
+                {t.lovelyLadiesMakeupEyebrow}
               </p>
               <h3 className="font-serif text-ink mb-2" style={{ fontSize: '1.25rem' }}>
                 {t.lovelyLadiesMakeupCardTitle}
