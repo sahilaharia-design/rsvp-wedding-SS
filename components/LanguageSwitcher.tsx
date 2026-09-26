@@ -25,7 +25,7 @@ export default function LanguageSwitcher({ variant = 'dark' }: LanguageSwitcherP
           onClick={() => setLang(code)}
           aria-pressed={lang === code}
           className={`
-            px-2.5 py-1 md:px-3 md:py-1.5 rounded-full font-sans text-[10px] md:text-[11px] tracking-wide transition-all duration-200
+            px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-full font-sans text-xs tracking-wide transition-all duration-200
             ${lang === code
               ? (isLight ? 'bg-burgundy text-paper-light font-medium' : 'bg-white/90 text-charcoal font-medium')
               : (isLight ? 'text-ink/60 hover:text-ink' : 'text-white/60 hover:text-white/90')}

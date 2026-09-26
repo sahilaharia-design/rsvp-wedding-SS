@@ -77,7 +77,7 @@ export default function BottomTabBar({ audience }: { audience: Audience }) {
               />
               <span
                 className={`font-sans uppercase transition-colors duration-200 ${active ? 'text-burgundy' : 'text-stone/70'}`}
-                style={{ fontSize: '0.68rem', letterSpacing: '0.08em' }}
+                style={{ fontSize: '0.74rem', letterSpacing: '0.05em' }}
               >
                 {tab.label}
               </span>

@@ -40,8 +40,11 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
         </Link>
 
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Desktop only — mobile already has the bottom tab bar for these */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop only, and only from lg — mobile has the bottom tab bar
+              for these, and at tablet/small-laptop widths (md–lg) there
+              isn't room for this plus the switch-side control and language
+              switcher without everything colliding. */}
+          <div className="hidden lg:flex items-center gap-4">
             <Link href={`${AUDIENCE_CONFIG[audience].route}#mehndi-rsvp`}
               className={`font-sans uppercase text-xs tracking-wide transition-colors ${scrolled ? 'text-ink/70 hover:text-burgundy' : 'text-paper-light/80 hover:text-paper-light'}`}>
               {t.navMehndi}
@@ -54,15 +57,32 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
           {isGroom && onCTAClick && (
             <button
               onClick={onCTAClick}
-              className="hidden md:inline-block px-5 py-2 rounded-full bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 flex-shrink-0"
+              className="hidden lg:inline-block px-5 py-2 rounded-full bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 flex-shrink-0"
               style={{ fontSize: '0.68rem', letterSpacing: '0.14em' }}
             >
               {t.groomPrimaryCTA}
             </button>
           )}
+          {/* Mobile and tablet/small-laptop (below lg): icon-only (matches
+              MusicToggle's circular footprint). Only from lg, where there's
+              room, does this become the full text pill. */}
           <Link
             href={AUDIENCE_CONFIG[other].route}
-            className={`px-2.5 py-1 md:px-3 md:py-1.5 rounded-full font-sans text-[10px] md:text-[11px] tracking-wide transition-colors flex-shrink-0 ${
+            aria-label={other === 'bride' ? t.switchToBride : t.switchToGroom}
+            title={other === 'bride' ? t.switchToBride : t.switchToGroom}
+            className={`lg:hidden relative flex items-center justify-center rounded-full flex-shrink-0 transition-colors ${
+              scrolled ? 'bg-ink/8 text-ink/70 hover:text-ink' : 'bg-black/25 backdrop-blur-sm text-white/80 hover:text-white'
+            }`}
+            style={{ width: 44, height: 44 }}
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 4v13M7 17l-3.5-3.5M7 17l3.5-3.5" />
+              <path d="M17 20V7M17 7l3.5 3.5M17 7l-3.5 3.5" />
+            </svg>
+          </Link>
+          <Link
+            href={AUDIENCE_CONFIG[other].route}
+            className={`hidden lg:inline-block px-3 py-1.5 rounded-full font-sans text-xs tracking-wide transition-colors flex-shrink-0 ${
               scrolled ? 'bg-ink/8 text-ink/60 hover:text-ink' : 'bg-black/25 backdrop-blur-sm text-white/70 hover:text-white/90'
             }`}
           >
