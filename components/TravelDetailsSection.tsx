@@ -319,6 +319,10 @@ export default function TravelDetailsSection() {
                         {t.arrivalTimeReminder}
                       </p>
 
+                      <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>
+                        {t.checkoutTimeReminder}
+                      </p>
+
                       <div className="space-y-2">
                         <label className={labelCls} style={labelStyle}>
                           {travelNumberLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
