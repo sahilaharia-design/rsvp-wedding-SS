@@ -40,11 +40,13 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
         </Link>
 
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Desktop only, and only from lg — mobile has the bottom tab bar
-              for these, and at tablet/small-laptop widths (md–lg) there
-              isn't room for this plus the switch-side control and language
-              switcher without everything colliding. */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* Desktop only, and only from xl — the bottom tab bar already
+              covers Mehndi/Makeup/Travel navigation at every screen size, so
+              this is a nice-to-have that only earns its space once there's
+              room to spare. Tablet widths, including common 1024px landscape
+              ones, don't have that room alongside the switch-side control
+              and language switcher without colliding with the logo. */}
+          <div className="hidden xl:flex items-center gap-4">
             <Link href={`${AUDIENCE_CONFIG[audience].route}#mehndi-rsvp`}
               className={`font-sans uppercase text-xs tracking-wide transition-colors ${scrolled ? 'text-ink/70 hover:text-burgundy' : 'text-paper-light/80 hover:text-paper-light'}`}>
               {t.navMehndi}
@@ -57,20 +59,20 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
           {isGroom && onCTAClick && (
             <button
               onClick={onCTAClick}
-              className="hidden lg:inline-block px-5 py-2 rounded-full bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 flex-shrink-0"
+              className="hidden xl:inline-block px-5 py-2 rounded-full bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] transition-colors duration-300 flex-shrink-0"
               style={{ fontSize: '0.68rem', letterSpacing: '0.14em' }}
             >
               {t.groomPrimaryCTA}
             </button>
           )}
-          {/* Mobile and tablet/small-laptop (below lg): icon-only (matches
-              MusicToggle's circular footprint). Only from lg, where there's
-              room, does this become the full text pill. */}
+          {/* Below xl (phone through common tablet/small-laptop widths):
+              icon-only (matches MusicToggle's circular footprint). Only from
+              xl, where there's room, does this become the full text pill. */}
           <Link
             href={AUDIENCE_CONFIG[other].route}
             aria-label={other === 'bride' ? t.switchToBride : t.switchToGroom}
             title={other === 'bride' ? t.switchToBride : t.switchToGroom}
-            className={`lg:hidden relative flex items-center justify-center rounded-full flex-shrink-0 transition-colors ${
+            className={`xl:hidden relative flex items-center justify-center rounded-full flex-shrink-0 transition-colors ${
               scrolled ? 'bg-ink/8 text-ink/70 hover:text-ink' : 'bg-black/25 backdrop-blur-sm text-white/80 hover:text-white'
             }`}
             style={{ width: 44, height: 44 }}
@@ -82,7 +84,7 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
           </Link>
           <Link
             href={AUDIENCE_CONFIG[other].route}
-            className={`hidden lg:inline-block px-3 py-1.5 rounded-full font-sans text-xs tracking-wide transition-colors flex-shrink-0 ${
+            className={`hidden xl:inline-block px-3 py-1.5 rounded-full font-sans text-xs tracking-wide transition-colors flex-shrink-0 ${
               scrolled ? 'bg-ink/8 text-ink/60 hover:text-ink' : 'bg-black/25 backdrop-blur-sm text-white/70 hover:text-white/90'
             }`}
           >
