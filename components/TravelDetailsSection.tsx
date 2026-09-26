@@ -38,11 +38,9 @@ const ARRIVAL_ICONS: Record<ArrivalMode, string> = {
   road: '/graphics/road.svg',
 }
 
-// The wedding runs 20–22 January only, so arrival can only ever meaningfully
-// be one of these two dates — a full date-picker was asking guests to
-// choose from an unbounded calendar for what's really a single tap. Most
-// guests arrive the 20th (the Mehndi morning), so it's pre-selected.
-const ARRIVAL_DATE_VALUES = ['2027-01-20', '2027-01-21']
+// Only 20 January is being offered as an arrival date for now (per direct
+// instruction) — fixed rather than a picker, so there's nothing to ask.
+const ARRIVAL_DATE = '2027-01-20'
 
 // The Mehndi (the first celebration) runs 11am–2pm, and pickup coordination
 // is built around that window — so arrival time is a fixed set of slots
@@ -60,7 +58,7 @@ interface FieldsState {
 }
 
 const EMPTY_FIELDS: FieldsState = {
-  full_name: '', mobile_number: '', arrival_date: ARRIVAL_DATE_VALUES[0], arrival_time: '',
+  full_name: '', mobile_number: '', arrival_date: ARRIVAL_DATE, arrival_time: '',
   travel_number: '', guest_names: '', notes: '',
 }
 
@@ -298,31 +296,9 @@ export default function TravelDetailsSection() {
                     <div className="space-y-7 pt-2 border-t border-thread-border/50">
                       <p className={sectionLabelCls} style={{ ...sectionLabelStyle, display: 'block', marginTop: '1.5rem' }}>{t.stepArrivalTitle}</p>
 
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         <label className={labelCls} style={labelStyle}>{t.arrivalDate}</label>
-                        <div className="grid grid-cols-2 gap-3">
-                          {ARRIVAL_DATE_VALUES.map((value, i) => {
-                            const active = fields.arrival_date === value
-                            return (
-                              <button key={value} type="button"
-                                onClick={() => setFields((prev) => ({ ...prev, arrival_date: value }))}
-                                className="relative flex items-center justify-center rounded-xl py-4 border-2 transition-colors duration-200 overflow-hidden"
-                                style={{ borderColor: active ? '#760D25' : 'rgba(216,198,173,0.6)' }}
-                              >
-                                {active && (
-                                  <motion.div
-                                    layoutId="arrivalDateFill"
-                                    className="absolute inset-0 bg-burgundy"
-                                    transition={{ duration: 0.3, ease: EASE }}
-                                  />
-                                )}
-                                <span className="relative z-10 font-sans" style={{ fontSize: '0.95rem', color: active ? '#FFF9F1' : '#303632' }}>
-                                  {t.arrivalDateOptions[i]}
-                                </span>
-                              </button>
-                            )
-                          })}
-                        </div>
+                        <p className="font-sans text-charcoal" style={{ fontSize: '1.05rem' }}>{t.arrivalDateFixed}</p>
                       </div>
 
                       <div className="space-y-2">
