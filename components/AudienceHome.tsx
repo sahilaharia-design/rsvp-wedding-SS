@@ -16,7 +16,7 @@ import LovelyLadiesTeaser from '@/components/LovelyLadiesTeaser'
 import LadiesSignpost from '@/components/LadiesSignpost'
 import LovelyLadiesSection from '@/components/LovelyLadiesSection'
 import MehndiRSVPSection from '@/components/MehndiRSVPSection'
-import StickyCTA from '@/components/StickyCTA'
+import BottomTabBar from '@/components/BottomTabBar'
 import SiteHeader from '@/components/SiteHeader'
 import SectionThread from '@/components/SectionThread'
 import { useLang } from '@/contexts/Language'
@@ -56,6 +56,16 @@ function Footer({ audience, onCTAClick }: { audience: Audience; onCTAClick?: () 
           className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
           style={{ fontSize: '0.95rem' }}>
           {t.navThemes} &rarr;
+        </Link>
+        <a href="#mehndi-rsvp"
+          className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
+          style={{ fontSize: '0.95rem' }}>
+          {t.navMehndi} &rarr;
+        </a>
+        <Link href={config.makeupRoute}
+          className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
+          style={{ fontSize: '0.95rem' }}>
+          {t.navMakeup} &rarr;
         </Link>
         <a href={config.pdfPath} target="_blank" rel="noopener noreferrer"
           className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
@@ -100,7 +110,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
     <>
       <SiteHeader audience={audience} onCTAClick={!isBride ? scrollToTravelDetails : undefined} />
 
-      <main>
+      <main className="pb-16">
         {/* Groom-only wow-factor opening flourish — bride's experience never
             had this "gate" feel and doesn't get it reintroduced here. */}
         {!isBride && <EnvelopeIntro />}
@@ -142,8 +152,8 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
         )}
 
         <Footer audience={audience} onCTAClick={!isBride ? scrollToTravelDetails : undefined} />
-        {!isBride && <StickyCTA onCTAClick={scrollToTravelDetails} />}
       </main>
+      <BottomTabBar audience={audience} />
     </>
   )
 }

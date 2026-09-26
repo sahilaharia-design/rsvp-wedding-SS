@@ -40,6 +40,17 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
         </Link>
 
         <div className="flex items-center gap-2 md:gap-3">
+          {/* Desktop only — mobile already has the bottom tab bar for these */}
+          <div className="hidden md:flex items-center gap-4">
+            <Link href={`${AUDIENCE_CONFIG[audience].route}#mehndi-rsvp`}
+              className={`font-sans uppercase text-xs tracking-wide transition-colors ${scrolled ? 'text-ink/70 hover:text-burgundy' : 'text-paper-light/80 hover:text-paper-light'}`}>
+              {t.navMehndi}
+            </Link>
+            <Link href={AUDIENCE_CONFIG[audience].makeupRoute}
+              className={`font-sans uppercase text-xs tracking-wide transition-colors ${scrolled ? 'text-ink/70 hover:text-burgundy' : 'text-paper-light/80 hover:text-paper-light'}`}>
+              {t.navMakeup}
+            </Link>
+          </div>
           {isGroom && onCTAClick && (
             <button
               onClick={onCTAClick}

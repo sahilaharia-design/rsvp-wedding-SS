@@ -10,6 +10,7 @@ import { motion, useScroll, useSpring } from 'framer-motion'
 import { useLang, themesStrings } from '@/contexts/Language'
 import ThemesChapter from '@/components/ThemesChapter'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import BottomTabBar from '@/components/BottomTabBar'
 import { useThemeChapters } from '@/lib/useThemeChapters'
 import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
 
@@ -24,7 +25,8 @@ export default function ThemesPageClient({ audience }: { audience: Audience }) {
   const homeRoute = AUDIENCE_CONFIG[audience].route
 
   return (
-    <main className="bg-paper">
+    <>
+    <main className="bg-paper pb-16">
       {/* ── Reading-progress thread ── */}
       <motion.div
         className="fixed top-0 left-0 right-0 z-50 h-[3px] origin-left"
@@ -46,6 +48,12 @@ export default function ThemesPageClient({ audience }: { audience: Audience }) {
               </a>
             ))}
             <a href="#what-to-wear" className="hover:text-burgundy transition-colors">{t.whatToWearShort}</a>
+            <Link href={`${homeRoute}#mehndi-rsvp`} className="hover:text-burgundy transition-colors">
+              {t.navMehndiRSVP}
+            </Link>
+            <Link href={AUDIENCE_CONFIG[audience].makeupRoute} className="hover:text-burgundy transition-colors">
+              {t.navMakeup}
+            </Link>
             {!isBride && (
               <Link href="/groom#travel-details" className="text-burgundy font-semibold hover:text-ink transition-colors">
                 {t.navTravel}
@@ -152,5 +160,7 @@ export default function ThemesPageClient({ audience }: { audience: Audience }) {
         </div>
       </section>
     </main>
+    <BottomTabBar audience={audience} />
+    </>
   )
 }

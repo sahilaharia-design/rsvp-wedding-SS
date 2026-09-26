@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import type { Audience } from '@/lib/audience'
@@ -60,6 +60,16 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
   const { t } = useLang()
+
+  // A soft (client-side) navigation to a #mehndi-rsvp link — e.g. from the
+  // bottom tab bar on a different page — doesn't trigger the browser's
+  // native scroll-to-hash the way a full page load does, so it has to be
+  // done explicitly here on mount (same pattern as TravelDetailsSection).
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#mehndi-rsvp') {
+      ref.current?.scrollIntoView({ block: 'start' })
+    }
+  }, [])
 
   const [submittedByName, setSubmittedByName] = useState('')
   const [submittedByMobile, setSubmittedByMobile] = useState('')

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import BottomTabBar from '@/components/BottomTabBar'
 import { useLang } from '@/contexts/Language'
 import { AUDIENCE_CONFIG, MAKEUP_GUIDE_PDF_PATH, type Audience } from '@/lib/audience'
 
@@ -19,12 +20,18 @@ export default function MakeupGuidePage({ audience }: { audience: Audience }) {
   const homeRoute = AUDIENCE_CONFIG[audience].route
 
   return (
-    <main className="min-h-screen bg-paper">
+    <>
+    <main className="min-h-screen bg-paper pb-16">
       <nav className="sticky top-0 z-40 bg-paper/95 backdrop-blur border-b border-thread-border/60">
-        <div className="max-w-3xl mx-auto px-6 md:px-14 py-4 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-6 md:px-14 py-4 flex flex-wrap items-center justify-between gap-3">
           <Link href={homeRoute} className="font-display text-burgundy" style={{ fontSize: '1.4rem' }}>
             S&nbsp;&amp;&nbsp;S
           </Link>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 font-sans uppercase text-ink/70"
+            style={{ fontSize: '0.75rem', letterSpacing: '0.14em' }}>
+            <Link href={homeRoute} className="hover:text-burgundy transition-colors">{t.navHome}</Link>
+            <Link href={`${homeRoute}#mehndi-rsvp`} className="hover:text-burgundy transition-colors">{t.navMehndi}</Link>
+          </div>
           <LanguageSwitcher variant="light" />
         </div>
       </nav>
@@ -85,5 +92,7 @@ export default function MakeupGuidePage({ audience }: { audience: Audience }) {
         </Link>
       </motion.div>
     </main>
+    <BottomTabBar audience={audience} />
+    </>
   )
 }
