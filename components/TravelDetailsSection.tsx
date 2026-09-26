@@ -38,20 +38,30 @@ const ARRIVAL_ICONS: Record<ArrivalMode, string> = {
   road: '/graphics/road.svg',
 }
 
+// The wedding runs 20–22 January only, so arrival can only ever meaningfully
+// be one of these two dates — a full date-picker was asking guests to
+// choose from an unbounded calendar for what's really a single tap. Most
+// guests arrive the 20th (the Mehndi morning), so it's pre-selected.
+const ARRIVAL_DATE_VALUES = ['2027-01-20', '2027-01-21']
+
+// The Mehndi (the first celebration) runs 11am–2pm, and pickup coordination
+// is built around that window — so arrival time is a fixed set of slots
+// inside it rather than a free time input, with a reminder explaining why.
+const ARRIVAL_TIME_VALUES = ['11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00']
+
 interface FieldsState {
   full_name: string
   mobile_number: string
   arrival_date: string
   arrival_time: string
   travel_number: string
-  departure_date: string
   guest_names: string
   notes: string
 }
 
 const EMPTY_FIELDS: FieldsState = {
-  full_name: '', mobile_number: '', arrival_date: '', arrival_time: '',
-  travel_number: '', departure_date: '', guest_names: '', notes: '',
+  full_name: '', mobile_number: '', arrival_date: ARRIVAL_DATE_VALUES[0], arrival_time: '',
+  travel_number: '', guest_names: '', notes: '',
 }
 
 // One continuous form, no steps — every field is visible and fillable in
@@ -91,7 +101,7 @@ export default function TravelDetailsSection() {
   // regardless of render timing.
   const isSubmittingRef = useRef(false)
 
-  const setField = (key: keyof FieldsState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+  const setField = (key: keyof FieldsState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setFields((prev) => ({ ...prev, [key]: e.target.value }))
 
   function addFiles(list: FileList | File[]) {
@@ -288,21 +298,50 @@ export default function TravelDetailsSection() {
                     <div className="space-y-7 pt-2 border-t border-thread-border/50">
                       <p className={sectionLabelCls} style={{ ...sectionLabelStyle, display: 'block', marginTop: '1.5rem' }}>{t.stepArrivalTitle}</p>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className={labelCls} style={labelStyle}>{t.arrivalDate}</label>
-                          <input type="date" value={fields.arrival_date} onChange={setField('arrival_date')} required
-                            className={inputCls} style={inputStyle} />
-                        </div>
-                        <div className="space-y-2">
-                          <label className={labelCls} style={labelStyle}>
-                            {t.arrivalTime}
-                          </label>
-                          <input type="time" value={fields.arrival_time} onChange={setField('arrival_time')} required
-                            className={inputCls} style={inputStyle} />
-                          <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
+                      <div className="space-y-3">
+                        <label className={labelCls} style={labelStyle}>{t.arrivalDate}</label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {ARRIVAL_DATE_VALUES.map((value, i) => {
+                            const active = fields.arrival_date === value
+                            return (
+                              <button key={value} type="button"
+                                onClick={() => setFields((prev) => ({ ...prev, arrival_date: value }))}
+                                className="relative flex items-center justify-center rounded-xl py-4 border-2 transition-colors duration-200 overflow-hidden"
+                                style={{ borderColor: active ? '#760D25' : 'rgba(216,198,173,0.6)' }}
+                              >
+                                {active && (
+                                  <motion.div
+                                    layoutId="arrivalDateFill"
+                                    className="absolute inset-0 bg-burgundy"
+                                    transition={{ duration: 0.3, ease: EASE }}
+                                  />
+                                )}
+                                <span className="relative z-10 font-sans" style={{ fontSize: '0.95rem', color: active ? '#FFF9F1' : '#303632' }}>
+                                  {t.arrivalDateOptions[i]}
+                                </span>
+                              </button>
+                            )
+                          })}
                         </div>
                       </div>
+
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>
+                          {t.arrivalTime}
+                        </label>
+                        <select value={fields.arrival_time} onChange={setField('arrival_time')} required
+                          className={inputCls} style={inputStyle}>
+                          <option value="" disabled>—</option>
+                          {ARRIVAL_TIME_VALUES.map((value, i) => (
+                            <option key={value} value={value}>{t.arrivalTimeSlots[i]}</option>
+                          ))}
+                        </select>
+                        <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
+                      </div>
+
+                      <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>
+                        {t.arrivalTimeReminder}
+                      </p>
 
                       <div className="space-y-2">
                         <label className={labelCls} style={labelStyle}>
@@ -310,14 +349,6 @@ export default function TravelDetailsSection() {
                         </label>
                         <input type="text" value={fields.travel_number} onChange={setField('travel_number')} autoComplete="off"
                           placeholder="e.g. AI-2401" className={inputCls} style={inputStyle} />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className={labelCls} style={labelStyle}>
-                          {t.departureDate} <span className="normal-case tracking-normal">{t.optionalTag}</span>
-                        </label>
-                        <input type="date" value={fields.departure_date} onChange={setField('departure_date')}
-                          className={inputCls} style={inputStyle} />
                       </div>
 
                       <div className="space-y-2">

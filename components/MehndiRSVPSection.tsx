@@ -63,7 +63,12 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
 
   const [submittedByName, setSubmittedByName] = useState('')
   const [submittedByMobile, setSubmittedByMobile] = useState('')
-  const [guests, setGuests] = useState<Guest[]>([newGuest()])
+  // The submitter is, by default, also the first guest — no separate "Guest
+  // Name" box asking them to type the same name again. `guests` here only
+  // holds anyone ELSE they're RSVPing for, added via "+ Add Another Guest".
+  const [selfStatus, setSelfStatus] = useState<Status | null>(null)
+  const [selfHand, setSelfHand] = useState<Hand | null>(null)
+  const [guests, setGuests] = useState<Guest[]>([])
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const isSubmittingRef = useRef(false)
@@ -75,13 +80,17 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
     setGuests((prev) => [...prev, newGuest()])
   }
   function removeGuest(id: string) {
-    setGuests((prev) => (prev.length > 1 ? prev.filter((g) => g.id !== id) : prev))
+    setGuests((prev) => prev.filter((g) => g.id !== id))
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!submittedByName.trim()) {
       setErrorMsg(t.mehndiMissingNameError)
+      return
+    }
+    if (!selfStatus || (selfStatus === 'joining' && !selfHand)) {
+      setErrorMsg(t.mehndiErrorGeneric)
       return
     }
     for (const g of guests) {
@@ -95,6 +104,10 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
     setFormState('submitting')
     setErrorMsg('')
     try {
+      const allGuests = [
+        { name: submittedByName.trim(), status: selfStatus, hand: selfStatus === 'joining' ? selfHand : null },
+        ...guests,
+      ]
       const res = await fetch('/api/mehndi-rsvp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -102,7 +115,7 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
           audience,
           submitted_by_name: submittedByName,
           submitted_by_mobile: submittedByMobile,
-          guests: guests.map((g) => ({ name: g.name, status: g.status, hand_preference: g.hand })),
+          guests: allGuests.map((g) => ({ name: g.name, status: g.status, hand_preference: g.hand })),
         }),
       })
       const json = await res.json()
@@ -176,19 +189,41 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
                       </div>
                     </div>
 
+                    {/* The submitter's own RSVP — no separate name box, they
+                        already gave it above. */}
+                    <div className="space-y-2">
+                      <label className={labelCls} style={labelStyle}>{t.mehndiYourStatusLabel}</label>
+                      <SegmentedControl
+                        options={statusOptions}
+                        value={selfStatus}
+                        onChange={(v) => { setSelfStatus(v); if (v !== 'joining') setSelfHand(null) }}
+                        layoutId="status-self"
+                      />
+                    </div>
+
+                    {selfStatus === 'joining' && (
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>{t.mehndiHandLabel}</label>
+                        <SegmentedControl
+                          options={handOptions}
+                          value={selfHand}
+                          onChange={setSelfHand}
+                          layoutId="hand-self"
+                        />
+                      </div>
+                    )}
+
                     <div className="space-y-6">
                       {guests.map((g, idx) => (
                         <div key={g.id} className="rounded-2xl border-2 border-thread-border/50 bg-white/50 p-5 space-y-4">
                           <div className="flex items-center justify-between">
                             <span className="font-sans uppercase text-burgundy" style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}>
-                              {t.mehndiGuestNameLabel} {idx + 1}
+                              {t.mehndiGuestNameLabel} {idx + 2}
                             </span>
-                            {guests.length > 1 && (
-                              <button type="button" onClick={() => removeGuest(g.id)}
-                                className="font-sans text-charcoal/50 hover:text-burgundy transition-colors" style={{ fontSize: '0.85rem' }}>
-                                {t.mehndiRemoveGuest} ✕
-                              </button>
-                            )}
+                            <button type="button" onClick={() => removeGuest(g.id)}
+                              className="font-sans text-charcoal/50 hover:text-burgundy transition-colors" style={{ fontSize: '0.85rem' }}>
+                              {t.mehndiRemoveGuest} ✕
+                            </button>
                           </div>
 
                           <input type="text" value={g.name} onChange={(e) => updateGuest(g.id, { name: e.target.value })}
