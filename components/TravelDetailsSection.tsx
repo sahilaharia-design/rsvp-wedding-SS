@@ -42,10 +42,15 @@ const ARRIVAL_ICONS: Record<ArrivalMode, string> = {
 // instruction) — fixed rather than a picker, so there's nothing to ask.
 const ARRIVAL_DATE = '2027-01-20'
 
-// The Mehndi (the first celebration) runs 11am–2pm, and pickup coordination
-// is built around that window — so arrival time is a fixed set of slots
-// inside it rather than a free time input, with a reminder explaining why.
-const ARRIVAL_TIME_VALUES = ['11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00']
+// The Mehndi (the first celebration) starts at 11am and pickup coordination
+// is built around it, so 2pm is a hard cap — but per direct feedback the
+// earlier 11am-only floor was too strict, so morning arrivals are offered
+// too (hourly early on, half-hourly from 10:30 through the 2pm cap, since
+// that's the denser pickup-coordination window).
+const ARRIVAL_TIME_VALUES = [
+  '06:00', '07:00', '08:00', '09:00', '10:00', '10:30',
+  '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00',
+]
 
 interface FieldsState {
   full_name: string
@@ -319,9 +324,22 @@ export default function TravelDetailsSection() {
                         {t.arrivalTimeReminder}
                       </p>
 
-                      <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>
+                      {/* Kept, but deliberately quieter than the Mehndi reminder
+                          above — a footnote-style aside, not a directive. */}
+                      <p className="font-sans italic leading-[1.6] text-stone/60" style={{ fontSize: '0.8rem' }}>
                         {t.checkoutTimeReminder}
                       </p>
+
+                      <div className="space-y-2">
+                        <label className={labelCls} style={labelStyle}>
+                          {t.notesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
+                        </label>
+                        <p className="font-sans text-stone leading-[1.6]" style={{ fontSize: '0.88rem' }}>
+                          {t.notesHint}
+                        </p>
+                        <textarea value={fields.notes} onChange={setField('notes')} rows={3} autoComplete="off"
+                          className={inputCls} style={inputStyle} />
+                      </div>
 
                       <div className="space-y-2">
                         <label className={labelCls} style={labelStyle}>
@@ -392,14 +410,6 @@ export default function TravelDetailsSection() {
                         {fileError && (
                           <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{fileError}</p>
                         )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className={labelCls} style={labelStyle}>
-                          {t.notesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
-                        </label>
-                        <textarea value={fields.notes} onChange={setField('notes')} rows={3} autoComplete="off"
-                          className={inputCls} style={inputStyle} />
                       </div>
                     </div>
 
