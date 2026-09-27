@@ -90,7 +90,6 @@ export default function TravelDetailsSection() {
 
   const [fields, setFields] = useState<FieldsState>(EMPTY_FIELDS)
   const [arrivalMode, setArrivalMode] = useState<ArrivalMode | null>(null)
-  const [arrivalModeError, setArrivalModeError] = useState('')
 
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -132,16 +131,15 @@ export default function TravelDetailsSection() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (isSubmittingRef.current) return
-    // Every native field is validated by the browser via `required` (it
-    // will focus and explain whichever one is empty). Arrival mode is a
-    // custom control, not a native input, so it needs its own check.
-    if (!arrivalMode) {
-      setArrivalModeError(t.arrivalModeLabel)
-      document.getElementById('arrival-mode-group')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Arrival time is validated natively via `required` on the <select>.
+    // ID upload is a custom control, not a native input, so it needs its
+    // own check — everything else on this form is optional.
+    if (files.length === 0) {
+      setFileError(t.idUploadRequiredError)
+      document.getElementById('id-upload-group')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
     isSubmittingRef.current = true
-    setArrivalModeError('')
     setFormState('submitting')
     setErrorMsg('')
     setUploadProgress('')
@@ -261,7 +259,7 @@ export default function TravelDetailsSection() {
                       </div>
 
                       {/* Arrival mode — segmented control with a sliding active pill */}
-                      <div id="arrival-mode-group" className="space-y-3 scroll-mt-24">
+                      <div className="space-y-3">
                         <label className={labelCls} style={labelStyle}>{t.arrivalModeLabel}</label>
                         <div className="grid grid-cols-3 gap-3">
                           {(['flight', 'train', 'road'] as ArrivalMode[]).map((mode) => {
@@ -270,7 +268,7 @@ export default function TravelDetailsSection() {
                             return (
                               <button
                                 key={mode} type="button"
-                                onClick={() => { setArrivalMode(mode); setArrivalModeError('') }}
+                                onClick={() => setArrivalMode(mode)}
                                 className="relative flex flex-col items-center gap-2 rounded-xl py-4 border-2 transition-colors duration-200 overflow-hidden"
                                 style={{ borderColor: active ? '#760D25' : 'rgba(216,198,173,0.6)' }}
                               >
@@ -291,9 +289,6 @@ export default function TravelDetailsSection() {
                             )
                           })}
                         </div>
-                        {arrivalModeError && (
-                          <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{arrivalModeError}</p>
-                        )}
                       </div>
                     </div>
 
@@ -362,7 +357,7 @@ export default function TravelDetailsSection() {
                     <div className="space-y-7 pt-2 border-t border-thread-border/50">
                       <p className={sectionLabelCls} style={{ ...sectionLabelStyle, display: 'block', marginTop: '1.5rem' }}>{t.stepFinalTitle}</p>
 
-                      <div className="space-y-3">
+                      <div id="id-upload-group" className="space-y-3 scroll-mt-24">
                         <label className={labelCls} style={labelStyle}>{t.idUploadLabel}</label>
                         <p className="font-sans text-stone leading-[1.6]" style={{ fontSize: '0.88rem' }}>
                           {t.idUploadHint}

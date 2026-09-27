@@ -56,16 +56,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Please enter a valid mobile number.' }, { status: 400 })
   }
 
-  if (!arrival_mode || !arrival_date?.trim()) {
-    return NextResponse.json({ error: 'Please let us know how and when you\'re arriving.' }, { status: 400 })
+  // Arrival mode is optional; arrival date is always the fixed date sent by
+  // the form. Arrival time is the one arrival-side field that's required.
+  if (!arrival_time?.trim()) {
+    return NextResponse.json({ error: 'Please let us know your arrival time.' }, { status: 400 })
   }
 
   const result = await postToSheet({
     action: 'travel_info',
     full_name: full_name.trim(),
     mobile: normalised,
-    arrival_mode,
-    arrival_date: arrival_date.trim(),
+    arrival_mode: arrival_mode?.trim() ?? '',
+    arrival_date: arrival_date?.trim() ?? '',
     arrival_time: arrival_time?.trim() ?? '',
     travel_number: travel_number?.trim() ?? '',
     departure_date: departure_date?.trim() ?? '',
