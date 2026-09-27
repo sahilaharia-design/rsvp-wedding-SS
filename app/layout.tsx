@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Inter, Allura } from 'next/font/google'
+import Script from 'next/script'
 import Providers from '@/components/Providers'
 import './globals.css'
+
+const GA_MEASUREMENT_ID = 'G-7WGRCWNRZ6'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -51,6 +54,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable} ${allura.variable}`}>
       <body className="bg-cream text-charcoal antialiased">
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
         <Providers>{children}</Providers>
       </body>
     </html>
