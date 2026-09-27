@@ -8,6 +8,9 @@ export const strings = {
   en: {
     // Identity
     eventDates:        'Wed 20 – Fri 22 January 2027',
+    // Bride's guests only attend the 20th and 21st — the 22nd is just
+    // checkout, not a celebration, so their date range leaves it out.
+    brideEventDates:   'Wed 20 – Thu 21 January 2027',
     namesLine:         'Sakshi & Dr. Sahil',
     hashtag:           '#SakshiKoMilaKinara',
     deadline:          'Tue 20 October 2026',
@@ -180,6 +183,7 @@ export const strings = {
   },
   hi: {
     eventDates:        'बुध 20 – शुक्र 22 जनवरी 2027',
+    brideEventDates:   'बुध 20 – गुरु 21 जनवरी 2027',
     namesLine:         'साक्षी और डॉ. सहिल',
     hashtag:           '#SakshiKoMilaKinara',
     deadline:          'मंगल 20 अक्टूबर 2026',
@@ -341,6 +345,7 @@ export const strings = {
   },
   gu: {
     eventDates:        'બુધ 20 – શુક્ર 22 જાન્યુઆરી 2027',
+    brideEventDates:   'બુધ 20 – ગુરુ 21 જાન્યુઆરી 2027',
     namesLine:         'સાક્ષી અને ડૉ. સહિલ',
     hashtag:           '#SakshiKoMilaKinara',
     deadline:          'મંગળ 20 ઓક્ટોબર 2026',
@@ -511,6 +516,7 @@ export const themesStrings = {
     heading: 'From a solo journey to a shared forever.',
     intro: 'What began as a solo trip to the hills of Bir became a journey neither of us would take alone.',
     datesLine: 'Wed 20 – Fri 22 January 2027 · Delhi',
+    datesLineBride: 'Wed 20 – Thu 21 January 2027 · Delhi',
     checkoutNote: 'Fri 22 January · Checkout',
     closing: 'Four celebrations. Four chapters. One complete journey.',
     inspirationNote: 'The illustrations are inspiration — bring your own style within the theme.',
@@ -560,6 +566,7 @@ export const themesStrings = {
     heading: 'एक अकेली यात्रा से एक साझा भविष्य तक।',
     intro: 'बीर की पहाड़ियों की एक अकेली यात्रा से शुरू हुआ सफ़र, एक ऐसी यात्रा बन गया जो हम दोनों ने साथ तय की।',
     datesLine: 'बुध 20 – शुक्र 22 जनवरी 2027 · दिल्ली',
+    datesLineBride: 'बुध 20 – गुरु 21 जनवरी 2027 · दिल्ली',
     checkoutNote: 'शुक्र 22 जनवरी · चेक-आउट',
     closing: 'चार उत्सव। चार अध्याय। एक संपूर्ण यात्रा।',
     inspirationNote: 'ये चित्र केवल प्रेरणा हैं — थीम के भीतर अपनी शैली अपनाएं।',
@@ -609,6 +616,7 @@ export const themesStrings = {
     heading: 'એકલી મુસાફરીથી એક સહિયારા ભવિષ્ય સુધી.',
     intro: 'બીરની ટેકરીઓની એકલી સફરથી શરૂ થયેલી આ યાત્રા, એવી સફર બની ગઈ જે અમે બંનેએ સાથે મળીને કરી.',
     datesLine: 'બુધ 20 – શુક્ર 22 જાન્યુઆરી 2027 · દિલ્હી',
+    datesLineBride: 'બુધ 20 – ગુરુ 21 જાન્યુઆરી 2027 · દિલ્હી',
     checkoutNote: 'શુક્ર 22 જાન્યુઆરી · ચેક-આઉટ',
     closing: 'ચાર ઉત્સવો. ચાર પ્રકરણો. એક સંપૂર્ણ સફર.',
     inspirationNote: 'આ ચિત્રો ફક્ત પ્રેરણા છે — થીમની અંદર તમારી પોતાની સ્ટાઇલ અપનાવો.',

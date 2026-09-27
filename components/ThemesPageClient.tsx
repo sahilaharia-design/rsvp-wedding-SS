@@ -96,7 +96,7 @@ export default function ThemesPageClient({ audience }: { audience: Audience }) {
             {tt.intro}
           </p>
           <p className="font-sans uppercase text-stone mb-1" style={{ fontSize: '0.85rem', letterSpacing: '0.16em' }}>
-            {tt.datesLine}
+            {isBride ? tt.datesLineBride : tt.datesLine}
           </p>
           <p className="font-sans text-stone/80" style={{ fontSize: '0.85rem' }}>
             {tt.checkoutNote}

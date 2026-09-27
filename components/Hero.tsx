@@ -125,7 +125,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
           <motion.p variants={heroFade(0.25)}
             className={`font-sans text-paper-light/90 ${isBride ? 'mb-9' : 'mb-3'}`}
             style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', letterSpacing: '0.02em', ...textShadow }}>
-            {isBride ? <>{t.eventDates} &nbsp;·&nbsp; Pitampura, Delhi</> : t.groomHeroTagline}
+            {isBride ? <>{t.brideEventDates} &nbsp;·&nbsp; Pitampura, Delhi</> : t.groomHeroTagline}
           </motion.p>
 
           {!isBride && (

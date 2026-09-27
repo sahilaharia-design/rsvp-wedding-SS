@@ -49,7 +49,7 @@ function Footer({ audience, onCTAClick }: { audience: Audience; onCTAClick?: () 
         #SakshiKoMilaKinara
       </p>
       <p className="font-sans text-stone mb-5" style={{ fontSize: '0.95rem', letterSpacing: '0.06em' }}>
-        {t.eventDates} &middot; Pitampura, Delhi
+        {isBride ? t.brideEventDates : t.eventDates} &middot; Pitampura, Delhi
       </p>
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
         <Link href={config.themesRoute}
