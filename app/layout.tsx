@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, Inter, Allura } from 'next/font/google'
 import Script from 'next/script'
 import Providers from '@/components/Providers'
+import GoogleAnalyticsPageview from '@/components/GoogleAnalyticsPageview'
 import './globals.css'
 
 const GA_MEASUREMENT_ID = 'G-7WGRCWNRZ6'
@@ -63,6 +64,7 @@ export default function RootLayout({
             gtag('config', '${GA_MEASUREMENT_ID}');
           `}
         </Script>
+        <GoogleAnalyticsPageview />
         <Providers>{children}</Providers>
       </body>
     </html>
