@@ -67,6 +67,11 @@ function Footer({ audience, onCTAClick }: { audience: Audience; onCTAClick?: () 
           style={{ fontSize: '0.95rem' }}>
           {t.navMakeup} &rarr;
         </Link>
+        <Link href={config.faqRoute}
+          className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
+          style={{ fontSize: '0.95rem' }}>
+          {t.navFaq} &rarr;
+        </Link>
         <a href={config.pdfPath} target="_blank" rel="noopener noreferrer"
           className="font-sans text-burgundy underline decoration-gold/60 underline-offset-4 hover:text-ink transition-colors"
           style={{ fontSize: '0.95rem' }}>

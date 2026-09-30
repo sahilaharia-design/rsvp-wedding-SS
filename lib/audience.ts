@@ -8,12 +8,13 @@ interface AudienceConfig {
   themesRoute: string
   pdfPath: string
   makeupRoute: string
+  faqRoute: string
   travelEnabled: boolean
 }
 
 export const AUDIENCE_CONFIG: Record<Audience, AudienceConfig> = {
-  bride: { route: '/bride', themesRoute: '/bride/themes', pdfPath: '/guides/bride-guide-v2.pdf', makeupRoute: '/bride/makeup', travelEnabled: false },
-  groom: { route: '/groom', themesRoute: '/groom/themes', pdfPath: '/guides/groom-guide-v2.pdf', makeupRoute: '/groom/makeup', travelEnabled: true },
+  bride: { route: '/bride', themesRoute: '/bride/themes', pdfPath: '/guides/bride-guide-v2.pdf', makeupRoute: '/bride/makeup', faqRoute: '/bride/faq', travelEnabled: false },
+  groom: { route: '/groom', themesRoute: '/groom/themes', pdfPath: '/guides/groom-guide-v2.pdf', makeupRoute: '/groom/makeup', faqRoute: '/groom/faq', travelEnabled: true },
 }
 
 // "For the lovely ladies" makeup guide — same PDF served on both /bride and

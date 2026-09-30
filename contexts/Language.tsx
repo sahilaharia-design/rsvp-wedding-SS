@@ -114,6 +114,11 @@ export const strings = {
     makeupOpenBtn:     'Open / Download the Makeup Guide',
     makeupViewerCaption: 'Trouble viewing below? Use the button above to open it in a new tab.',
 
+    // FAQ page (/bride/faq, /groom/faq)
+    faqEyebrow:        'Good to Know',
+    faqHeading:        'Frequently Asked Questions',
+    faqIntro:          'Everything about the celebrations, travel, and what to wear — all in one place.',
+
     // Navigation
     navHome:           'Home',
     navCelebrations:    'Celebrations',
@@ -124,6 +129,7 @@ export const strings = {
     navMehndi:          'Mehndi',
     navMehndiRSVP:      'Mehndi RSVP',
     navMakeup:          'Makeup',
+    navFaq:             'FAQ',
     switchToBride:      'Switch to Sakshi’s guests',
     switchToGroom:      'Switch to Dr. Sahil’s guests',
 
@@ -280,6 +286,10 @@ export const strings = {
     makeupOpenBtn:     'मेकअप गाइड खोलें / डाउनलोड करें',
     makeupViewerCaption: 'नीचे देखने में समस्या हो रही है? नए टैब में खोलने के लिए ऊपर दिए गए बटन का उपयोग करें।',
 
+    faqEyebrow:        'जानना ज़रूरी',
+    faqHeading:        'अक्सर पूछे जाने वाले सवाल',
+    faqIntro:          'उत्सव, यात्रा, और क्या पहनें — सब कुछ एक ही जगह पर।',
+
     navHome:           'होम',
     navCelebrations:    'उत्सव',
     navThemes:          'थीम्स और पहनावा',
@@ -289,6 +299,7 @@ export const strings = {
     navMehndi:          'मेहंदी',
     navMehndiRSVP:      'मेहंदी RSVP',
     navMakeup:          'मेकअप',
+    navFaq:             'सवाल-जवाब',
     switchToBride:      'साक्षी के मेहमानों पर जाएं',
     switchToGroom:      'डॉ. सहिल के मेहमानों पर जाएं',
 
@@ -442,6 +453,10 @@ export const strings = {
     makeupOpenBtn:     'મેકઅપ ગાઇડ ખોલો / ડાઉનલોડ કરો',
     makeupViewerCaption: 'નીચે જોવામાં તકલીફ પડે છે? નવા ટૅબમાં ખોલવા માટે ઉપરના બટનનો ઉપયોગ કરો.',
 
+    faqEyebrow:        'જાણવા જેવું',
+    faqHeading:        'વારંવાર પુછાતા પ્રશ્નો',
+    faqIntro:          'ઉત્સવો, મુસાફરી, અને શું પહેરવું — બધું જ એક જ જગ્યાએ.',
+
     navHome:           'હોમ',
     navCelebrations:    'ઉત્સવો',
     navThemes:          'થીમ્સ અને પોશાક',
@@ -451,6 +466,7 @@ export const strings = {
     navMehndi:          'મહેંદી',
     navMehndiRSVP:      'મહેંદી RSVP',
     navMakeup:          'મેકઅપ',
+    navFaq:             'પ્રશ્નો',
     switchToBride:      'સાક્ષીના મહેમાનો પર જાઓ',
     switchToGroom:      'ડૉ. સહિલના મહેમાનો પર જાઓ',
 
