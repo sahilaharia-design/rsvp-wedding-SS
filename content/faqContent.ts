@@ -75,6 +75,24 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'Please plan to arrive on Wednesday, 20 January 2027. Choose your arrival time on the form — options run from early morning through 2 pm, so we can plan your pickup around it.',
         },
         {
+          id: 'not-booked-yet',
+          audience: 'groom',
+          question: 'I haven’t booked my travel yet — what do I enter?',
+          answer: 'That’s completely fine, especially for trains. Give your best estimate for arrival time so we can plan around it, and leave the flight/train number blank until you’ve booked — you can always come back and update it.',
+        },
+        {
+          id: 'train-not-open',
+          audience: 'groom',
+          question: 'Train tickets for my route aren’t open for booking yet — what should I do?',
+          answer: 'Train bookings usually open only a couple of months before travel. Submit the form now with your best estimate, and once you’ve booked, just fill it out again with the same mobile number — it updates your existing details rather than creating a duplicate.',
+        },
+        {
+          id: 'flight-booked-early',
+          audience: 'groom',
+          question: 'Can I add my flight details now?',
+          answer: 'Yes — flights can usually be booked further in advance than trains, so feel free to add your flight number as soon as you’ve booked it.',
+        },
+        {
           id: 'id-upload',
           audience: 'groom',
           question: 'Why do I need to upload a photo of my ID?',
@@ -231,6 +249,24 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'कृपया बुधवार, 20 जनवरी 2027 को पहुँचने की योजना बनाएं। फ़ॉर्म पर अपना आगमन समय चुनें — विकल्प सुबह जल्दी से लेकर दोपहर 2 बजे तक हैं, ताकि हम उसी के अनुसार आपकी पिकअप की योजना बना सकें।',
         },
         {
+          id: 'not-booked-yet',
+          audience: 'groom',
+          question: 'मैंने अभी तक अपनी यात्रा बुक नहीं की है — मैं क्या भरूं?',
+          answer: 'यह बिल्कुल ठीक है, खासकर ट्रेन के लिए। अपने आगमन समय का अंदाज़ा बता दें ताकि हम उसी के अनुसार योजना बना सकें, और फ़्लाइट/ट्रेन नंबर खाली छोड़ दें जब तक आप बुकिंग नहीं कर लेते — आप इसे बाद में कभी भी अपडेट कर सकते हैं।',
+        },
+        {
+          id: 'train-not-open',
+          audience: 'groom',
+          question: 'मेरे रूट के लिए ट्रेन टिकट अभी बुकिंग के लिए नहीं खुले हैं — मुझे क्या करना चाहिए?',
+          answer: 'ट्रेन की बुकिंग आमतौर पर यात्रा से बस कुछ महीने पहले ही खुलती है। अभी अपने अंदाज़े के साथ फ़ॉर्म भर दें, और बुकिंग हो जाने के बाद उसी मोबाइल नंबर से फिर से फ़ॉर्म भर दें — इससे आपकी मौजूदा जानकारी अपडेट हो जाएगी, कोई नई एंट्री नहीं बनेगी।',
+        },
+        {
+          id: 'flight-booked-early',
+          audience: 'groom',
+          question: 'क्या मैं अभी अपनी फ़्लाइट की जानकारी दे सकता/सकती हूँ?',
+          answer: 'जी हाँ — फ़्लाइट आमतौर पर ट्रेन से पहले बुक की जा सकती है, तो बुकिंग होते ही बेझिझक अपना फ़्लाइट नंबर जोड़ दें।',
+        },
+        {
           id: 'id-upload',
           audience: 'groom',
           question: 'मुझे अपने पहचान पत्र की फोटो क्यों अपलोड करनी है?',
@@ -385,6 +421,24 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'મારે કઈ તારીખ અને સમયે પહોંચવાનું આયોજન કરવું જોઈએ?',
           answer: 'કૃપા કરી બુધવાર, 20 જાન્યુઆરી 2027ના રોજ પહોંચવાનું આયોજન કરો. ફોર્મ પર તમારો આગમનનો સમય પસંદ કરો — વિકલ્પો વહેલી સવારથી બપોરે 2 વાગ્યા સુધીના છે, જેથી અમે તે મુજબ તમારું પિકઅપ ગોઠવી શકીએ.',
+        },
+        {
+          id: 'not-booked-yet',
+          audience: 'groom',
+          question: 'મેં હજુ મારી મુસાફરી બુક નથી કરી — હું શું ભરું?',
+          answer: 'એ બિલકુલ ઠીક છે, ખાસ કરીને ટ્રેન માટે. તમારા આગમન સમયનો અંદાજ જણાવો જેથી અમે તે મુજબ આયોજન કરી શકીએ, અને ફ્લાઇટ/ટ્રેન નંબર ત્યાં સુધી ખાલી રાખો જ્યાં સુધી તમે બુકિંગ ન કરો — તમે તેને પછી ગમે ત્યારે અપડેટ કરી શકો છો.',
+        },
+        {
+          id: 'train-not-open',
+          audience: 'groom',
+          question: 'મારા રૂટ માટે ટ્રેન ટિકિટ હજુ બુકિંગ માટે ખુલી નથી — મારે શું કરવું જોઈએ?',
+          answer: 'ટ્રેનની બુકિંગ સામાન્ય રીતે મુસાફરીના થોડા મહિના પહેલાં જ ખુલે છે. હમણાં તમારા અંદાજ સાથે ફોર્મ ભરો, અને બુકિંગ થઈ ગયા પછી એ જ મોબાઇલ નંબરથી ફરી ફોર્મ ભરો — તેનાથી તમારી હાલની વિગતો અપડેટ થશે, નવી એન્ટ્રી નહીં બને.',
+        },
+        {
+          id: 'flight-booked-early',
+          audience: 'groom',
+          question: 'શું હું અત્યારે મારી ફ્લાઇટની વિગતો આપી શકું?',
+          answer: 'હા — ફ્લાઇટ સામાન્ય રીતે ટ્રેન કરતાં વહેલી બુક કરી શકાય છે, તો બુકિંગ થતાં જ તમારો ફ્લાઇટ નંબર ઉમેરવામાં મુક્ત મન રાખો.',
         },
         {
           id: 'id-upload',

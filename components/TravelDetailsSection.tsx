@@ -313,6 +313,7 @@ export default function TravelDetailsSection() {
                           ))}
                         </select>
                         <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
+                        <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.arrivalTimeEstimateHint}</p>
                       </div>
 
                       <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>
@@ -340,6 +341,7 @@ export default function TravelDetailsSection() {
                         <label className={labelCls} style={labelStyle}>
                           {travelNumberLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
                         </label>
+                        <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.travelNumberHint}</p>
                         <input type="text" value={fields.travel_number} onChange={setField('travel_number')} autoComplete="off"
                           placeholder="e.g. AI-2401" className={inputCls} style={inputStyle} />
                       </div>
