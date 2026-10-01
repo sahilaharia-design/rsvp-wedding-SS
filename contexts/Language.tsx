@@ -115,9 +115,14 @@ export const strings = {
     makeupViewerCaption: 'Trouble viewing below? Use the button above to open it in a new tab.',
 
     // FAQ page (/bride/faq, /groom/faq)
-    faqEyebrow:        'Good to Know',
-    faqHeading:        'Frequently Asked Questions',
-    faqIntro:          'Everything about the celebrations, travel, and what to wear — all in one place.',
+    faqEyebrow:        'We’ve Got You',
+    faqHeading:        'Got Questions? We’ve Got Answers',
+    faqIntro:          'From travel and outfits to mehndi and makeup — every little detail is laid out here, so you can sit back and look forward to the celebrations.',
+
+    // FAQ teaser (homepage, just above the footer)
+    faqTeaserHeading:  'Got Questions?',
+    faqTeaserBody:     'Travel, outfits, timings — we’ve laid it all out in one place.',
+    faqTeaserCTA:      'View the FAQ',
 
     // Navigation
     navHome:           'Home',
@@ -288,9 +293,13 @@ export const strings = {
     makeupOpenBtn:     'मेकअप गाइड खोलें / डाउनलोड करें',
     makeupViewerCaption: 'नीचे देखने में समस्या हो रही है? नए टैब में खोलने के लिए ऊपर दिए गए बटन का उपयोग करें।',
 
-    faqEyebrow:        'जानना ज़रूरी',
-    faqHeading:        'अक्सर पूछे जाने वाले सवाल',
-    faqIntro:          'उत्सव, यात्रा, और क्या पहनें — सब कुछ एक ही जगह पर।',
+    faqEyebrow:        'हम आपके साथ हैं',
+    faqHeading:        'सवाल हैं? जवाब यहाँ हैं',
+    faqIntro:          'यात्रा और पहनावे से लेकर मेहंदी और मेकअप तक — हर छोटी जानकारी यहाँ एक जगह है, ताकि आप बेफ़िक्र होकर उत्सव का आनंद लें।',
+
+    faqTeaserHeading:  'कोई सवाल है?',
+    faqTeaserBody:     'यात्रा, पहनावा, समय — सब कुछ एक ही जगह पर तैयार है।',
+    faqTeaserCTA:      'सवाल-जवाब देखें',
 
     navHome:           'होम',
     navCelebrations:    'उत्सव',
@@ -457,9 +466,13 @@ export const strings = {
     makeupOpenBtn:     'મેકઅપ ગાઇડ ખોલો / ડાઉનલોડ કરો',
     makeupViewerCaption: 'નીચે જોવામાં તકલીફ પડે છે? નવા ટૅબમાં ખોલવા માટે ઉપરના બટનનો ઉપયોગ કરો.',
 
-    faqEyebrow:        'જાણવા જેવું',
-    faqHeading:        'વારંવાર પુછાતા પ્રશ્નો',
-    faqIntro:          'ઉત્સવો, મુસાફરી, અને શું પહેરવું — બધું જ એક જ જગ્યાએ.',
+    faqEyebrow:        'અમે તમારી સાથે છીએ',
+    faqHeading:        'પ્રશ્નો છે? જવાબ અહીં છે',
+    faqIntro:          'મુસાફરી અને પોશાકથી લઈને મહેંદી અને મેકઅપ સુધી — દરેક નાની વિગત અહીં એક જ જગ્યાએ છે, જેથી તમે નિશ્ચિંત રહીને ઉત્સવોનો આનંદ માણી શકો.',
+
+    faqTeaserHeading:  'કોઈ પ્રશ્ન છે?',
+    faqTeaserBody:     'મુસાફરી, પોશાક, સમય — બધું જ એક જ જગ્યાએ તૈયાર છે.',
+    faqTeaserCTA:      'પ્રશ્નો જુઓ',
 
     navHome:           'હોમ',
     navCelebrations:    'ઉત્સવો',

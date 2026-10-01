@@ -16,6 +16,7 @@ import LovelyLadiesTeaser from '@/components/LovelyLadiesTeaser'
 import LadiesSignpost from '@/components/LadiesSignpost'
 import LovelyLadiesSection from '@/components/LovelyLadiesSection'
 import MehndiRSVPSection from '@/components/MehndiRSVPSection'
+import FaqTeaser from '@/components/FaqTeaser'
 import BottomTabBar from '@/components/BottomTabBar'
 import SiteHeader from '@/components/SiteHeader'
 import SectionThread from '@/components/SectionThread'
@@ -156,6 +157,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
           </>
         )}
 
+        <FaqTeaser audience={audience} />
         <Footer audience={audience} onCTAClick={!isBride ? scrollToTravelDetails : undefined} />
       </main>
       <BottomTabBar audience={audience} />

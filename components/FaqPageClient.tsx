@@ -37,6 +37,72 @@ function resolveFaqLink(type: FaqLinkType, audience: Audience, t: Strings) {
 
 type ResolvedLink = ReturnType<typeof resolveFaqLink>
 
+// Alternating card tints so the categories read as a lively set of cards
+// rather than one long uniform list — same palette used in LovelyLadiesSection.
+const CARD_TINTS = ['bg-blush/10', 'bg-champagne/20', 'bg-cream/70']
+
+// Small line-art badges, one per category — same thin-stroke style as the
+// existing plane/rail/road travel icons (the travel badge reuses that exact
+// path), just enough personality to make the list scannable and inviting.
+function CategoryIcon({ id, className }: { id: string; className?: string }) {
+  const stroke = {
+    fill: 'none' as const,
+    stroke: 'currentColor',
+    strokeWidth: 2.2,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  }
+  switch (id) {
+    case 'save-the-date':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <rect x="10" y="14" width="44" height="40" rx="5" />
+          <line x1="10" y1="25" x2="54" y2="25" />
+          <line x1="21" y1="8" x2="21" y2="18" />
+          <line x1="43" y1="8" x2="43" y2="18" />
+          <circle cx="24" cy="36" r="2" fill="currentColor" stroke="none" />
+        </svg>
+      )
+    case 'travel':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <path d="M8 36l20-9V9c0-6 8-6 8 0v18l20 9v7l-20-5v13l6 5v4l-10-3-10 3v-4l6-5V38L8 43z" />
+        </svg>
+      )
+    case 'mehndi':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <path d="M32 8c10 14 16 22 16 30a16 16 0 11-32 0c0-8 6-16 16-30z" />
+          <path d="M26 38c0 4 3 7 7 7" />
+        </svg>
+      )
+    case 'makeup':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <rect x="25" y="30" width="14" height="24" rx="2.5" />
+          <path d="M25 30l3.5-16h7l3.5 16z" />
+        </svg>
+      )
+    case 'wear':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <path d="M32 14a5 5 0 015 5c0 2-1.2 3.3-3 4.2L32 24.5" />
+          <path d="M32 24l-24 14a4.5 4.5 0 004.5 7h39a4.5 4.5 0 004.5-7L32 24z" />
+        </svg>
+      )
+    case 'good-to-know':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <circle cx="32" cy="32" r="22" />
+          <path d="M25 24c0-4.5 3.5-8 8-8s7.5 3.3 7.5 7c0 6-7.5 6.5-7.5 13.5" />
+          <circle cx="32.5" cy="46" r="1.9" fill="currentColor" stroke="none" />
+        </svg>
+      )
+    default:
+      return null
+  }
+}
+
 // One open/closed accordion row. Kept as its own top-level component (not
 // nested inside FaqPageClient) so each row's open state is local to itself
 // — several can be open at once, and toggling one never re-renders the rest.
@@ -142,12 +208,17 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
           </div>
 
           <div className="space-y-10">
-            {categories.map((category) => (
+            {categories.map((category, i) => (
               <div key={category.id}>
-                <h2 className="font-sans uppercase text-burgundy mb-2" style={{ fontSize: '0.85rem', letterSpacing: '0.18em' }}>
-                  {category.title}
-                </h2>
-                <div className="rounded-2xl border-2 border-thread-border/60 bg-blush/10 px-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="hover-lift flex-shrink-0 w-10 h-10 rounded-full bg-paper border border-gold/50 flex items-center justify-center">
+                    <CategoryIcon id={category.id} className="w-5 h-5 text-burgundy" />
+                  </span>
+                  <h2 className="font-sans uppercase text-burgundy" style={{ fontSize: '0.85rem', letterSpacing: '0.18em' }}>
+                    {category.title}
+                  </h2>
+                </div>
+                <div className={`rounded-2xl border-2 border-thread-border/60 ${CARD_TINTS[i % CARD_TINTS.length]} px-6`}>
                   {category.items.map((item) => (
                     <FaqRow key={item.id} item={item} link={item.link ? resolveFaqLink(item.link, audience, t) : undefined} />
                   ))}
