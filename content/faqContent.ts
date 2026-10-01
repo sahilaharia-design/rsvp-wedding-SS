@@ -1,6 +1,12 @@
 import type { Lang } from '@/contexts/Language'
 import type { Audience } from '@/lib/audience'
 
+// Resolved to an actual href + button label in FaqPageClient, using
+// AUDIENCE_CONFIG and the existing translated CTA strings — kept as a type
+// tag here (not a literal URL or label) so content stays audience- and
+// language-agnostic and nothing has to be translated three times.
+export type FaqLinkType = 'themes' | 'makeup' | 'guide' | 'mehndiRsvp' | 'travelDetails' | 'switchAudience'
+
 export interface FaqItem {
   id: string
   question: string
@@ -10,6 +16,8 @@ export interface FaqItem {
   // "when is it" question needs a different date range per audience since
   // bride's guests only attend the 20th and 21st, not the 22nd checkout.
   audience?: Audience
+  // Shows a button under the answer linking to the page/section it refers to.
+  link?: FaqLinkType
 }
 
 export interface FaqCategory {
@@ -44,6 +52,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'schedule',
           question: 'What’s the schedule of events?',
           answer: 'Four celebrations: Mehndi (20 January, morning), Engagement & Cocktail (20 January, evening), Haldi (21 January, morning), and the Wedding (21 January, evening). The Themes & What to Wear page has the full story behind each.',
+          link: 'themes',
         },
         {
           id: 'hashtag',
@@ -61,6 +70,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'Do I need to confirm my travel?',
           answer: 'Yes — please fill out the Travel Details form so we can arrange your pickup and stay.',
+          link: 'travelDetails',
         },
         {
           id: 'who-books-travel',
@@ -131,6 +141,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'mehndi-rsvp',
           question: 'How do I let you know I’m joining?',
           answer: 'Use the Mehndi RSVP section — share your name and whether you’re joining, unable to join, or not sure yet. You can add more than one guest at a time.',
+          link: 'mehndiRsvp',
         },
         {
           id: 'mehndi-not-sure',
@@ -147,6 +158,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'makeup-arranged',
           question: 'Is makeup arranged for us?',
           answer: 'Not directly — we’ve put together a guide to a few nearby Pitampura salons to make it easier, or you’re welcome to book an artist you already love.',
+          link: 'makeup',
         },
         {
           id: 'makeup-window',
@@ -173,11 +185,13 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'wear-more',
           question: 'Where can I see more detail and inspiration?',
           answer: 'The Themes & What to Wear page has the full story and look ideas for each celebration.',
+          link: 'themes',
         },
         {
           id: 'guest-guide',
           question: 'Is there a downloadable guide?',
           answer: 'Yes — the Guest Guide PDF, linked in the footer, has everything in one place.',
+          link: 'guide',
         },
       ],
     },
@@ -194,6 +208,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'switch-side',
           question: 'I think I’m on the wrong guest page — can I switch?',
           answer: 'Yes — use the switch link in the header to move between Sakshi’s guests and Dr. Sahil’s guests.',
+          link: 'switchAudience',
         },
         {
           id: 'contact',
@@ -224,6 +239,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'schedule',
           question: 'कार्यक्रम का क्रम क्या है?',
           answer: 'चार उत्सव: मेहंदी (20 जनवरी, सुबह), सगाई और कॉकटेल (20 जनवरी, शाम), हल्दी (21 जनवरी, सुबह), और शादी (21 जनवरी, शाम)। हर उत्सव की पूरी कहानी थीम्स और पहनावा पेज पर है।',
+          link: 'themes',
         },
         {
           id: 'hashtag',
@@ -241,6 +257,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'क्या मुझे अपनी यात्रा की पुष्टि करनी होगी?',
           answer: 'हाँ — कृपया यात्रा विवरण फ़ॉर्म भरें ताकि हम आपकी पिकअप और ठहरने की व्यवस्था कर सकें।',
+          link: 'travelDetails',
         },
         {
           id: 'who-books-travel',
@@ -311,6 +328,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'mehndi-rsvp',
           question: 'मैं आपको कैसे बताऊं कि मैं शामिल हो रहा/रही हूँ?',
           answer: 'मेहंदी RSVP सेक्शन का उपयोग करें — अपना नाम बताएं और यह भी कि आप शामिल हो रही हैं, शामिल नहीं हो पाएंगी, या अभी तय नहीं है। आप एक साथ एक से ज़्यादा मेहमान भी जोड़ सकती हैं।',
+          link: 'mehndiRsvp',
         },
         {
           id: 'mehndi-not-sure',
@@ -327,6 +345,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'makeup-arranged',
           question: 'क्या हमारे लिए मेकअप की व्यवस्था की गई है?',
           answer: 'सीधे तौर पर नहीं — हमने आसानी के लिए पितमपुरा के कुछ नज़दीकी सैलून की एक गाइड तैयार की है, या आप अपनी पसंदीदा आर्टिस्ट भी बुक कर सकती हैं।',
+          link: 'makeup',
         },
         {
           id: 'makeup-window',
@@ -353,11 +372,13 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'wear-more',
           question: 'मैं और जानकारी और प्रेरणा कहाँ देख सकती/सकता हूँ?',
           answer: 'थीम्स और पहनावा पेज पर हर उत्सव की पूरी कहानी और लुक के विचार मौजूद हैं।',
+          link: 'themes',
         },
         {
           id: 'guest-guide',
           question: 'क्या कोई डाउनलोड करने योग्य गाइड है?',
           answer: 'जी हाँ — फ़ुटर में दिया गया गेस्ट गाइड PDF में सब कुछ एक ही जगह मौजूद है।',
+          link: 'guide',
         },
       ],
     },
@@ -374,6 +395,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'switch-side',
           question: 'लगता है मैं गलत मेहमान पेज पर हूँ — क्या मैं बदल सकता/सकती हूँ?',
           answer: 'जी हाँ — साक्षी के मेहमानों और डॉ. सहिल के मेहमानों के बीच जाने के लिए हेडर में दिया गया स्विच लिंक इस्तेमाल करें।',
+          link: 'switchAudience',
         },
         {
           id: 'contact',
@@ -404,6 +426,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'schedule',
           question: 'કાર્યક્રમોનું શેડ્યૂલ શું છે?',
           answer: 'ચાર ઉત્સવો: મહેંદી (20 જાન્યુઆરી, સવારે), સગાઈ અને કૉકટેલ (20 જાન્યુઆરી, સાંજે), હળદી (21 જાન્યુઆરી, સવારે), અને લગ્ન (21 જાન્યુઆરી, સાંજે). દરેકની સંપૂર્ણ વાર્તા થીમ્સ અને પોશાક પાના પર છે.',
+          link: 'themes',
         },
         {
           id: 'hashtag',
@@ -421,6 +444,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'શું મારે મારી મુસાફરીની પુષ્ટિ કરવાની જરૂર છે?',
           answer: 'હા — કૃપા કરી મુસાફરીની વિગતોનું ફોર્મ ભરો જેથી અમે તમારું પિકઅપ અને રોકાણ ગોઠવી શકીએ.',
+          link: 'travelDetails',
         },
         {
           id: 'who-books-travel',
@@ -491,6 +515,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'mehndi-rsvp',
           question: 'હું તમને કેવી રીતે જણાવું કે હું જોડાઈ રહ્યો/રહી છું?',
           answer: 'મહેંદી RSVP વિભાગનો ઉપયોગ કરો — તમારું નામ અને તમે જોડાઈ રહ્યા છો, જોડાઈ શકશો નહીં, કે હજુ નક્કી નથી તે જણાવો. તમે એક સાથે એકથી વધુ મહેમાન પણ ઉમેરી શકો છો.',
+          link: 'mehndiRsvp',
         },
         {
           id: 'mehndi-not-sure',
@@ -507,6 +532,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'makeup-arranged',
           question: 'શું અમારા માટે મેકઅપની વ્યવસ્થા કરવામાં આવી છે?',
           answer: 'સીધી રીતે નહીં — શોધવાનું સરળ બનાવવા અમે પિતમપુરાનાં થોડાં નજીકનાં સલૂનની ગાઇડ તૈયાર કરી છે, અથવા તમે તમારી મનપસંદ આર્ટિસ્ટ પણ બુક કરી શકો છો.',
+          link: 'makeup',
         },
         {
           id: 'makeup-window',
@@ -533,11 +559,13 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'wear-more',
           question: 'હું વધુ વિગતો અને પ્રેરણા ક્યાં જોઈ શકું?',
           answer: 'થીમ્સ અને પોશાક પાના પર દરેક ઉત્સવની સંપૂર્ણ વાર્તા અને લુકના વિચારો છે.',
+          link: 'themes',
         },
         {
           id: 'guest-guide',
           question: 'શું કોઈ ડાઉનલોડ કરી શકાય તેવી ગાઇડ છે?',
           answer: 'હા — ફૂટરમાં આપેલ ગેસ્ટ ગાઇડ PDF માં બધું એક જ જગ્યાએ છે.',
+          link: 'guide',
         },
       ],
     },
@@ -554,6 +582,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'switch-side',
           question: 'લાગે છે હું ખોટા મહેમાન પાના પર છું — શું હું બદલી શકું?',
           answer: 'હા — સાક્ષીના મહેમાનો અને ડૉ. સહિલના મહેમાનો વચ્ચે જવા માટે હેડરમાં આપેલ સ્વિચ લિંકનો ઉપયોગ કરો.',
+          link: 'switchAudience',
         },
         {
           id: 'contact',

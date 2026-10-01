@@ -5,16 +5,42 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import BottomTabBar from '@/components/BottomTabBar'
-import { useLang } from '@/contexts/Language'
-import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
-import { faqContent, type FaqItem } from '@/content/faqContent'
+import { useLang, type Strings } from '@/contexts/Language'
+import { AUDIENCE_CONFIG, OTHER_AUDIENCE, type Audience } from '@/lib/audience'
+import { faqContent, type FaqItem, type FaqLinkType } from '@/content/faqContent'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
+
+// Resolves a content-level link type to an actual href + button label,
+// reusing the same translated CTA strings their source pages already use
+// (wardrobeExploreCTA, lovelyLadiesMakeupCardCTA, etc.) instead of writing
+// new copy here — one source of truth per label, in all three languages.
+function resolveFaqLink(type: FaqLinkType, audience: Audience, t: Strings) {
+  const config = AUDIENCE_CONFIG[audience]
+  switch (type) {
+    case 'themes':
+      return { href: config.themesRoute, label: t.wardrobeExploreCTA }
+    case 'makeup':
+      return { href: config.makeupRoute, label: t.lovelyLadiesMakeupCardCTA }
+    case 'guide':
+      return { href: config.pdfPath, label: audience === 'bride' ? t.brideDownloadLabel : t.groomDownloadLabel, external: true }
+    case 'mehndiRsvp':
+      return { href: `${config.route}#mehndi-rsvp`, label: t.lovelyLadiesMehndiCardCTA }
+    case 'travelDetails':
+      return { href: `${config.route}#travel-details`, label: t.groomPrimaryCTA }
+    case 'switchAudience': {
+      const other = OTHER_AUDIENCE[audience]
+      return { href: AUDIENCE_CONFIG[other].route, label: other === 'bride' ? t.switchToBride : t.switchToGroom }
+    }
+  }
+}
+
+type ResolvedLink = ReturnType<typeof resolveFaqLink>
 
 // One open/closed accordion row. Kept as its own top-level component (not
 // nested inside FaqPageClient) so each row's open state is local to itself
 // — several can be open at once, and toggling one never re-renders the rest.
-function FaqRow({ item }: { item: FaqItem }) {
+function FaqRow({ item, link }: { item: FaqItem; link?: ResolvedLink }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -46,9 +72,22 @@ function FaqRow({ item }: { item: FaqItem }) {
             transition={{ duration: 0.3, ease: EASE }}
             className="overflow-hidden"
           >
-            <p className="font-sans leading-[1.8] text-stone pb-6 pr-8" style={{ fontSize: '0.95rem' }}>
-              {item.answer}
-            </p>
+            <div className="pb-6 pr-8">
+              <p className="font-sans leading-[1.8] text-stone" style={{ fontSize: '0.95rem' }}>
+                {item.answer}
+              </p>
+              {link && (
+                <Link
+                  href={link.href}
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 border-2 border-burgundy text-burgundy font-sans uppercase hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
+                  style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}
+                >
+                  {link.label} &rarr;
+                </Link>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -110,7 +149,7 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
                 </h2>
                 <div className="rounded-2xl border-2 border-thread-border/60 bg-blush/10 px-6">
                   {category.items.map((item) => (
-                    <FaqRow key={item.id} item={item} />
+                    <FaqRow key={item.id} item={item} link={item.link ? resolveFaqLink(item.link, audience, t) : undefined} />
                   ))}
                 </div>
               </div>

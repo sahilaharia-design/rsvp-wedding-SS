@@ -686,7 +686,7 @@ export const themesStrings = {
   },
 }
 
-type Strings = typeof strings.en
+export type Strings = typeof strings.en
 const LanguageContext = createContext<{
   lang: Lang
   setLang: (l: Lang) => void
