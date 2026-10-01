@@ -37,12 +37,14 @@ export default function BottomTabBar({ audience }: { audience: Audience }) {
         { label: t.navTabTravel, href: `${config.route}#travel-details`, anchorId: 'travel-details' },
         { label: t.navMehndi, href: `${config.route}#mehndi-rsvp`, anchorId: 'mehndi-rsvp' },
         { label: t.navMakeup, href: config.makeupRoute },
+        { label: t.navFaq, href: config.faqRoute },
       ]
     : [
         { label: t.navHome, href: config.route },
         { label: t.navTabThemes, href: config.themesRoute },
         { label: t.navMehndi, href: `${config.route}#mehndi-rsvp`, anchorId: 'mehndi-rsvp' },
         { label: t.navMakeup, href: config.makeupRoute },
+        { label: t.navFaq, href: config.faqRoute },
       ]
 
   const onTabClick = useCallback(
@@ -61,7 +63,7 @@ export default function BottomTabBar({ audience }: { audience: Audience }) {
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       aria-label="Site navigation"
     >
-      <div className="max-w-md mx-auto grid grid-cols-4">
+      <div className="max-w-md mx-auto grid grid-cols-5">
         {tabs.map((tab) => {
           const active = !tab.anchorId && pathname === tab.href
           return (
@@ -69,15 +71,15 @@ export default function BottomTabBar({ audience }: { audience: Audience }) {
               key={tab.label}
               href={tab.href}
               onClick={onTabClick(tab)}
-              className="flex flex-col items-center justify-center gap-1 py-3 transition-colors duration-200"
+              className="flex flex-col items-center justify-center gap-1 py-3 px-0.5 transition-colors duration-200"
             >
               <span
                 className="w-1 h-1 rounded-full transition-opacity duration-200"
                 style={{ background: '#A17B3D', opacity: active ? 1 : 0 }}
               />
               <span
-                className={`font-sans uppercase transition-colors duration-200 ${active ? 'text-burgundy' : 'text-stone/70'}`}
-                style={{ fontSize: '0.74rem', letterSpacing: '0.05em' }}
+                className={`font-sans uppercase text-center transition-colors duration-200 ${active ? 'text-burgundy' : 'text-stone/70'}`}
+                style={{ fontSize: '0.66rem', letterSpacing: '0.03em' }}
               >
                 {tab.label}
               </span>
