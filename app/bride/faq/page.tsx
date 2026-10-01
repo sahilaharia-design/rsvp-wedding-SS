@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Everything about the celebrations, travel, and what to wear — all in one place.',
     type: 'website',
     url: 'https://sakshisahil.com/bride/faq',
-    images: ['/opengraph-image'],
+    images: ['/og/faq.jpg'],
   },
 }
 
