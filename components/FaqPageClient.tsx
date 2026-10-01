@@ -98,6 +98,27 @@ function CategoryIcon({ id, className }: { id: string; className?: string }) {
           <circle cx="32.5" cy="46" r="1.9" fill="currentColor" stroke="none" />
         </svg>
       )
+    case 'venues':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <path d="M32 8c11 0 19 8.5 19 19 0 14-19 29-19 29S13 41 13 27c0-10.5 8-19 19-19z" />
+          <circle cx="32" cy="27" r="7" />
+        </svg>
+      )
+    case 'food-stay':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <path d="M14 20h30v15a13 13 0 01-13 13h-4a13 13 0 01-13-13V20z" />
+          <path d="M44 24h4a6 6 0 010 12h-4" />
+        </svg>
+      )
+    case 'nearby':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <path d="M21 22v-5a11 11 0 0122 0v5" />
+          <rect x="14" y="22" width="36" height="30" rx="4" />
+        </svg>
+      )
     default:
       return null
   }

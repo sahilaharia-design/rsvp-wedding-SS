@@ -11,10 +11,12 @@ export interface FaqItem {
   id: string
   question: string
   answer: string
-  // Omit to show on both guest pages. Travel & Arrival only exists on the
-  // groom's side (bride's guests have no Travel Details form), and the
-  // "when is it" question needs a different date range per audience since
-  // bride's guests only attend the 20th and 21st, not the 22nd checkout.
+  // Omit to show on both guest pages. Travel & Arrival, Venues & Getting
+  // Around, Food & Stay and Nearby Essentials only exist on the groom's
+  // side (bride's guests have no Travel Details form, don't stay at the
+  // hotel the same way, and the "when is it" question needs a different
+  // date range per audience since bride's guests only attend the 20th and
+  // 21st, not the 22nd checkout).
   audience?: Audience
   // Shows a button under the answer linking to the page/section it refers to.
   link?: FaqLinkType
@@ -28,8 +30,8 @@ export interface FaqCategory {
 
 // Answers are deliberately grounded only in copy and data that already
 // exists elsewhere on the site (Language.tsx, content/wedding-content.json)
-// — nothing here introduces a fact (a venue name, a phone number, etc.)
-// that isn't already established somewhere else.
+// or facts given directly for this FAQ (pickup window, venue distances,
+// Rani Bagh) — nothing here introduces an unconfirmed fact.
 export const faqContent: Record<Lang, FaqCategory[]> = {
   en: [
     {
@@ -43,10 +45,16 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'Our celebrations for you run Wednesday 20 to Thursday 21 January 2027, in Pitampura, Delhi.',
         },
         {
-          id: 'when-groom',
+          id: 'event-dates-groom',
+          audience: 'groom',
+          question: 'What are the event dates?',
+          answer: 'Our celebrations run Wednesday 20 to Friday 22 January 2027, in Pitampura, Delhi. The main celebrations are on the 20th and 21st — 22 January is checkout day, not a separate celebration.',
+        },
+        {
+          id: 'wedding-date-groom',
           audience: 'groom',
           question: 'When is the wedding?',
-          answer: 'Wednesday 20 to Friday 22 January 2027, in Pitampura, Delhi — the 22nd is checkout, not a separate celebration.',
+          answer: 'The wedding ceremony itself is on Thursday, 21 January 2027. The celebrations begin a day earlier, on Wednesday 20 January, with the other wedding functions.',
         },
         {
           id: 'schedule',
@@ -68,45 +76,45 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
         {
           id: 'confirm-travel',
           audience: 'groom',
-          question: 'Do I need to confirm my travel?',
-          answer: 'Yes — please fill out the Travel Details form so we can arrange your pickup and stay.',
+          question: 'Do I need to confirm my travel details?',
+          answer: 'Yes — please fill out the Travel Details form so we can plan your stay and, where applicable, coordinate your pickup within Delhi. Guests book and manage their own travel to Delhi.',
           link: 'travelDetails',
         },
         {
           id: 'who-books-travel',
           audience: 'groom',
           question: 'Do you book our tickets, or should we do that ourselves?',
-          answer: 'Please go ahead and book whichever flight or train works best for you. The Travel Details form just helps us know your plans — your airport/station transfer and your stay here are both taken care of for you.',
+          answer: 'Please go ahead and book whichever flight or train works best for you — getting to Delhi is on you. Once you’re here, your stay is taken care of, and we’ll coordinate your pickup from the airport/station during the supported arrival window — see the next question for details.',
         },
         {
           id: 'travel-deadline',
           audience: 'groom',
-          question: 'What’s the deadline to submit my travel details?',
+          question: 'By when should I submit my travel details?',
           answer: 'Tuesday, 20 October 2026.',
         },
         {
           id: 'arrival-date-time',
           audience: 'groom',
-          question: 'What date and time should I plan to arrive?',
-          answer: 'Please plan to arrive on Wednesday, 20 January 2027. Choose your arrival time on the form — options run from early morning through 2 pm, so we can plan your pickup around it.',
+          question: 'When should I plan to arrive?',
+          answer: 'Please plan to arrive on Wednesday, 20 January 2027. Choose your best estimate on the form — if it falls in the 6 am–11 am pickup window, see the next question for how that works.',
         },
         {
-          id: 'not-booked-yet',
+          id: 'delhi-pickup',
           audience: 'groom',
-          question: 'I haven’t booked my travel yet — what do I enter?',
-          answer: 'That’s completely fine, especially for trains. Give your best estimate for arrival time so we can plan around it, and leave the flight/train number blank until you’ve booked — you can always come back and update it.',
+          question: 'Is pickup arranged when I arrive in Delhi?',
+          answer: 'Pickup window: 6:00 am – 11:00 am, Wednesday 20 January. During that window, we’ll coordinate your pickup from the Delhi airport or railway station, grouping guests by arrival timing wherever practical rather than arranging an individual cab for every arrival. Please submit accurate arrival details in advance so we can plan smoothly.',
         },
         {
-          id: 'train-not-open',
+          id: 'pickup-outside-window',
           audience: 'groom',
-          question: 'Train tickets for my route aren’t open for booking yet — what should I do?',
-          answer: 'Train bookings usually open only a couple of months before travel. Submit the form now with your best estimate, and once you’ve booked, just fill it out again with the same mobile number — it updates your existing details rather than creating a duplicate.',
+          question: 'What if I arrive outside the pickup window, or on another day?',
+          answer: 'You’re absolutely welcome to — just know that organised pickups run only during the 6 am–11 am window on 20 January. Outside that window, or on another day (the 21st, or the wedding day itself), please arrange your own transport to the hotel, and let us know your plans in the notes field on the form.',
         },
         {
-          id: 'flight-booked-early',
+          id: 'tickets-not-booked-yet',
           audience: 'groom',
-          question: 'Can I add my flight details now?',
-          answer: 'Yes — flights can usually be booked further in advance than trains, so feel free to add your flight number as soon as you’ve booked it.',
+          question: 'What if I haven’t booked my tickets yet?',
+          answer: 'That’s completely fine, especially for trains — bookings for your route may only open a couple of months before travel. Submit the form now with your best estimate, and once you’ve booked, fill it out again with the same mobile number to update your details rather than create a duplicate. Flights can usually be booked further ahead, so feel free to add your flight number as soon as you have it.',
         },
         {
           id: 'id-upload',
@@ -115,16 +123,76 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'It’s used only to arrange your pickup and stay. Aadhar, Passport or Driving Licence all work, for yourself and anyone travelling with you.',
         },
         {
-          id: 'different-day',
-          audience: 'groom',
-          question: 'What if I’m arriving on a different day — the 21st, or the wedding day itself?',
-          answer: 'That’s completely fine — just let us know in the notes field on the Travel Details form, along with your flight or train details if you have them.',
-        },
-        {
           id: 'checkout',
           audience: 'groom',
           question: 'When is checkout?',
           answer: '11 am on Friday, 22 January.',
+        },
+      ],
+    },
+    {
+      id: 'venues',
+      title: 'Venues & Getting Around',
+      items: [
+        {
+          id: 'same-venue',
+          audience: 'groom',
+          question: 'Are all the events at the same venue?',
+          answer: 'Almost all the celebrations are at the main venue/hotel, so you won’t need to travel between different places for most of the stay.',
+        },
+        {
+          id: 'wedding-venue-location',
+          audience: 'groom',
+          question: 'Where is the Wedding venue?',
+          answer: 'The Wedding on 21 January is at a separate venue, about 400 metres from the main venue/hotel.',
+        },
+        {
+          id: 'wedding-venue-transport',
+          audience: 'groom',
+          question: 'Is transport to the Wedding venue arranged?',
+          answer: 'Yes — we’ll arrange transport between the hotel/main venue and the Wedding venue, so you won’t need to organise this yourself.',
+        },
+      ],
+    },
+    {
+      id: 'food-stay',
+      title: 'Food & Stay',
+      items: [
+        {
+          id: 'meals-arranged',
+          audience: 'groom',
+          question: 'Are meals being arranged during the celebrations?',
+          answer: 'Yes — meals around the wedding celebrations are being arranged for our guests, so please don’t worry about going hungry. Scheduled meals, including lunch and other event meals, are part of the arrangements.',
+        },
+        {
+          id: 'separate-orders',
+          audience: 'groom',
+          question: 'What if I order something separately from the hotel?',
+          answer: 'Meals that are part of the wedding celebrations are taken care of by us. If you order anything extra for personal use — room service, beverages, or anything else from the hotel menu — please settle those charges directly with the hotel.',
+        },
+        {
+          id: 'hotel-expenses',
+          audience: 'groom',
+          question: 'What personal hotel expenses should I pay myself?',
+          answer: 'Your stay and the arrangements we’ve shared with you are taken care of. Personal extras — additional room-service orders, minibar or personal purchases, laundry, or other individually requested hotel services — should be settled directly with the hotel.',
+        },
+        {
+          id: 'room-issue',
+          audience: 'groom',
+          question: 'What should I do if there’s an issue with my room?',
+          answer: 'For anything related to your room — housekeeping, amenities, maintenance, room keys, or other hotel services — please contact the hotel reception directly, just as you would on any hotel stay. The hotel team is best placed to help you quickly, and it means we get to spend that time enjoying the celebrations together with you.',
+        },
+      ],
+    },
+    {
+      id: 'nearby',
+      title: 'Nearby Essentials',
+      items: [
+        {
+          id: 'rani-bagh',
+          audience: 'groom',
+          question: 'Where can I get medicines, shopping or everyday essentials?',
+          answer: 'Rani Bagh Market is about 400 metres away and is handy for medicines, personal essentials, shopping, or anything else you might need during your stay. E-rickshaws are easily available for the short ride over.',
         },
       ],
     },
@@ -230,10 +298,16 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'आपके लिए हमारे उत्सव बुधवार 20 से गुरुवार 21 जनवरी 2027 तक, पितमपुरा, दिल्ली में होंगे।',
         },
         {
-          id: 'when-groom',
+          id: 'event-dates-groom',
+          audience: 'groom',
+          question: 'उत्सव की तारीख़ें क्या हैं?',
+          answer: 'हमारे उत्सव बुधवार 20 से शुक्रवार 22 जनवरी 2027 तक, पितमपुरा, दिल्ली में होंगे। मुख्य उत्सव 20 और 21 तारीख़ को हैं — 22 जनवरी सिर्फ़ चेकआउट का दिन है, कोई अलग उत्सव नहीं।',
+        },
+        {
+          id: 'wedding-date-groom',
           audience: 'groom',
           question: 'शादी कब है?',
-          answer: 'बुधवार 20 से शुक्रवार 22 जनवरी 2027 तक, पितमपुरा, दिल्ली में — 22 तारीख़ सिर्फ़ चेकआउट है, कोई अलग उत्सव नहीं।',
+          answer: 'शादी की रस्म गुरुवार, 21 जनवरी 2027 को है। उत्सव इससे एक दिन पहले, बुधवार 20 जनवरी से, बाक़ी शादी के कार्यक्रमों के साथ शुरू होते हैं।',
         },
         {
           id: 'schedule',
@@ -255,45 +329,45 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
         {
           id: 'confirm-travel',
           audience: 'groom',
-          question: 'क्या मुझे अपनी यात्रा की पुष्टि करनी होगी?',
-          answer: 'हाँ — कृपया यात्रा विवरण फ़ॉर्म भरें ताकि हम आपकी पिकअप और ठहरने की व्यवस्था कर सकें।',
+          question: 'क्या मुझे अपनी यात्रा जानकारी की पुष्टि करनी होगी?',
+          answer: 'हाँ — कृपया यात्रा विवरण फ़ॉर्म भरें ताकि हम आपके ठहरने की योजना बना सकें और, जहाँ लागू हो, दिल्ली के भीतर आपकी पिकअप की व्यवस्था कर सकें। दिल्ली तक की यात्रा बुक करना और उसकी व्यवस्था करना आपकी ज़िम्मेदारी है।',
           link: 'travelDetails',
         },
         {
           id: 'who-books-travel',
           audience: 'groom',
           question: 'क्या आप हमारी टिकट बुक करेंगे, या हमें खुद बुक करनी होगी?',
-          answer: 'जो भी फ़्लाइट या ट्रेन आपके लिए सही रहे, बेझिझक उसकी बुकिंग करें। यात्रा विवरण फ़ॉर्म बस हमें आपकी योजना बताने के लिए है — आपका एयरपोर्ट/स्टेशन ट्रांसफर और यहाँ ठहरना, दोनों की व्यवस्था हमारी तरफ़ से है।',
+          answer: 'जो भी फ़्लाइट या ट्रेन आपके लिए सही रहे, बेझिझक उसकी बुकिंग करें — दिल्ली तक पहुँचना आपकी तरफ़ से है। यहाँ पहुँचने के बाद आपका ठहरना हमारी तरफ़ से है, और तय पिकअप समय के दौरान हम आपकी एयरपोर्ट/स्टेशन पिकअप की व्यवस्था करेंगे — पूरी जानकारी अगले सवाल में है।',
         },
         {
           id: 'travel-deadline',
           audience: 'groom',
-          question: 'अपनी यात्रा जानकारी देने की आख़िरी तारीख़ क्या है?',
+          question: 'मुझे अपनी यात्रा जानकारी कब तक देनी चाहिए?',
           answer: 'मंगलवार, 20 अक्टूबर 2026।',
         },
         {
           id: 'arrival-date-time',
           audience: 'groom',
-          question: 'मुझे किस तारीख़ और समय पर पहुँचने की योजना बनानी चाहिए?',
-          answer: 'कृपया बुधवार, 20 जनवरी 2027 को पहुँचने की योजना बनाएं। फ़ॉर्म पर अपना आगमन समय चुनें — विकल्प सुबह जल्दी से लेकर दोपहर 2 बजे तक हैं, ताकि हम उसी के अनुसार आपकी पिकअप की योजना बना सकें।',
+          question: 'मुझे किस तारीख़ को पहुँचने की योजना बनानी चाहिए?',
+          answer: 'कृपया बुधवार, 20 जनवरी 2027 को पहुँचने की योजना बनाएं। फ़ॉर्म पर अपना अंदाज़ित समय बताएं — अगर यह सुबह 6 से 11 बजे के पिकअप समय में आता है, तो अगले सवाल में पूरी जानकारी है।',
         },
         {
-          id: 'not-booked-yet',
+          id: 'delhi-pickup',
           audience: 'groom',
-          question: 'मैंने अभी तक अपनी यात्रा बुक नहीं की है — मैं क्या भरूं?',
-          answer: 'यह बिल्कुल ठीक है, खासकर ट्रेन के लिए। अपने आगमन समय का अंदाज़ा बता दें ताकि हम उसी के अनुसार योजना बना सकें, और फ़्लाइट/ट्रेन नंबर खाली छोड़ दें जब तक आप बुकिंग नहीं कर लेते — आप इसे बाद में कभी भी अपडेट कर सकते हैं।',
+          question: 'दिल्ली पहुँचने पर क्या पिकअप की व्यवस्था है?',
+          answer: 'पिकअप का समय: बुधवार, 20 जनवरी, सुबह 6 से 11 बजे तक। इस दौरान हम आपकी दिल्ली एयरपोर्ट या रेलवे स्टेशन से पिकअप की व्यवस्था करेंगे — जहाँ तक संभव हो, हर आगमन के लिए अलग कैब के बजाय आगमन समय के अनुसार मेहमानों को साथ में समूहबद्ध करेंगे। कृपया सही आगमन जानकारी पहले से दें ताकि हम इसे ठीक से योजनाबद्ध कर सकें।',
         },
         {
-          id: 'train-not-open',
+          id: 'pickup-outside-window',
           audience: 'groom',
-          question: 'मेरे रूट के लिए ट्रेन टिकट अभी बुकिंग के लिए नहीं खुले हैं — मुझे क्या करना चाहिए?',
-          answer: 'ट्रेन की बुकिंग आमतौर पर यात्रा से बस कुछ महीने पहले ही खुलती है। अभी अपने अंदाज़े के साथ फ़ॉर्म भर दें, और बुकिंग हो जाने के बाद उसी मोबाइल नंबर से फिर से फ़ॉर्म भर दें — इससे आपकी मौजूदा जानकारी अपडेट हो जाएगी, कोई नई एंट्री नहीं बनेगी।',
+          question: 'अगर मैं पिकअप समय के बाहर, या किसी और दिन पहुँचूं तो?',
+          answer: 'आप बेझिझक आ सकते हैं — बस ध्यान रखें कि व्यवस्थित पिकअप केवल 20 जनवरी को सुबह 6 से 11 बजे के बीच ही उपलब्ध है। इस समय के बाहर, या किसी और दिन (21 तारीख़, या शादी वाले दिन ही) पहुँचने पर, कृपया होटल तक अपनी यात्रा ख़ुद तय करें, और फ़ॉर्म के नोट्स वाले हिस्से में हमें अपनी योजना बता दें।',
         },
         {
-          id: 'flight-booked-early',
+          id: 'tickets-not-booked-yet',
           audience: 'groom',
-          question: 'क्या मैं अभी अपनी फ़्लाइट की जानकारी दे सकता/सकती हूँ?',
-          answer: 'जी हाँ — फ़्लाइट आमतौर पर ट्रेन से पहले बुक की जा सकती है, तो बुकिंग होते ही बेझिझक अपना फ़्लाइट नंबर जोड़ दें।',
+          question: 'अगर मैंने अभी तक अपनी टिकट बुक नहीं की है तो?',
+          answer: 'यह बिल्कुल ठीक है, खासकर ट्रेन के लिए — आपके रूट की बुकिंग यात्रा से बस कुछ महीने पहले ही खुल सकती है। अभी अपने अंदाज़े के साथ फ़ॉर्म भर दें, और बुकिंग हो जाने के बाद उसी मोबाइल नंबर से दोबारा फ़ॉर्म भरें ताकि आपकी जानकारी अपडेट हो, नई एंट्री न बने। फ़्लाइट आमतौर पर पहले से बुक हो सकती है, तो बुकिंग होते ही अपना फ़्लाइट नंबर जोड़ दें।',
         },
         {
           id: 'id-upload',
@@ -302,16 +376,76 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'इसका उपयोग केवल आपकी पिकअप और ठहरने की व्यवस्था के लिए किया जाता है। आधार, पासपोर्ट या ड्राइविंग लाइसेंस — अपने और साथ आने वाले सभी के लिए — मान्य हैं।',
         },
         {
-          id: 'different-day',
-          audience: 'groom',
-          question: 'अगर मैं किसी और दिन पहुँच रहा/रही हूँ — 21 तारीख़ को, या शादी वाले दिन ही — तो क्या करूं?',
-          answer: 'यह बिल्कुल ठीक है — बस यात्रा विवरण फ़ॉर्म के नोट्स वाले हिस्से में हमें बता दें, साथ में अपनी फ़्लाइट या ट्रेन की जानकारी भी अगर आपके पास हो।',
-        },
-        {
           id: 'checkout',
           audience: 'groom',
           question: 'चेकआउट कब है?',
           answer: 'शुक्रवार, 22 जनवरी को सुबह 11 बजे।',
+        },
+      ],
+    },
+    {
+      id: 'venues',
+      title: 'वेन्यू और आना-जाना',
+      items: [
+        {
+          id: 'same-venue',
+          audience: 'groom',
+          question: 'क्या सभी उत्सव एक ही वेन्यू पर हैं?',
+          answer: 'लगभग सभी उत्सव मुख्य वेन्यू/होटल में ही हैं, तो ठहरने के दौरान ज़्यादातर समय आपको अलग-अलग जगहों पर आने-जाने की ज़रूरत नहीं पड़ेगी।',
+        },
+        {
+          id: 'wedding-venue-location',
+          audience: 'groom',
+          question: 'शादी का वेन्यू कहाँ है?',
+          answer: '21 जनवरी की शादी एक अलग वेन्यू पर है, मुख्य वेन्यू/होटल से लगभग 400 मीटर दूर।',
+        },
+        {
+          id: 'wedding-venue-transport',
+          audience: 'groom',
+          question: 'क्या शादी के वेन्यू तक जाने की व्यवस्था है?',
+          answer: 'जी हाँ — हम होटल/मुख्य वेन्यू और शादी के वेन्यू के बीच आने-जाने की व्यवस्था करेंगे, तो आपको इसकी व्यवस्था ख़ुद करने की ज़रूरत नहीं है।',
+        },
+      ],
+    },
+    {
+      id: 'food-stay',
+      title: 'खाना और ठहरना',
+      items: [
+        {
+          id: 'meals-arranged',
+          audience: 'groom',
+          question: 'क्या उत्सवों के दौरान खाने की व्यवस्था है?',
+          answer: 'जी हाँ — शादी के उत्सवों के आसपास मेहमानों के लिए खाने की व्यवस्था की जा रही है, तो भूखे रहने की चिंता बिल्कुल न करें। लंच सहित तय किए गए भोजन इन व्यवस्थाओं का हिस्सा हैं।',
+        },
+        {
+          id: 'separate-orders',
+          audience: 'groom',
+          question: 'अगर मैं होटल से अलग से कुछ ऑर्डर करूं तो?',
+          answer: 'शादी के उत्सवों का हिस्सा होने वाला खाना हमारी तरफ़ से है। अगर आप अपने लिए अलग से कुछ ऑर्डर करते हैं — रूम सर्विस, पेय पदार्थ, या होटल मेन्यू से कुछ और — तो कृपया उसका भुगतान सीधे होटल को करें।',
+        },
+        {
+          id: 'hotel-expenses',
+          audience: 'groom',
+          question: 'होटल का कौन-सा निजी खर्च मुझे ख़ुद देना होगा?',
+          answer: 'आपका ठहरना और हमने जो व्यवस्थाएं आपके साथ साझा की हैं, वे हमारी तरफ़ से हैं। निजी खर्च — अतिरिक्त रूम सर्विस, मिनीबार या निजी खरीदारी, लॉन्ड्री, या कोई और अलग से मांगी गई होटल सेवा — सीधे होटल को देने होंगे।',
+        },
+        {
+          id: 'room-issue',
+          audience: 'groom',
+          question: 'अगर मेरे कमरे में कोई समस्या हो तो मुझे क्या करना चाहिए?',
+          answer: 'कमरे से जुड़ी किसी भी बात के लिए — हाउसकीपिंग, सुविधाएं, मरम्मत, चाबी, या कोई और होटल सेवा — कृपया सीधे होटल रिसेप्शन से संपर्क करें, जैसा आप किसी भी होटल ठहराव में करते हैं। होटल टीम आपकी मदद सबसे तेज़ी से कर पाएगी, और इससे हमें भी आपके साथ उत्सव मनाने का पूरा समय मिल पाएगा।',
+        },
+      ],
+    },
+    {
+      id: 'nearby',
+      title: 'आस-पास की ज़रूरी चीज़ें',
+      items: [
+        {
+          id: 'rani-bagh',
+          audience: 'groom',
+          question: 'दवाइयों, खरीदारी या रोज़मर्रा की ज़रूरी चीज़ों के लिए कहाँ जाएं?',
+          answer: 'रानी बाग़ मार्केट लगभग 400 मीटर दूर है और दवाइयों, निजी ज़रूरतों, खरीदारी, या ठहरने के दौरान आपको जो भी चाहिए उसके लिए सुविधाजनक है। थोड़ी दूरी के लिए ई-रिक्शा आसानी से मिल जाते हैं।',
         },
       ],
     },
@@ -417,10 +551,16 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'તમારા માટે અમારા ઉત્સવો બુધવાર 20 થી ગુરુવાર 21 જાન્યુઆરી 2027 સુધી, પિતમપુરા, દિલ્હીમાં યોજાશે.',
         },
         {
-          id: 'when-groom',
+          id: 'event-dates-groom',
+          audience: 'groom',
+          question: 'ઉત્સવોની તારીખો શું છે?',
+          answer: 'અમારા ઉત્સવો બુધવાર 20 થી શુક્રવાર 22 જાન્યુઆરી 2027 સુધી, પિતમપુરા, દિલ્હીમાં યોજાશે. મુખ્ય ઉત્સવો 20મી અને 21મી તારીખે છે — 22 જાન્યુઆરી ફક્ત ચેકઆઉટનો દિવસ છે, અલગ ઉત્સવ નથી.',
+        },
+        {
+          id: 'wedding-date-groom',
           audience: 'groom',
           question: 'લગ્ન ક્યારે છે?',
-          answer: 'બુધવાર 20 થી શુક્રવાર 22 જાન્યુઆરી 2027 સુધી, પિતમપુરા, દિલ્હીમાં — 22મી તારીખ ફક્ત ચેકઆઉટ છે, અલગ ઉત્સવ નથી.',
+          answer: 'લગ્નવિધિ ગુરુવાર, 21 જાન્યુઆરી 2027ના રોજ છે. ઉત્સવો તેના એક દિવસ પહેલાં, બુધવાર 20 જાન્યુઆરીથી, બાકીના લગ્ન કાર્યક્રમો સાથે શરૂ થાય છે.',
         },
         {
           id: 'schedule',
@@ -442,45 +582,45 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
         {
           id: 'confirm-travel',
           audience: 'groom',
-          question: 'શું મારે મારી મુસાફરીની પુષ્ટિ કરવાની જરૂર છે?',
-          answer: 'હા — કૃપા કરી મુસાફરીની વિગતોનું ફોર્મ ભરો જેથી અમે તમારું પિકઅપ અને રોકાણ ગોઠવી શકીએ.',
+          question: 'શું મારે મારી મુસાફરીની વિગતોની પુષ્ટિ કરવાની જરૂર છે?',
+          answer: 'હા — કૃપા કરી મુસાફરીની વિગતોનું ફોર્મ ભરો જેથી અમે તમારું રોકાણ આયોજિત કરી શકીએ અને, જ્યાં લાગુ પડે ત્યાં, દિલ્હીમાં તમારું પિકઅપ ગોઠવી શકીએ. દિલ્હી સુધીની મુસાફરી બુક કરવી અને ગોઠવવી એ તમારી જવાબદારી છે.',
           link: 'travelDetails',
         },
         {
           id: 'who-books-travel',
           audience: 'groom',
           question: 'શું તમે અમારી ટિકિટ બુક કરશો, કે અમારે જાતે બુક કરવાની રહેશે?',
-          answer: 'તમારા માટે જે પણ ફ્લાઇટ કે ટ્રેન અનુકૂળ હોય તે બેધડક બુક કરો. મુસાફરીની વિગતોનું ફોર્મ ફક્ત અમને તમારી યોજના જણાવવા માટે છે — તમારું એરપોર્ટ/સ્ટેશન ટ્રાન્સફર અને અહીંનું રોકાણ, બંનેની વ્યવસ્થા અમારા તરફથી છે.',
+          answer: 'તમારા માટે જે પણ ફ્લાઇટ કે ટ્રેન અનુકૂળ હોય તે બેધડક બુક કરો — દિલ્હી સુધી પહોંચવું તમારા તરફથી છે. અહીં પહોંચ્યા પછી તમારું રોકાણ અમારા તરફથી છે, અને નિર્ધારિત પિકઅપ સમય દરમિયાન અમે તમારું એરપોર્ટ/સ્ટેશન પિકઅપ ગોઠવીશું — સંપૂર્ણ વિગતો આગળના પ્રશ્નમાં છે.',
         },
         {
           id: 'travel-deadline',
           audience: 'groom',
-          question: 'મારી મુસાફરીની વિગતો શેર કરવાની છેલ્લી તારીખ કઈ છે?',
+          question: 'મારે મારી મુસાફરીની વિગતો ક્યાં સુધીમાં આપવી જોઈએ?',
           answer: 'મંગળવાર, 20 ઓક્ટોબર 2026.',
         },
         {
           id: 'arrival-date-time',
           audience: 'groom',
-          question: 'મારે કઈ તારીખ અને સમયે પહોંચવાનું આયોજન કરવું જોઈએ?',
-          answer: 'કૃપા કરી બુધવાર, 20 જાન્યુઆરી 2027ના રોજ પહોંચવાનું આયોજન કરો. ફોર્મ પર તમારો આગમનનો સમય પસંદ કરો — વિકલ્પો વહેલી સવારથી બપોરે 2 વાગ્યા સુધીના છે, જેથી અમે તે મુજબ તમારું પિકઅપ ગોઠવી શકીએ.',
+          question: 'મારે કઈ તારીખે પહોંચવાનું આયોજન કરવું જોઈએ?',
+          answer: 'કૃપા કરી બુધવાર, 20 જાન્યુઆરી 2027ના રોજ પહોંચવાનું આયોજન કરો. ફોર્મ પર તમારો અંદાજિત સમય જણાવો — જો તે સવારે 6 થી 11 વાગ્યાના પિકઅપ સમયમાં આવે, તો આગળના પ્રશ્નમાં સંપૂર્ણ વિગતો છે.',
         },
         {
-          id: 'not-booked-yet',
+          id: 'delhi-pickup',
           audience: 'groom',
-          question: 'મેં હજુ મારી મુસાફરી બુક નથી કરી — હું શું ભરું?',
-          answer: 'એ બિલકુલ ઠીક છે, ખાસ કરીને ટ્રેન માટે. તમારા આગમન સમયનો અંદાજ જણાવો જેથી અમે તે મુજબ આયોજન કરી શકીએ, અને ફ્લાઇટ/ટ્રેન નંબર ત્યાં સુધી ખાલી રાખો જ્યાં સુધી તમે બુકિંગ ન કરો — તમે તેને પછી ગમે ત્યારે અપડેટ કરી શકો છો.',
+          question: 'દિલ્હી પહોંચ્યા પછી પિકઅપની વ્યવસ્થા છે?',
+          answer: 'પિકઅપ સમય: બુધવાર, 20 જાન્યુઆરી, સવારે 6 થી 11 વાગ્યા સુધી. આ સમય દરમિયાન અમે તમારું દિલ્હી એરપોર્ટ અથવા રેલવે સ્ટેશનથી પિકઅપ ગોઠવીશું — શક્ય હોય ત્યાં સુધી, દરેક આગમન માટે અલગ કેબને બદલે આગમન સમય મુજબ મહેમાનોને સાથે જૂથબદ્ધ કરીશું. કૃપા કરી સાચી આગમન વિગતો અગાઉથી આપો જેથી અમે તેનું યોગ્ય આયોજન કરી શકીએ.',
         },
         {
-          id: 'train-not-open',
+          id: 'pickup-outside-window',
           audience: 'groom',
-          question: 'મારા રૂટ માટે ટ્રેન ટિકિટ હજુ બુકિંગ માટે ખુલી નથી — મારે શું કરવું જોઈએ?',
-          answer: 'ટ્રેનની બુકિંગ સામાન્ય રીતે મુસાફરીના થોડા મહિના પહેલાં જ ખુલે છે. હમણાં તમારા અંદાજ સાથે ફોર્મ ભરો, અને બુકિંગ થઈ ગયા પછી એ જ મોબાઇલ નંબરથી ફરી ફોર્મ ભરો — તેનાથી તમારી હાલની વિગતો અપડેટ થશે, નવી એન્ટ્રી નહીં બને.',
+          question: 'જો હું પિકઅપ સમય પછી, અથવા બીજા દિવસે પહોંચું તો?',
+          answer: 'તમે બેધડક આવી શકો છો — ફક્ત ધ્યાન રાખો કે ગોઠવાયેલું પિકઅપ ફક્ત 20 જાન્યુઆરીએ સવારે 6 થી 11 વાગ્યા દરમિયાન જ ઉપલબ્ધ છે. આ સમય પછી, અથવા બીજા દિવસે (21મીએ, અથવા લગ્નના દિવસે જ) પહોંચવા પર, કૃપા કરી હોટેલ સુધીની તમારી મુસાફરી જાતે ગોઠવો, અને ફોર્મના નોંધ વિભાગમાં અમને તમારી યોજના જણાવો.',
         },
         {
-          id: 'flight-booked-early',
+          id: 'tickets-not-booked-yet',
           audience: 'groom',
-          question: 'શું હું અત્યારે મારી ફ્લાઇટની વિગતો આપી શકું?',
-          answer: 'હા — ફ્લાઇટ સામાન્ય રીતે ટ્રેન કરતાં વહેલી બુક કરી શકાય છે, તો બુકિંગ થતાં જ તમારો ફ્લાઇટ નંબર ઉમેરવામાં મુક્ત મન રાખો.',
+          question: 'જો મેં હજુ મારી ટિકિટ બુક ન કરી હોય તો?',
+          answer: 'એ બિલકુલ ઠીક છે, ખાસ કરીને ટ્રેન માટે — તમારા રૂટની બુકિંગ મુસાફરીના થોડા મહિના પહેલાં જ ખુલી શકે છે. હમણાં તમારા અંદાજ સાથે ફોર્મ ભરો, અને બુકિંગ થઈ ગયા પછી એ જ મોબાઇલ નંબરથી ફરી ફોર્મ ભરો જેથી તમારી વિગતો અપડેટ થાય, નવી એન્ટ્રી ન બને. ફ્લાઇટ સામાન્ય રીતે વહેલી બુક કરી શકાય છે, તો બુકિંગ થતાં જ તમારો ફ્લાઇટ નંબર ઉમેરો.',
         },
         {
           id: 'id-upload',
@@ -489,16 +629,76 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'આનો ઉપયોગ ફક્ત તમારું પિકઅપ અને રોકાણ ગોઠવવા માટે થાય છે. આધાર, પાસપોર્ટ અથવા ડ્રાઇવિંગ લાઇસન્સ — તમારા માટે અને સાથે આવતા બધા માટે — ચાલશે.',
         },
         {
-          id: 'different-day',
-          audience: 'groom',
-          question: 'જો હું કોઈ બીજા દિવસે આવી રહ્યો/રહી છું — 21મીએ, અથવા લગ્નના દિવસે જ — તો શું કરું?',
-          answer: 'એ બિલકુલ ઠીક છે — ફક્ત મુસાફરીની વિગતોના ફોર્મમાં નોંધ વિભાગમાં અમને જણાવો, અને જો હોય તો તમારી ફ્લાઇટ કે ટ્રેનની વિગતો પણ સાથે જણાવો.',
-        },
-        {
           id: 'checkout',
           audience: 'groom',
           question: 'ચેકઆઉટ ક્યારે છે?',
           answer: 'શુક્રવાર, 22 જાન્યુઆરીએ સવારે 11 વાગ્યે.',
+        },
+      ],
+    },
+    {
+      id: 'venues',
+      title: 'વેન્યુ અને અવરજવર',
+      items: [
+        {
+          id: 'same-venue',
+          audience: 'groom',
+          question: 'શું બધા ઉત્સવો એક જ વેન્યુ પર છે?',
+          answer: 'લગભગ બધા ઉત્સવો મુખ્ય વેન્યુ/હોટેલમાં જ છે, તો રોકાણ દરમિયાન મોટાભાગે તમારે અલગ-અલગ જગ્યાએ જવાની જરૂર નહીં પડે.',
+        },
+        {
+          id: 'wedding-venue-location',
+          audience: 'groom',
+          question: 'લગ્નનું વેન્યુ ક્યાં છે?',
+          answer: '21 જાન્યુઆરીનાં લગ્ન એક અલગ વેન્યુ પર છે, મુખ્ય વેન્યુ/હોટેલથી લગભગ 400 મીટર દૂર.',
+        },
+        {
+          id: 'wedding-venue-transport',
+          audience: 'groom',
+          question: 'લગ્નના વેન્યુ સુધી જવાની વ્યવસ્થા છે?',
+          answer: 'હા — અમે હોટેલ/મુખ્ય વેન્યુ અને લગ્નના વેન્યુ વચ્ચે અવરજવરની વ્યવસ્થા કરીશું, તો તમારે આ જાતે ગોઠવવાની જરૂર નથી.',
+        },
+      ],
+    },
+    {
+      id: 'food-stay',
+      title: 'ભોજન અને રોકાણ',
+      items: [
+        {
+          id: 'meals-arranged',
+          audience: 'groom',
+          question: 'શું ઉત્સવો દરમિયાન ભોજનની વ્યવસ્થા છે?',
+          answer: 'હા — લગ્નના ઉત્સવોની આસપાસ મહેમાનો માટે ભોજનની વ્યવસ્થા કરવામાં આવી રહી છે, તો ભૂખ્યા રહેવાની ચિંતા બિલકુલ ન કરો. લંચ સહિત નિર્ધારિત ભોજન આ વ્યવસ્થાનો ભાગ છે.',
+        },
+        {
+          id: 'separate-orders',
+          audience: 'groom',
+          question: 'જો હું હોટેલમાંથી અલગથી કંઈક ઓર્ડર કરું તો?',
+          answer: 'લગ્નના ઉત્સવોનો ભાગ હોય તેવું ભોજન અમારા તરફથી છે. જો તમે તમારા માટે અલગથી કંઈક ઓર્ડર કરો છો — રૂમ સર્વિસ, પીણાં, અથવા હોટેલ મેનૂમાંથી બીજું કંઈ — તો કૃપા કરી તેની ચુકવણી સીધી હોટેલને કરો.',
+        },
+        {
+          id: 'hotel-expenses',
+          audience: 'groom',
+          question: 'હોટેલનો કયો અંગત ખર્ચ મારે જાતે ચૂકવવો પડશે?',
+          answer: 'તમારું રોકાણ અને અમે તમારી સાથે શેર કરેલી વ્યવસ્થાઓ અમારા તરફથી છે. અંગત ખર્ચ — વધારાની રૂમ સર્વિસ, મિનીબાર અથવા અંગત ખરીદી, લોન્ડ્રી, અથવા બીજી કોઈ અલગથી માંગેલી હોટેલ સેવા — સીધી હોટેલને ચૂકવવી પડશે.',
+        },
+        {
+          id: 'room-issue',
+          audience: 'groom',
+          question: 'જો મારા રૂમમાં કોઈ સમસ્યા હોય તો મારે શું કરવું જોઈએ?',
+          answer: 'રૂમને લગતી કોઈપણ બાબત માટે — હાઉસકીપિંગ, સુવિધાઓ, સમારકામ, ચાવી, અથવા બીજી કોઈ હોટેલ સેવા — કૃપા કરી સીધા હોટેલ રિસેપ્શનનો સંપર્ક કરો, જેમ તમે કોઈપણ હોટેલ રોકાણમાં કરો છો. હોટેલ ટીમ તમને સૌથી ઝડપથી મદદ કરી શકશે, અને તેનાથી અમને પણ તમારી સાથે ઉત્સવ માણવાનો પૂરો સમય મળશે.',
+        },
+      ],
+    },
+    {
+      id: 'nearby',
+      title: 'નજીકની જરૂરી ચીજો',
+      items: [
+        {
+          id: 'rani-bagh',
+          audience: 'groom',
+          question: 'દવાઓ, ખરીદી કે રોજિંદી જરૂરી ચીજો માટે ક્યાં જવું?',
+          answer: 'રાની બાગ માર્કેટ લગભગ 400 મીટર દૂર છે અને દવાઓ, અંગત જરૂરિયાતો, ખરીદી, અથવા રોકાણ દરમિયાન તમને જે પણ જોઈએ તેના માટે અનુકૂળ છે. થોડા અંતર માટે ઇ-રિક્ષા સરળતાથી મળી રહે છે.',
         },
       ],
     },
