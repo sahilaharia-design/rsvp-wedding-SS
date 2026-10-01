@@ -28,7 +28,7 @@ export default function SiteHeader({ audience, onCTAClick }: { audience: Audienc
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[80] transition-colors duration-500 ${scrolled ? 'bg-paper/92 backdrop-blur border-b border-thread-border/50' : 'bg-transparent'}`}
+      className={`fixed top-9 left-0 right-0 z-[80] transition-colors duration-500 ${scrolled ? 'bg-paper/92 backdrop-blur border-b border-thread-border/50' : 'bg-transparent'}`}
     >
       <div className="max-w-6xl mx-auto px-5 md:px-14 py-3.5 flex items-center justify-between">
         <Link

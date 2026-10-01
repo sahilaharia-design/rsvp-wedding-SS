@@ -17,6 +17,7 @@ import LadiesSignpost from '@/components/LadiesSignpost'
 import LovelyLadiesSection from '@/components/LovelyLadiesSection'
 import MehndiRSVPSection from '@/components/MehndiRSVPSection'
 import FaqTeaser from '@/components/FaqTeaser'
+import TopFaqBar from '@/components/TopFaqBar'
 import BottomTabBar from '@/components/BottomTabBar'
 import SiteHeader from '@/components/SiteHeader'
 import SectionThread from '@/components/SectionThread'
@@ -114,6 +115,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
 
   return (
     <>
+      <TopFaqBar audience={audience} />
       <SiteHeader audience={audience} onCTAClick={!isBride ? scrollToTravelDetails : undefined} />
 
       <main className="pb-16">

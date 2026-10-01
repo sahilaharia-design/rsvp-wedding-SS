@@ -108,7 +108,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
       </motion.div>
 
       {/* ── Content — anchored to the bottom of the full-height frame ── */}
-      <div className="relative z-10 min-h-[100svh] flex flex-col justify-end max-w-6xl mx-auto px-6 md:px-14 pt-28 pb-14 md:pb-20">
+      <div className="relative z-10 min-h-[100svh] flex flex-col justify-end max-w-6xl mx-auto px-6 md:px-14 pt-36 pb-14 md:pb-20">
         <motion.div initial="hidden" animate="visible">
           <motion.p variants={heroFade(0.15)}
             className="font-sans uppercase text-gold mb-4"
