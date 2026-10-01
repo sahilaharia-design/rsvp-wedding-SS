@@ -63,6 +63,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'Yes — please fill out the Travel Details form so we can arrange your pickup and stay.',
         },
         {
+          id: 'who-books-travel',
+          audience: 'groom',
+          question: 'Do you book our tickets, or should we do that ourselves?',
+          answer: 'Please go ahead and book whichever flight or train works best for you. The Travel Details form just helps us know your plans — your airport/station transfer and your stay here are both taken care of for you.',
+        },
+        {
           id: 'travel-deadline',
           audience: 'groom',
           question: 'What’s the deadline to submit my travel details?',
@@ -237,6 +243,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'हाँ — कृपया यात्रा विवरण फ़ॉर्म भरें ताकि हम आपकी पिकअप और ठहरने की व्यवस्था कर सकें।',
         },
         {
+          id: 'who-books-travel',
+          audience: 'groom',
+          question: 'क्या आप हमारी टिकट बुक करेंगे, या हमें खुद बुक करनी होगी?',
+          answer: 'जो भी फ़्लाइट या ट्रेन आपके लिए सही रहे, बेझिझक उसकी बुकिंग करें। यात्रा विवरण फ़ॉर्म बस हमें आपकी योजना बताने के लिए है — आपका एयरपोर्ट/स्टेशन ट्रांसफर और यहाँ ठहरना, दोनों की व्यवस्था हमारी तरफ़ से है।',
+        },
+        {
           id: 'travel-deadline',
           audience: 'groom',
           question: 'अपनी यात्रा जानकारी देने की आख़िरी तारीख़ क्या है?',
@@ -409,6 +421,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'શું મારે મારી મુસાફરીની પુષ્ટિ કરવાની જરૂર છે?',
           answer: 'હા — કૃપા કરી મુસાફરીની વિગતોનું ફોર્મ ભરો જેથી અમે તમારું પિકઅપ અને રોકાણ ગોઠવી શકીએ.',
+        },
+        {
+          id: 'who-books-travel',
+          audience: 'groom',
+          question: 'શું તમે અમારી ટિકિટ બુક કરશો, કે અમારે જાતે બુક કરવાની રહેશે?',
+          answer: 'તમારા માટે જે પણ ફ્લાઇટ કે ટ્રેન અનુકૂળ હોય તે બેધડક બુક કરો. મુસાફરીની વિગતોનું ફોર્મ ફક્ત અમને તમારી યોજના જણાવવા માટે છે — તમારું એરપોર્ટ/સ્ટેશન ટ્રાન્સફર અને અહીંનું રોકાણ, બંનેની વ્યવસ્થા અમારા તરફથી છે.',
         },
         {
           id: 'travel-deadline',
