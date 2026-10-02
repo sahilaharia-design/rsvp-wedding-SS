@@ -41,6 +41,13 @@ type ResolvedLink = ReturnType<typeof resolveFaqLink>
 // rather than one long uniform list — same palette used in LovelyLadiesSection.
 const CARD_TINTS = ['bg-blush/10', 'bg-champagne/20', 'bg-cream/70']
 
+// One jewel tone per topic, cycling through the site's existing (but
+// mostly unused outside this page) design-token palette — each topic gets
+// its own bit of colour identity instead of every icon reading the same
+// burgundy, which is what actually made the grid feel flat and grey at a
+// glance despite the tinted card backgrounds.
+const ICON_ACCENTS = ['gold', 'navy', 'emerald', 'ruby', 'sage', 'burgundy', 'hot-pink', 'plum']
+
 // faq-<id> anchor prefix — kept distinct from category ids (also used as
 // DOM ids) so a search result's scroll target can never collide with a
 // category section's own id.
@@ -129,6 +136,29 @@ function CategoryIcon({ id, className }: { id: string; className?: string }) {
     default:
       return null
   }
+}
+
+// Full Tailwind class names, written out literally (not interpolated) so
+// the JIT scanner picks them all up — maps one of ICON_ACCENTS to the
+// {icon stroke, badge ring, badge wash} classes used on a topic tile.
+const ACCENT_CLASSES: Record<string, { text: string; border: string; bg: string }> = {
+  gold: { text: 'text-gold', border: 'border-gold/45', bg: 'bg-gold/10' },
+  navy: { text: 'text-navy', border: 'border-navy/35', bg: 'bg-navy/8' },
+  emerald: { text: 'text-emerald', border: 'border-emerald/35', bg: 'bg-emerald/8' },
+  ruby: { text: 'text-ruby', border: 'border-ruby/35', bg: 'bg-ruby/8' },
+  sage: { text: 'text-sage', border: 'border-sage/40', bg: 'bg-sage/10' },
+  burgundy: { text: 'text-burgundy', border: 'border-burgundy/35', bg: 'bg-burgundy/8' },
+  'hot-pink': { text: 'text-hot-pink', border: 'border-hot-pink/35', bg: 'bg-hot-pink/8' },
+  plum: { text: 'text-plum', border: 'border-plum/35', bg: 'bg-plum/8' },
+}
+
+function GlobeIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" />
+    </svg>
+  )
 }
 
 function SearchIcon({ className }: { className?: string }) {
@@ -286,38 +316,53 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
             <h1 className="font-serif text-ink mb-2" style={{ fontSize: 'clamp(1.6rem, 6vw, 2.4rem)', lineHeight: 1.15 }}>
               {t.faqHeading}
             </h1>
-            <p className="font-sans text-stone" style={{ fontSize: '0.95rem' }}>
+            <p className="font-sans text-stone mb-3" style={{ fontSize: '0.95rem' }}>
               {t.faqIntro}
             </p>
+            {/* Right under the intro, before anything else — the one spot
+                guaranteed seen before a guest's eye drops to the grid, so
+                the pointer up at the EN/हिं/ગુ switcher actually lands. */}
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/35">
+              <GlobeIcon className="w-3.5 h-3.5 text-gold flex-shrink-0" />
+              <span className="font-sans text-gold" style={{ fontSize: '0.78rem' }}>
+                {t.faqLanguageNote}
+              </span>
+            </span>
           </div>
 
           {/* Topic grid — every category visible at once, no scrolling
               (horizontal or vertical) required to see what's covered. This
               replaces an earlier horizontal-scroll strip that only showed
-              2-3 topics at a time and buried the rest off-screen. */}
+              2-3 topics at a time and buried the rest off-screen. Each
+              topic gets its own accent colour (ICON_ACCENTS) rather than
+              a uniform burgundy, so the grid reads as lively/colourful
+              rather than one flat block. */}
           <motion.div
-            className="grid grid-cols-3 gap-2.5 mb-5"
+            className="grid grid-cols-3 gap-2.5 mb-6"
             initial="hidden"
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
           >
-            {categories.map((category, i) => (
-              <motion.button
-                key={category.id}
-                type="button"
-                onClick={() => jumpToCategory(category.id)}
-                variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-                whileTap={{ scale: 0.94 }}
-                className={`hover-lift flex flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-thread-border/50 ${CARD_TINTS[i % CARD_TINTS.length]} px-1.5 py-3.5 text-center transition-colors duration-200 hover:border-burgundy`}
-              >
-                <span className="flex-shrink-0 w-9 h-9 rounded-full bg-paper border border-gold/50 flex items-center justify-center">
-                  <CategoryIcon id={category.id} className="w-4 h-4 text-burgundy" />
-                </span>
-                <span className="font-sans uppercase text-ink/80 leading-tight" style={{ fontSize: '0.62rem', letterSpacing: '0.02em' }}>
-                  {category.title}
-                </span>
-              </motion.button>
-            ))}
+            {categories.map((category, i) => {
+              const accent = ACCENT_CLASSES[ICON_ACCENTS[i % ICON_ACCENTS.length]]
+              return (
+                <motion.button
+                  key={category.id}
+                  type="button"
+                  onClick={() => jumpToCategory(category.id)}
+                  variants={{ hidden: { opacity: 0, y: 8, scale: 0.96 }, visible: { opacity: 1, y: 0, scale: 1 } }}
+                  whileTap={{ scale: 0.94 }}
+                  className={`hover-lift flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-thread-border/50 ${CARD_TINTS[i % CARD_TINTS.length]} px-1.5 py-4 text-center transition-colors duration-200 hover:border-burgundy`}
+                >
+                  <span className={`flex-shrink-0 w-10 h-10 rounded-full ${accent.bg} border-2 ${accent.border} flex items-center justify-center`}>
+                    <CategoryIcon id={category.id} className={`w-[18px] h-[18px] ${accent.text}`} />
+                  </span>
+                  <span className="font-sans uppercase text-ink/85 font-medium leading-snug" style={{ fontSize: '0.66rem', letterSpacing: '0.02em' }}>
+                    {category.title}
+                  </span>
+                </motion.button>
+              )
+            })}
           </motion.div>
 
           {/* Search — finds a question by keyword across every category,
@@ -361,16 +406,13 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
               </div>
             )}
           </div>
-          <p className="text-center font-sans text-stone/60 mb-8" style={{ fontSize: '0.78rem' }}>
-            {t.faqLanguageNote}
-          </p>
 
-          <div className="space-y-8">
+          <div className="space-y-8 mt-8">
             {categories.map((category, i) => (
               <div key={category.id} id={category.id} className="scroll-mt-24">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="hover-lift flex-shrink-0 w-10 h-10 rounded-full bg-paper border border-gold/50 flex items-center justify-center">
-                    <CategoryIcon id={category.id} className="w-5 h-5 text-burgundy" />
+                  <span className={`hover-lift flex-shrink-0 w-10 h-10 rounded-full ${ACCENT_CLASSES[ICON_ACCENTS[i % ICON_ACCENTS.length]].bg} border-2 ${ACCENT_CLASSES[ICON_ACCENTS[i % ICON_ACCENTS.length]].border} flex items-center justify-center`}>
+                    <CategoryIcon id={category.id} className={`w-5 h-5 ${ACCENT_CLASSES[ICON_ACCENTS[i % ICON_ACCENTS.length]].text}`} />
                   </span>
                   <h2 className="font-sans uppercase text-burgundy" style={{ fontSize: '0.85rem', letterSpacing: '0.18em' }}>
                     {category.title}
