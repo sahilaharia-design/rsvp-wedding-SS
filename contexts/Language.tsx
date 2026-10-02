@@ -118,6 +118,10 @@ export const strings = {
     faqEyebrow:        'We’ve Got You',
     faqHeading:        'Got Questions? We’ve Got Answers',
     faqIntro:          'From travel and outfits to mehndi and makeup — every little detail is laid out here, so you can sit back and look forward to the celebrations.',
+    faqLanguageNote:   'This FAQ is also available in Hindi and Gujarati — switch using the buttons above.',
+    faqSearchPlaceholder: 'Search a question…',
+    faqSearchNoResults: 'No matching questions — try a different word.',
+    faqJumpToTop:      'Jump to a topic',
 
     // FAQ teaser (homepage, just above the footer)
     faqTeaserHeading:  'Got Questions?',
@@ -296,6 +300,10 @@ export const strings = {
     faqEyebrow:        'हम आपके साथ हैं',
     faqHeading:        'सवाल हैं? जवाब यहाँ हैं',
     faqIntro:          'यात्रा और पहनावे से लेकर मेहंदी और मेकअप तक — हर छोटी जानकारी यहाँ एक जगह है, ताकि आप बेफ़िक्र होकर उत्सव का आनंद लें।',
+    faqLanguageNote:   'यह सवाल-जवाब हिंदी और गुजराती में भी उपलब्ध है — ऊपर दिए बटन से भाषा बदलें।',
+    faqSearchPlaceholder: 'कोई सवाल खोजें…',
+    faqSearchNoResults: 'कोई मेल खाता सवाल नहीं मिला — कोई और शब्द आज़माएं।',
+    faqJumpToTop:      'किसी विषय पर जाएं',
 
     faqTeaserHeading:  'कोई सवाल है?',
     faqTeaserBody:     'यात्रा, पहनावा, समय — सब कुछ एक ही जगह पर तैयार है।',
@@ -469,6 +477,10 @@ export const strings = {
     faqEyebrow:        'અમે તમારી સાથે છીએ',
     faqHeading:        'પ્રશ્નો છે? જવાબ અહીં છે',
     faqIntro:          'મુસાફરી અને પોશાકથી લઈને મહેંદી અને મેકઅપ સુધી — દરેક નાની વિગત અહીં એક જ જગ્યાએ છે, જેથી તમે નિશ્ચિંત રહીને ઉત્સવોનો આનંદ માણી શકો.',
+    faqLanguageNote:   'આ પ્રશ્નો હિન્દી અને ગુજરાતીમાં પણ ઉપલબ્ધ છે — ઉપર આપેલા બટનથી ભાષા બદલો.',
+    faqSearchPlaceholder: 'કોઈ પ્રશ્ન શોધો…',
+    faqSearchNoResults: 'કોઈ મેળ ખાતો પ્રશ્ન ન મળ્યો — બીજો શબ્દ અજમાવો.',
+    faqJumpToTop:      'કોઈ વિષય પર જાઓ',
 
     faqTeaserHeading:  'કોઈ પ્રશ્ન છે?',
     faqTeaserBody:     'મુસાફરી, પોશાક, સમય — બધું જ એક જ જગ્યાએ તૈયાર છે.',

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import BottomTabBar from '@/components/BottomTabBar'
@@ -41,9 +41,16 @@ type ResolvedLink = ReturnType<typeof resolveFaqLink>
 // rather than one long uniform list — same palette used in LovelyLadiesSection.
 const CARD_TINTS = ['bg-blush/10', 'bg-champagne/20', 'bg-cream/70']
 
+// faq-<id> anchor prefix — kept distinct from category ids (also used as
+// DOM ids) so a search result's scroll target can never collide with a
+// category section's own id.
+const rowAnchor = (id: string) => `faq-${id}`
+
 // Small line-art badges, one per category — same thin-stroke style as the
 // existing plane/rail/road travel icons (the travel badge reuses that exact
 // path), just enough personality to make the list scannable and inviting.
+// Also reused at a smaller size in the jump-to-topic strip, so every topic
+// is one tap away even for guests who never scroll past the intro.
 function CategoryIcon({ id, className }: { id: string; className?: string }) {
   const stroke = {
     fill: 'none' as const,
@@ -124,28 +131,35 @@ function CategoryIcon({ id, className }: { id: string; className?: string }) {
   }
 }
 
-// One open/closed accordion row. Kept as its own top-level component (not
-// nested inside FaqPageClient) so each row's open state is local to itself
-// — several can be open at once, and toggling one never re-renders the rest.
-function FaqRow({ item, link }: { item: FaqItem; link?: ResolvedLink }) {
-  const [open, setOpen] = useState(false)
-
+function SearchIcon({ className }: { className?: string }) {
   return (
-    <div className="border-b border-thread-border/50 last:border-b-0">
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" />
+      <path d="M21 21l-4.3-4.3" />
+    </svg>
+  )
+}
+
+// One open/closed accordion row. Open state is lifted to the parent (an
+// openIds set) rather than kept locally, so a search result can expand the
+// one it points to without touching every other row's state.
+function FaqRow({ item, link, open, onToggle }: { item: FaqItem; link?: ResolvedLink; open: boolean; onToggle: () => void }) {
+  return (
+    <div id={rowAnchor(item.id)} className="scroll-mt-24 border-b border-thread-border/50 last:border-b-0">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         aria-expanded={open}
         className="w-full flex items-start justify-between gap-4 py-5 text-left"
       >
-        <span className="font-serif text-ink" style={{ fontSize: '1.05rem' }}>
+        <span className="font-serif text-ink" style={{ fontSize: '1.15rem', lineHeight: 1.4 }}>
           {item.question}
         </span>
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.25, ease: EASE }}
           className="flex-shrink-0 mt-1 font-sans text-burgundy"
-          style={{ fontSize: '1.3rem', lineHeight: 1 }}
+          style={{ fontSize: '1.4rem', lineHeight: 1 }}
         >
           +
         </motion.span>
@@ -160,7 +174,7 @@ function FaqRow({ item, link }: { item: FaqItem; link?: ResolvedLink }) {
             className="overflow-hidden"
           >
             <div className="pb-6 pr-8">
-              <p className="font-sans leading-[1.8] text-stone" style={{ fontSize: '0.95rem' }}>
+              <p className="font-sans leading-[1.75] text-stone" style={{ fontSize: '1.03rem' }}>
                 {item.answer}
               </p>
               {link && (
@@ -169,7 +183,7 @@ function FaqRow({ item, link }: { item: FaqItem; link?: ResolvedLink }) {
                   target={link.external ? '_blank' : undefined}
                   rel={link.external ? 'noopener noreferrer' : undefined}
                   className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 border-2 border-burgundy text-burgundy font-sans uppercase hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
-                  style={{ fontSize: '0.72rem', letterSpacing: '0.16em' }}
+                  style={{ fontSize: '0.76rem', letterSpacing: '0.16em' }}
                 >
                   {link.label} &rarr;
                 </Link>
@@ -185,12 +199,61 @@ function FaqRow({ item, link }: { item: FaqItem; link?: ResolvedLink }) {
 export default function FaqPageClient({ audience }: { audience: Audience }) {
   const { t, lang } = useLang()
   const config = AUDIENCE_CONFIG[audience]
+  const [openIds, setOpenIds] = useState<Set<string>>(new Set())
+  const [query, setQuery] = useState('')
+  const toggleItem = (id: string) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
   const categories = faqContent[lang]
     .map((category) => ({
       ...category,
       items: category.items.filter((item) => !item.audience || item.audience === audience),
     }))
     .filter((category) => category.items.length > 0)
+
+  // Flat index for search — question matches rank above answer-only
+  // matches, so typing e.g. "pickup" surfaces the pickup FAQ itself before
+  // any FAQ that merely mentions pickup in passing.
+  const searchResults = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return []
+    return categories
+      .flatMap((category) => category.items.map((item) => ({ item, categoryTitle: category.title })))
+      .map(({ item, categoryTitle }) => {
+        const qMatch = item.question.toLowerCase().includes(q)
+        const aMatch = item.answer.toLowerCase().includes(q)
+        const score = qMatch ? 2 : aMatch ? 1 : 0
+        return { item, categoryTitle, score }
+      })
+      .filter((r) => r.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6)
+  }, [categories, query])
+
+  const goToResult = (id: string) => {
+    // 'instant' is explicit on purpose — globals.css sets scroll-behavior:
+    // smooth on <html>, so omitting behavior (or passing 'auto') silently
+    // inherits that smooth animation, which the state update right below
+    // (closing the dropdown, opening the row) then interrupts mid-flight
+    // for anything more than a short distance. Only an explicit 'instant'
+    // actually bypasses the CSS and lands synchronously, in the same tick
+    // as the click — before the row opens, which is fine since the row's
+    // own top edge doesn't move when it opens (only the content after it
+    // shifts down as the row grows).
+    document.getElementById(rowAnchor(id))?.scrollIntoView({ behavior: 'instant', block: 'start' })
+    setOpenIds((prev) => new Set(prev).add(id))
+    setQuery('')
+  }
+
+  const jumpToCategory = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <>
@@ -216,21 +279,86 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
           transition={{ duration: 0.8, ease: EASE }}
           className="max-w-2xl mx-auto px-7 md:px-14 py-14 md:py-20"
         >
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <p className="font-sans uppercase text-gold mb-4" style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}>
               {t.faqEyebrow}
             </p>
             <h1 className="font-serif text-ink mb-5" style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)' }}>
               {t.faqHeading}
             </h1>
-            <p className="font-sans leading-[1.7] text-stone" style={{ fontSize: '1.02rem' }}>
+            <p className="font-sans leading-[1.7] text-stone mb-3" style={{ fontSize: '1.08rem' }}>
               {t.faqIntro}
             </p>
+            <p className="font-sans text-stone/70" style={{ fontSize: '0.88rem' }}>
+              {t.faqLanguageNote}
+            </p>
+          </div>
+
+          {/* Jump-to-topic strip — every category is one tap away even for
+              a guest who never scrolls past the intro. Horizontally
+              scrollable so all categories fit on a phone without wrapping. */}
+          <div className="mb-6 -mx-7 md:mx-0 px-7 md:px-0">
+            <div className="hide-scrollbar flex items-center gap-2.5 overflow-x-auto pb-1">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => jumpToCategory(category.id)}
+                  className="hover-lift flex-shrink-0 flex items-center gap-2 rounded-full border-2 border-thread-border/60 bg-paper px-4 py-2.5 font-sans uppercase text-ink/80 hover:border-burgundy hover:text-burgundy transition-colors duration-200"
+                  style={{ fontSize: '0.74rem', letterSpacing: '0.07em' }}
+                >
+                  <CategoryIcon id={category.id} className="w-4 h-4 flex-shrink-0 text-burgundy" />
+                  {category.title}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Search — finds a question by keyword across every category,
+              not just the ones a guest happens to browse into. */}
+          <div className="relative mb-12">
+            <div className="relative">
+              <SearchIcon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone/50" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Escape') setQuery('') }}
+                placeholder={t.faqSearchPlaceholder}
+                className="w-full rounded-full border-2 border-thread-border/60 bg-paper pl-12 pr-5 py-3.5 font-sans text-ink placeholder:text-stone/50 focus:outline-none focus:border-burgundy transition-colors duration-200"
+                style={{ fontSize: '1rem' }}
+              />
+            </div>
+            {query.trim().length > 0 && (
+              <div className="absolute z-30 left-0 right-0 mt-2 rounded-2xl border-2 border-thread-border/60 bg-paper shadow-lg overflow-hidden">
+                {searchResults.length > 0 ? (
+                  searchResults.map(({ item, categoryTitle }) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => goToResult(item.id)}
+                      className="w-full text-left px-5 py-3.5 border-b border-thread-border/40 last:border-b-0 hover:bg-blush/15 transition-colors duration-150"
+                    >
+                      <p className="font-sans uppercase text-gold mb-0.5" style={{ fontSize: '0.68rem', letterSpacing: '0.1em' }}>
+                        {categoryTitle}
+                      </p>
+                      <p className="font-serif text-ink" style={{ fontSize: '1rem' }}>
+                        {item.question}
+                      </p>
+                    </button>
+                  ))
+                ) : (
+                  <p className="px-5 py-4 font-sans text-stone/70" style={{ fontSize: '0.92rem' }}>
+                    {t.faqSearchNoResults}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="space-y-10">
             {categories.map((category, i) => (
-              <div key={category.id}>
+              <div key={category.id} id={category.id} className="scroll-mt-24">
                 <div className="flex items-center gap-3 mb-3">
                   <span className="hover-lift flex-shrink-0 w-10 h-10 rounded-full bg-paper border border-gold/50 flex items-center justify-center">
                     <CategoryIcon id={category.id} className="w-5 h-5 text-burgundy" />
@@ -241,7 +369,13 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
                 </div>
                 <div className={`rounded-2xl border-2 border-thread-border/60 ${CARD_TINTS[i % CARD_TINTS.length]} px-6`}>
                   {category.items.map((item) => (
-                    <FaqRow key={item.id} item={item} link={item.link ? resolveFaqLink(item.link, audience, t) : undefined} />
+                    <FaqRow
+                      key={item.id}
+                      item={item}
+                      link={item.link ? resolveFaqLink(item.link, audience, t) : undefined}
+                      open={openIds.has(item.id)}
+                      onToggle={() => toggleItem(item.id)}
+                    />
                   ))}
                 </div>
               </div>

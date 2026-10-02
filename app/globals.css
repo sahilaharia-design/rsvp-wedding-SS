@@ -42,6 +42,16 @@ body {
   border-radius: 2px;
 }
 
+/* Hides the scrollbar on a horizontally-scrollable strip (e.g. the FAQ
+   jump-to-topic row) while keeping it scrollable by touch/drag/wheel. */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Radio button custom style */
 input[type="radio"] {
   appearance: none;
