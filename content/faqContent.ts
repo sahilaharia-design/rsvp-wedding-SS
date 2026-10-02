@@ -281,7 +281,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
         {
           id: 'contact',
           question: 'Who do I contact if I still have questions?',
-          answer: 'Reach out to Sakshi & Dr. Sahil directly, or whoever shared this site with you.',
+          answer: 'Reach out to Ashok & Chetana Haria (Dr. Sahil’s parents) — they’re happy to help with anything not already covered here.',
         },
       ],
     },
@@ -534,7 +534,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
         {
           id: 'contact',
           question: 'अगर मेरे कोई और सवाल हैं तो मैं किससे संपर्क करूं?',
-          answer: 'सीधे साक्षी और डॉ. सहिल से संपर्क करें, या जिसने भी आपके साथ यह साइट साझा की है।',
+          answer: 'अशोक और चेतना हरिया (डॉ. सहिल के माता-पिता) से संपर्क करें — यहाँ न बताई गई किसी भी बात में वे मदद करने में खुशी महसूस करेंगे।',
         },
       ],
     },
@@ -787,7 +787,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
         {
           id: 'contact',
           question: 'જો મારે હજુ પ્રશ્નો હોય તો હું કોનો સંપર્ક કરું?',
-          answer: 'સીધો સાક્ષી અને ડૉ. સહિલનો સંપર્ક કરો, અથવા જેમણે પણ તમારી સાથે આ સાઇટ શેર કરી હોય તેમનો.',
+          answer: 'અશોક અને ચેતના હરિયાનો (ડૉ. સહિલના માતા-પિતા) સંપર્ક કરો — અહીં ન જણાવેલી કોઈપણ બાબતમાં મદદ કરવામાં તેમને આનંદ થશે.',
         },
       ],
     },
