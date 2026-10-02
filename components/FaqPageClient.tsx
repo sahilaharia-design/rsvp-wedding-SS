@@ -277,46 +277,52 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: EASE }}
-          className="max-w-2xl mx-auto px-7 md:px-14 py-14 md:py-20"
+          className="max-w-2xl mx-auto px-6 md:px-14 pt-6 pb-14 md:pt-10 md:pb-20"
         >
-          <div className="text-center mb-8">
-            <p className="font-sans uppercase text-gold mb-4" style={{ fontSize: '0.8rem', letterSpacing: '0.24em' }}>
+          <div className="text-center mb-5">
+            <p className="font-sans uppercase text-gold mb-2" style={{ fontSize: '0.72rem', letterSpacing: '0.22em' }}>
               {t.faqEyebrow}
             </p>
-            <h1 className="font-serif text-ink mb-5" style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)' }}>
+            <h1 className="font-serif text-ink mb-2" style={{ fontSize: 'clamp(1.6rem, 6vw, 2.4rem)', lineHeight: 1.15 }}>
               {t.faqHeading}
             </h1>
-            <p className="font-sans leading-[1.7] text-stone mb-3" style={{ fontSize: '1.08rem' }}>
+            <p className="font-sans text-stone" style={{ fontSize: '0.95rem' }}>
               {t.faqIntro}
-            </p>
-            <p className="font-sans text-stone/70" style={{ fontSize: '0.88rem' }}>
-              {t.faqLanguageNote}
             </p>
           </div>
 
-          {/* Jump-to-topic strip — every category is one tap away even for
-              a guest who never scrolls past the intro. Horizontally
-              scrollable so all categories fit on a phone without wrapping. */}
-          <div className="mb-6 -mx-7 md:mx-0 px-7 md:px-0">
-            <div className="hide-scrollbar flex items-center gap-2.5 overflow-x-auto pb-1">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => jumpToCategory(category.id)}
-                  className="hover-lift flex-shrink-0 flex items-center gap-2 rounded-full border-2 border-thread-border/60 bg-paper px-4 py-2.5 font-sans uppercase text-ink/80 hover:border-burgundy hover:text-burgundy transition-colors duration-200"
-                  style={{ fontSize: '0.74rem', letterSpacing: '0.07em' }}
-                >
-                  <CategoryIcon id={category.id} className="w-4 h-4 flex-shrink-0 text-burgundy" />
+          {/* Topic grid — every category visible at once, no scrolling
+              (horizontal or vertical) required to see what's covered. This
+              replaces an earlier horizontal-scroll strip that only showed
+              2-3 topics at a time and buried the rest off-screen. */}
+          <motion.div
+            className="grid grid-cols-3 gap-2.5 mb-5"
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
+          >
+            {categories.map((category, i) => (
+              <motion.button
+                key={category.id}
+                type="button"
+                onClick={() => jumpToCategory(category.id)}
+                variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
+                whileTap={{ scale: 0.94 }}
+                className={`hover-lift flex flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-thread-border/50 ${CARD_TINTS[i % CARD_TINTS.length]} px-1.5 py-3.5 text-center transition-colors duration-200 hover:border-burgundy`}
+              >
+                <span className="flex-shrink-0 w-9 h-9 rounded-full bg-paper border border-gold/50 flex items-center justify-center">
+                  <CategoryIcon id={category.id} className="w-4 h-4 text-burgundy" />
+                </span>
+                <span className="font-sans uppercase text-ink/80 leading-tight" style={{ fontSize: '0.62rem', letterSpacing: '0.02em' }}>
                   {category.title}
-                </button>
-              ))}
-            </div>
-          </div>
+                </span>
+              </motion.button>
+            ))}
+          </motion.div>
 
           {/* Search — finds a question by keyword across every category,
               not just the ones a guest happens to browse into. */}
-          <div className="relative mb-12">
+          <div className="relative mb-2">
             <div className="relative">
               <SearchIcon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone/50" />
               <input
@@ -355,8 +361,11 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
               </div>
             )}
           </div>
+          <p className="text-center font-sans text-stone/60 mb-8" style={{ fontSize: '0.78rem' }}>
+            {t.faqLanguageNote}
+          </p>
 
-          <div className="space-y-10">
+          <div className="space-y-8">
             {categories.map((category, i) => (
               <div key={category.id} id={category.id} className="scroll-mt-24">
                 <div className="flex items-center gap-3 mb-3">
