@@ -45,10 +45,16 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'Our celebrations for you run Wednesday 20 to Thursday 21 January 2027, in Pitampura, Delhi.',
         },
         {
+          id: 'early-arrival-bride',
+          audience: 'bride',
+          question: 'Can I arrive before the 20th?',
+          answer: 'You’re welcome to — just note that our celebrations begin on Wednesday 20 January, not the day before. If you’re coming in earlier, please make your own travel and stay arrangements for those days.',
+        },
+        {
           id: 'event-dates-groom',
           audience: 'groom',
           question: 'What are the event dates?',
-          answer: 'Our celebrations run Wednesday 20 to Friday 22 January 2027, in Pitampura, Delhi. The main celebrations are on the 20th and 21st — 22 January is checkout day, not a separate celebration.',
+          answer: 'Our celebrations run Wednesday 20 to Friday 22 January 2027, in Pitampura, Delhi. The main celebrations are on the 20th and 21st — 22 January is checkout day, not a separate celebration. Our hosting and festivities begin on the 20th, not the day before.',
         },
         {
           id: 'wedding-date-groom',
@@ -99,6 +105,13 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'Please plan to arrive on Wednesday, 20 January 2027. Choose your best estimate on the form — if it falls in the 6 am–11 am pickup window, see the next question for how that works.',
         },
         {
+          id: 'early-arrival',
+          audience: 'groom',
+          question: 'Can I arrive a day early, or before the 20th?',
+          answer: 'You’re welcome to — but please note that our hosting begins on Wednesday 20 January, the day the functions start, not the day before. Our stay bookings, pickup and festivities all start from the 20th. If you’re coming in earlier, please arrange your own stay and transport for the extra days, and let us know in the notes field on the Travel Details form.',
+          link: 'travelDetails',
+        },
+        {
           id: 'delhi-pickup',
           audience: 'groom',
           question: 'Is pickup arranged when I arrive in Delhi?',
@@ -108,7 +121,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'pickup-outside-window',
           audience: 'groom',
           question: 'What if I arrive outside the pickup window, or on another day?',
-          answer: 'You’re absolutely welcome to — just know that organised pickups run only during the 6 am–11 am window on 20 January. Outside that window, or on another day (the 21st, or the wedding day itself), please arrange your own transport to the hotel, and let us know your plans in the notes field on the form.',
+          answer: 'You’re absolutely welcome to — just know that organised pickups run only during the 6 am–11 am window on 20 January. Outside that window, or on another day (before the 20th, or on the 21st), please arrange your own transport to the hotel, and let us know your plans in the notes field on the form.',
         },
         {
           id: 'tickets-not-booked-yet',
@@ -264,6 +277,34 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
       ],
     },
     {
+      id: 'weather',
+      title: 'Weather & Packing',
+      items: [
+        {
+          id: 'weather-expect',
+          question: 'What will the weather be like?',
+          answer: 'Late January is peak winter in Delhi. Afternoons are usually sunny and pleasant, around 18–20°C. Mornings and nights are cold — typically 6–8°C, and it can dip lower in a cold spell — and fog is common in the early hours. Light winter showers are possible too. It’s worth checking the forecast a few days before you travel.',
+        },
+        {
+          id: 'pack-clothes',
+          question: 'What should I pack for the cold?',
+          answer: 'Layers. Carry a warm jacket or coat, a shawl or stole, and thermals or warm innerwear for the mornings and evenings. Pick layers that go with your outfits: a shawl, wrap or cape over your gown or Indian outfit for the evening events, a blazer or jacket over a sherwani or suit, and a warm cardigan or wrap for the morning Haldi. The Mehndi (11 am – 2 pm) falls in the warmest part of the day.',
+        },
+        {
+          id: 'pack-essentials',
+          question: 'Anything else worth packing for a Delhi winter?',
+          answer: 'Winter air is dry, so a good moisturiser, lip balm and sunscreen help. Warm socks and comfortable closed footwear for the early mornings, and a small umbrella in case of a winter shower.',
+        },
+        {
+          id: 'fog-travel',
+          audience: 'groom',
+          question: 'Could fog delay my flight or train?',
+          answer: 'It can — fog is common in Delhi in January, especially early in the morning, and flights and trains are sometimes delayed. Check your flight or train status before leaving for the airport or station, and if you have a choice, an arrival in the later half of the pickup window gives more cushion than the very first flight or train. Pickup runs 6–11 am on 20 January; if a delay pushes you past it, please arrange your own transport to the hotel — and if your plans change, update your arrival details on the Travel Details form using the same mobile number.',
+          link: 'travelDetails',
+        },
+      ],
+    },
+    {
       id: 'good-to-know',
       title: 'Good to Know',
       items: [
@@ -298,10 +339,16 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'आपके लिए हमारे उत्सव बुधवार 20 से गुरुवार 21 जनवरी 2027 तक, पितमपुरा, दिल्ली में होंगे।',
         },
         {
+          id: 'early-arrival-bride',
+          audience: 'bride',
+          question: 'क्या मैं 20 तारीख़ से पहले आ सकता/सकती हूँ?',
+          answer: 'आ सकते हैं — बस ध्यान रखें कि हमारे उत्सव बुधवार, 20 जनवरी से शुरू होते हैं, एक दिन पहले से नहीं। अगर आप पहले आ रहे हैं, तो उन दिनों के लिए कृपया यात्रा और रुकने की व्यवस्था ख़ुद करें।',
+        },
+        {
           id: 'event-dates-groom',
           audience: 'groom',
           question: 'उत्सव की तारीख़ें क्या हैं?',
-          answer: 'हमारे उत्सव बुधवार 20 से शुक्रवार 22 जनवरी 2027 तक, पितमपुरा, दिल्ली में होंगे। मुख्य उत्सव 20 और 21 तारीख़ को हैं — 22 जनवरी सिर्फ़ चेकआउट का दिन है, कोई अलग उत्सव नहीं।',
+          answer: 'हमारे उत्सव बुधवार 20 से शुक्रवार 22 जनवरी 2027 तक, पितमपुरा, दिल्ली में होंगे। मुख्य उत्सव 20 और 21 तारीख़ को हैं — 22 जनवरी सिर्फ़ चेकआउट का दिन है, कोई अलग उत्सव नहीं। हमारी मेज़बानी और उत्सव 20 तारीख़ से शुरू होते हैं, एक दिन पहले से नहीं।',
         },
         {
           id: 'wedding-date-groom',
@@ -352,6 +399,13 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'कृपया बुधवार, 20 जनवरी 2027 को पहुँचने की योजना बनाएं। फ़ॉर्म पर अपना अंदाज़ित समय बताएं — अगर यह सुबह 6 से 11 बजे के पिकअप समय में आता है, तो अगले सवाल में पूरी जानकारी है।',
         },
         {
+          id: 'early-arrival',
+          audience: 'groom',
+          question: 'क्या मैं एक दिन पहले, या 20 तारीख़ से पहले आ सकता/सकती हूँ?',
+          answer: 'बिल्कुल आ सकते हैं — बस ध्यान रखें कि हमारी मेज़बानी बुधवार, 20 जनवरी से शुरू होती है, यानी जिस दिन कार्यक्रम शुरू होते हैं, उससे एक दिन पहले नहीं। हमारी ओर से रुकने की बुकिंग, पिकअप और सभी उत्सव 20 तारीख़ से ही शुरू होंगे। अगर आप पहले आ रहे हैं, तो अतिरिक्त दिनों के लिए कृपया रुकने और आने-जाने की व्यवस्था ख़ुद करें, और यात्रा विवरण फ़ॉर्म के नोट्स वाले हिस्से में हमें बता दें।',
+          link: 'travelDetails',
+        },
+        {
           id: 'delhi-pickup',
           audience: 'groom',
           question: 'दिल्ली पहुँचने पर क्या पिकअप की व्यवस्था है?',
@@ -361,7 +415,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'pickup-outside-window',
           audience: 'groom',
           question: 'अगर मैं पिकअप समय के बाहर, या किसी और दिन पहुँचूं तो?',
-          answer: 'आप बेझिझक आ सकते हैं — बस ध्यान रखें कि व्यवस्थित पिकअप केवल 20 जनवरी को सुबह 6 से 11 बजे के बीच ही उपलब्ध है। इस समय के बाहर, या किसी और दिन (21 तारीख़, या शादी वाले दिन ही) पहुँचने पर, कृपया होटल तक अपनी यात्रा ख़ुद तय करें, और फ़ॉर्म के नोट्स वाले हिस्से में हमें अपनी योजना बता दें।',
+          answer: 'आप बेझिझक आ सकते हैं — बस ध्यान रखें कि व्यवस्थित पिकअप केवल 20 जनवरी को सुबह 6 से 11 बजे के बीच ही उपलब्ध है। इस समय के बाहर, या किसी और दिन (20 तारीख़ से पहले, या 21 तारीख़ को) पहुँचने पर, कृपया होटल तक अपनी यात्रा ख़ुद तय करें, और फ़ॉर्म के नोट्स वाले हिस्से में हमें अपनी योजना बता दें।',
         },
         {
           id: 'tickets-not-booked-yet',
@@ -517,6 +571,34 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
       ],
     },
     {
+      id: 'weather',
+      title: 'मौसम और पैकिंग',
+      items: [
+        {
+          id: 'weather-expect',
+          question: 'मौसम कैसा रहेगा?',
+          answer: 'जनवरी के आख़िर में दिल्ली में कड़ाके की सर्दी होती है। दोपहर आमतौर पर धूप वाली और सुहावनी होती है, लगभग 18–20°C। सुबह और रात ठंडी होती हैं — आमतौर पर 6–8°C, और ठंड की लहर में इससे नीचे भी जा सकता है — और तड़के कोहरा आम है। सर्दी की हल्की बौछार भी संभव है। यात्रा से कुछ दिन पहले मौसम का पूर्वानुमान देख लेना अच्छा रहेगा।',
+        },
+        {
+          id: 'pack-clothes',
+          question: 'ठंड के लिए क्या-क्या पैक करूँ?',
+          answer: 'परतों में कपड़े रखें। गर्म जैकेट या कोट, शॉल या स्टोल, और सुबह-शाम के लिए थर्मल या गर्म इनरवियर साथ रखें। ऐसी परतें चुनें जो आपके पहनावे के साथ जँचें: शाम के कार्यक्रमों में गाउन या भारतीय परिधान के ऊपर शॉल, रैप या केप; शेरवानी या सूट के ऊपर ब्लेज़र या जैकेट; और सुबह की हल्दी के लिए गर्म कार्डिगन या शॉल। मेहंदी (सुबह 11 से दोपहर 2 बजे) दिन के सबसे गर्म समय में है।',
+        },
+        {
+          id: 'pack-essentials',
+          question: 'दिल्ली की सर्दी के लिए और क्या रखना चाहिए?',
+          answer: 'सर्दियों की हवा सूखी होती है, इसलिए अच्छा मॉइस्चराइज़र, लिप बाम और सनस्क्रीन काम आएँगे। तड़के के लिए गर्म मोज़े और आरामदायक बंद जूते, और सर्दी की बौछार के लिए एक छोटी छतरी।',
+        },
+        {
+          id: 'fog-travel',
+          audience: 'groom',
+          question: 'क्या कोहरे से मेरी फ़्लाइट या ट्रेन देर हो सकती है?',
+          answer: 'हो सकती है — दिल्ली में जनवरी में कोहरा आम है, ख़ासकर तड़के, और फ़्लाइट व ट्रेनें कभी-कभी देर से चलती हैं। एयरपोर्ट या स्टेशन के लिए निकलने से पहले अपनी फ़्लाइट या ट्रेन की स्थिति देख लें, और विकल्प हो तो सबसे पहली फ़्लाइट या ट्रेन के बजाय पिकअप समय के उत्तरार्ध में पहुँचना ज़्यादा सुरक्षित रहता है। पिकअप का समय 20 जनवरी को सुबह 6 से 11 बजे है; अगर देरी से आप इस समय के बाहर पहुँचते हैं, तो कृपया होटल तक अपनी यात्रा ख़ुद तय करें — और योजना बदले तो उसी मोबाइल नंबर से यात्रा विवरण फ़ॉर्म में आगमन की जानकारी अपडेट कर दें।',
+          link: 'travelDetails',
+        },
+      ],
+    },
+    {
       id: 'good-to-know',
       title: 'जानना ज़रूरी',
       items: [
@@ -551,10 +633,16 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'તમારા માટે અમારા ઉત્સવો બુધવાર 20 થી ગુરુવાર 21 જાન્યુઆરી 2027 સુધી, પિતમપુરા, દિલ્હીમાં યોજાશે.',
         },
         {
+          id: 'early-arrival-bride',
+          audience: 'bride',
+          question: 'શું હું 20 તારીખ પહેલાં આવી શકું?',
+          answer: 'આવી શકો — પણ ધ્યાન રાખો કે અમારા ઉત્સવો બુધવાર, 20 જાન્યુઆરીથી શરૂ થાય છે, આગલા દિવસથી નહીં. જો તમે વહેલા આવી રહ્યા હો, તો તે દિવસો માટે કૃપા કરી મુસાફરી અને રોકાણની વ્યવસ્થા જાતે કરો.',
+        },
+        {
           id: 'event-dates-groom',
           audience: 'groom',
           question: 'ઉત્સવોની તારીખો શું છે?',
-          answer: 'અમારા ઉત્સવો બુધવાર 20 થી શુક્રવાર 22 જાન્યુઆરી 2027 સુધી, પિતમપુરા, દિલ્હીમાં યોજાશે. મુખ્ય ઉત્સવો 20મી અને 21મી તારીખે છે — 22 જાન્યુઆરી ફક્ત ચેકઆઉટનો દિવસ છે, અલગ ઉત્સવ નથી.',
+          answer: 'અમારા ઉત્સવો બુધવાર 20 થી શુક્રવાર 22 જાન્યુઆરી 2027 સુધી, પિતમપુરા, દિલ્હીમાં યોજાશે. મુખ્ય ઉત્સવો 20મી અને 21મી તારીખે છે — 22 જાન્યુઆરી ફક્ત ચેકઆઉટનો દિવસ છે, અલગ ઉત્સવ નથી. અમારી મહેમાનગતિ અને ઉત્સવો 20 તારીખથી શરૂ થાય છે, આગલા દિવસથી નહીં.',
         },
         {
           id: 'wedding-date-groom',
@@ -605,6 +693,13 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'કૃપા કરી બુધવાર, 20 જાન્યુઆરી 2027ના રોજ પહોંચવાનું આયોજન કરો. ફોર્મ પર તમારો અંદાજિત સમય જણાવો — જો તે સવારે 6 થી 11 વાગ્યાના પિકઅપ સમયમાં આવે, તો આગળના પ્રશ્નમાં સંપૂર્ણ વિગતો છે.',
         },
         {
+          id: 'early-arrival',
+          audience: 'groom',
+          question: 'શું હું એક દિવસ વહેલો, અથવા 20 તારીખ પહેલાં આવી શકું?',
+          answer: 'ચોક્કસ આવી શકો — પણ કૃપા કરી ધ્યાન રાખો કે અમારી મહેમાનગતિ બુધવાર, 20 જાન્યુઆરીથી શરૂ થાય છે, એટલે કે જે દિવસે કાર્યક્રમો શરૂ થાય છે, તેના આગલા દિવસથી નહીં. અમારા તરફથી રોકાણનું બુકિંગ, પિકઅપ અને બધા ઉત્સવો 20 તારીખથી જ શરૂ થશે. જો તમે વહેલા આવી રહ્યા હો, તો વધારાના દિવસો માટે કૃપા કરી રોકાણ અને અવરજવરની વ્યવસ્થા જાતે કરો, અને મુસાફરી વિગતો ફોર્મના નોંધ વિભાગમાં અમને જણાવો.',
+          link: 'travelDetails',
+        },
+        {
           id: 'delhi-pickup',
           audience: 'groom',
           question: 'દિલ્હી પહોંચ્યા પછી પિકઅપની વ્યવસ્થા છે?',
@@ -614,7 +709,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'pickup-outside-window',
           audience: 'groom',
           question: 'જો હું પિકઅપ સમય પછી, અથવા બીજા દિવસે પહોંચું તો?',
-          answer: 'તમે બેધડક આવી શકો છો — ફક્ત ધ્યાન રાખો કે ગોઠવાયેલું પિકઅપ ફક્ત 20 જાન્યુઆરીએ સવારે 6 થી 11 વાગ્યા દરમિયાન જ ઉપલબ્ધ છે. આ સમય પછી, અથવા બીજા દિવસે (21મીએ, અથવા લગ્નના દિવસે જ) પહોંચવા પર, કૃપા કરી હોટેલ સુધીની તમારી મુસાફરી જાતે ગોઠવો, અને ફોર્મના નોંધ વિભાગમાં અમને તમારી યોજના જણાવો.',
+          answer: 'તમે બેધડક આવી શકો છો — ફક્ત ધ્યાન રાખો કે ગોઠવાયેલું પિકઅપ ફક્ત 20 જાન્યુઆરીએ સવારે 6 થી 11 વાગ્યા દરમિયાન જ ઉપલબ્ધ છે. આ સમય પછી, અથવા બીજા દિવસે (20 તારીખ પહેલાં, અથવા 21મીએ) પહોંચવા પર, કૃપા કરી હોટેલ સુધીની તમારી મુસાફરી જાતે ગોઠવો, અને ફોર્મના નોંધ વિભાગમાં અમને તમારી યોજના જણાવો.',
         },
         {
           id: 'tickets-not-booked-yet',
@@ -766,6 +861,34 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           question: 'શું કોઈ ડાઉનલોડ કરી શકાય તેવી ગાઇડ છે?',
           answer: 'હા — ફૂટરમાં આપેલ ગેસ્ટ ગાઇડ PDF માં બધું એક જ જગ્યાએ છે.',
           link: 'guide',
+        },
+      ],
+    },
+    {
+      id: 'weather',
+      title: 'હવામાન અને પેકિંગ',
+      items: [
+        {
+          id: 'weather-expect',
+          question: 'હવામાન કેવું રહેશે?',
+          answer: 'જાન્યુઆરીના અંતમાં દિલ્હીમાં કડકડતી શિયાળાની ઋતુ હોય છે. બપોર સામાન્ય રીતે તડકાવાળી અને સુખદ હોય છે, લગભગ 18–20°C. સવાર અને રાત ઠંડી હોય છે — સામાન્ય રીતે 6–8°C, અને ઠંડીની લહેરમાં તેનાથી પણ નીચે જઈ શકે છે — અને વહેલી સવારે ધુમ્મસ સામાન્ય છે. શિયાળાનો હળવો વરસાદ પણ શક્ય છે. મુસાફરીના થોડા દિવસ પહેલાં હવામાનની આગાહી જોઈ લેવી સારી રહેશે.',
+        },
+        {
+          id: 'pack-clothes',
+          question: 'ઠંડી માટે શું પેક કરવું?',
+          answer: 'સ્તરોમાં કપડાં રાખો. ગરમ જેકેટ અથવા કોટ, શાલ અથવા સ્ટોલ, અને સવાર-સાંજ માટે થર્મલ અથવા ગરમ ઇનરવેર સાથે રાખો. એવા સ્તરો પસંદ કરો જે તમારા પોશાક સાથે શોભે: સાંજના કાર્યક્રમોમાં ગાઉન અથવા ભારતીય પોશાક પર શાલ, રેપ કે કેપ; શેરવાની અથવા સૂટ પર બ્લેઝર કે જેકેટ; અને સવારની હળદી માટે ગરમ કાર્ડિગન કે શાલ. મહેંદી (સવારે 11 થી બપોરે 2) દિવસના સૌથી ગરમ સમયમાં છે.',
+        },
+        {
+          id: 'pack-essentials',
+          question: 'દિલ્હીના શિયાળા માટે બીજું શું રાખવું?',
+          answer: 'શિયાળાની હવા સૂકી હોય છે, તેથી સારું મૉઇશ્ચરાઇઝર, લિપ બામ અને સનસ્ક્રીન કામ આવશે. વહેલી સવાર માટે ગરમ મોજાં અને આરામદાયક બંધ શૂઝ, અને શિયાળાના ઝાપટા માટે નાની છત્રી.',
+        },
+        {
+          id: 'fog-travel',
+          audience: 'groom',
+          question: 'શું ધુમ્મસને કારણે મારી ફ્લાઇટ કે ટ્રેન મોડી પડી શકે?',
+          answer: 'પડી શકે — દિલ્હીમાં જાન્યુઆરીમાં ધુમ્મસ સામાન્ય છે, ખાસ કરીને વહેલી સવારે, અને ફ્લાઇટ તથા ટ્રેન ક્યારેક મોડી પડે છે. એરપોર્ટ કે સ્ટેશન જવા નીકળતા પહેલાં તમારી ફ્લાઇટ કે ટ્રેનની સ્થિતિ જોઈ લો, અને વિકલ્પ હોય તો સૌથી પહેલી ફ્લાઇટ કે ટ્રેનને બદલે પિકઅપ સમયના પાછલા ભાગમાં પહોંચવું વધુ સલામત રહે છે. પિકઅપ સમય 20 જાન્યુઆરીએ સવારે 6 થી 11 વાગ્યા છે; જો મોડું થવાથી તમે આ સમયની બહાર પહોંચો, તો કૃપા કરી હોટેલ સુધીની મુસાફરી જાતે ગોઠવો — અને યોજના બદલાય તો એ જ મોબાઇલ નંબરથી મુસાફરી વિગતો ફોર્મમાં આગમનની માહિતી અપડેટ કરો.',
+          link: 'travelDetails',
         },
       ],
     },

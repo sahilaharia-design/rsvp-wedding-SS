@@ -104,6 +104,14 @@ function CategoryIcon({ id, className }: { id: string; className?: string }) {
           <path d="M32 24l-24 14a4.5 4.5 0 004.5 7h39a4.5 4.5 0 004.5-7L32 24z" />
         </svg>
       )
+    case 'weather':
+      return (
+        <svg viewBox="0 0 64 64" className={className} {...stroke}>
+          <circle cx="24" cy="24" r="8" />
+          <path d="M24 8v4M24 36v4M8 24h4M36 24h4M12.7 12.7l2.8 2.8M32.5 32.5l2.8 2.8M12.7 35.3l2.8-2.8M32.5 15.5l2.8-2.8" />
+          <path d="M30 50h20a8 8 0 000-16 11 11 0 00-20.5 3A6.5 6.5 0 0030 50z" />
+        </svg>
+      )
     case 'good-to-know':
       return (
         <svg viewBox="0 0 64 64" className={className} {...stroke}>
@@ -352,7 +360,7 @@ export default function FaqPageClient({ audience }: { audience: Audience }) {
                   onClick={() => jumpToCategory(category.id)}
                   variants={{ hidden: { opacity: 0, y: 8, scale: 0.96 }, visible: { opacity: 1, y: 0, scale: 1 } }}
                   whileTap={{ scale: 0.94 }}
-                  className={`hover-lift flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-thread-border/50 ${CARD_TINTS[i % CARD_TINTS.length]} px-1.5 py-4 text-center transition-colors duration-200 hover:border-burgundy`}
+                  className={`${categories.length % 3 === 1 && i === categories.length - 1 ? 'col-span-3 ' : ''}hover-lift flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-thread-border/50 ${CARD_TINTS[i % CARD_TINTS.length]} px-1.5 py-4 text-center transition-colors duration-200 hover:border-burgundy`}
                 >
                   <span className={`flex-shrink-0 w-10 h-10 rounded-full ${accent.bg} border-2 ${accent.border} flex items-center justify-center`}>
                     <CategoryIcon id={category.id} className={`w-[18px] h-[18px] ${accent.text}`} />
