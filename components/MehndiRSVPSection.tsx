@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
-import type { Audience } from '@/lib/audience'
+import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
+import FormSuccess from '@/components/FormSuccess'
 
 type Status = 'joining' | 'unable' | 'not_sure'
 type Hand = 'one_hand' | 'both_hands'
@@ -164,16 +165,23 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
           >
             <AnimatePresence mode="wait">
               {formState === 'success' ? (
-                <motion.div key="success" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }} className="py-10 text-center">
-                  <div className="w-12 h-[2px] bg-gold mx-auto mb-8" />
-                  <h2 className="font-serif italic leading-[1.2] text-charcoal mb-5"
-                    style={{ fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
-                    {t.mehndiSuccessHeading}
-                  </h2>
-                  <p className="font-sans leading-[1.9] text-stone" style={{ fontSize: '1.1rem' }}>
-                    {t.mehndiSuccessBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
-                  </p>
+                <motion.div key="success">
+                  <FormSuccess
+                    heading={t.mehndiSuccessHeading}
+                    body={t.mehndiSuccessBody}
+                    summaryLabel={t.successReceivedLabel}
+                    summary={[
+                      { name: submittedByName.trim(), status: selfStatus },
+                      ...guests.map((g) => ({ name: g.name.trim(), status: g.status })),
+                    ]
+                      .filter((g) => g.name)
+                      .map((g) => `${g.name} — ${g.status === 'joining' ? t.mehndiStatusJoining : g.status === 'unable' ? t.mehndiStatusUnable : t.mehndiStatusNotSure}`)}
+                    note={t.mehndiSuccessNote}
+                    links={[
+                      { href: AUDIENCE_CONFIG[audience].faqRoute, label: t.faqTeaserCTA },
+                      { href: AUDIENCE_CONFIG[audience].makeupRoute, label: t.lovelyLadiesMakeupCardCTA },
+                    ]}
+                  />
                 </motion.div>
               ) : (
                 <motion.div key="form">

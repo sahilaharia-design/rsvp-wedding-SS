@@ -101,6 +101,9 @@ export const strings = {
     mehndiSending:     'Sending…',
     mehndiSuccessHeading: 'Thank You.',
     mehndiSuccessBody: 'We\'ve received your Mehndi preferences.\nWe can\'t wait to celebrate with you.',
+    successReceivedLabel: 'What we received',
+    travelSuccessNote: 'Need to change something? Just fill the form again with the same mobile number — it updates your details.',
+    mehndiSuccessNote: 'Need to change something? Just submit the form again.',
     mehndiErrorGeneric: 'Something went wrong. Please try again.',
     mehndiMissingNameError: 'Please enter your name.',
 
@@ -285,6 +288,9 @@ export const strings = {
     mehndiSending:     'भेजा जा रहा है…',
     mehndiSuccessHeading: 'धन्यवाद।',
     mehndiSuccessBody: 'हमें आपकी मेहंदी पसंद मिल गई है।\nहम आपके साथ जश्न मनाने के लिए बेताब हैं।',
+    successReceivedLabel: 'हमें क्या मिला',
+    travelSuccessNote: 'कुछ बदलना है? उसी मोबाइल नंबर से फिर से फ़ॉर्म भरें — आपकी जानकारी अपडेट हो जाएगी।',
+    mehndiSuccessNote: 'कुछ बदलना है? बस फ़ॉर्म दोबारा भर दें।',
     mehndiErrorGeneric: 'कुछ गलत हो गया। कृपया फिर से प्रयास करें।',
     mehndiMissingNameError: 'कृपया अपना नाम दर्ज करें।',
 
@@ -462,6 +468,9 @@ export const strings = {
     mehndiSending:     'મોકલાઈ રહ્યું છે…',
     mehndiSuccessHeading: 'આભાર.',
     mehndiSuccessBody: 'અમને તમારી મહેંદી પસંદગીઓ મળી ગઈ છે.\nઅમે તમારી સાથે ઉજવણી કરવા આતુર છીએ.',
+    successReceivedLabel: 'અમને શું મળ્યું',
+    travelSuccessNote: 'કંઈક બદલવું છે? એ જ મોબાઇલ નંબરથી ફરી ફોર્મ ભરો — તમારી વિગતો અપડેટ થશે.',
+    mehndiSuccessNote: 'કંઈક બદલવું છે? ફક્ત ફોર્મ ફરી ભરો.',
     mehndiErrorGeneric: 'કંઈક ખોટું થયું. કૃપા કરી ફરી પ્રયાસ કરો.',
     mehndiMissingNameError: 'કૃપા કરી તમારું નામ દાખલ કરો.',
 

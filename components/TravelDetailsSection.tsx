@@ -4,6 +4,8 @@ import Image from 'next/image'
 import { useEffect, useState, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
+import { AUDIENCE_CONFIG } from '@/lib/audience'
+import FormSuccess from '@/components/FormSuccess'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 type ArrivalMode = 'flight' | 'train' | 'road'
@@ -214,16 +216,21 @@ export default function TravelDetailsSection() {
           >
             <AnimatePresence mode="wait">
               {formState === 'success' ? (
-                <motion.div key="success" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }} className="py-10 text-center relative">
-                  <div className="w-12 h-[2px] bg-gold mx-auto mb-8" />
-                  <h2 className="font-serif italic leading-[1.2] text-charcoal mb-5"
-                    style={{ fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
-                    {t.travelSuccessHeading}
-                  </h2>
-                  <p className="font-sans leading-[1.9] text-stone" style={{ fontSize: '1.1rem' }}>
-                    {t.travelSuccessBody.split('\n').map((l, i) => <span key={i}>{l}{i === 0 && <br />}</span>)}
-                  </p>
+                <motion.div key="success">
+                  <FormSuccess
+                    heading={t.travelSuccessHeading}
+                    body={t.travelSuccessBody}
+                    summaryLabel={t.successReceivedLabel}
+                    summary={[
+                      fields.full_name,
+                      `${arrivalMode === 'flight' ? t.byFlight : arrivalMode === 'train' ? t.byTrain : t.byRoad} · ${fields.arrival_date}${fields.arrival_time ? ` · ${fields.arrival_time}` : ''}`,
+                    ].filter(Boolean)}
+                    note={t.travelSuccessNote}
+                    links={[
+                      { href: AUDIENCE_CONFIG.groom.faqRoute, label: t.faqTeaserCTA },
+                      { href: AUDIENCE_CONFIG.groom.themesRoute, label: t.wardrobeExploreCTA },
+                    ]}
+                  />
                 </motion.div>
               ) : (
                 <motion.div key="form">
