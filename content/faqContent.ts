@@ -124,6 +124,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'You’re absolutely welcome to — just know that organised pickups run only during the 6 am–11 am window on 20 January. Outside that window, or on another day (before the 20th, or on the 21st), please arrange your own transport to the hotel, and let us know your plans in the notes field on the form.',
         },
         {
+          id: 'check-in-time',
+          audience: 'groom',
+          question: 'What time is check-in — and can I check in early?',
+          answer: 'Check-in is at 2 pm. Early check-in can’t be guaranteed, but rooms are handed over as and when they’re ready — so if yours is ready when you arrive, you’ll get it.',
+        },
+        {
           id: 'tickets-not-booked-yet',
           audience: 'groom',
           question: 'What if I haven’t booked my tickets yet?',
@@ -173,6 +179,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           question: 'When should I book my return?',
           answer: 'The Wedding is on the evening of Thursday 21 January and checkout is at 11 am on Friday 22 January — so plan your return for the 22nd, after checkout, rather than the night of the 21st. Fog can delay early-morning departures in January, so a slightly later departure on the 22nd gives you some cushion.',
         },
+        {
+          id: 'departure-transport',
+          audience: 'groom',
+          question: 'Is transport arranged for my departure?',
+          answer: 'Yes — after checkout at 11 am on Friday 22 January, we’ll arrange transport to the Delhi airport or railway station. If you’re heading anywhere else, please arrange your own transport.',
+        },
       ],
     },
     {
@@ -208,6 +220,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'Are meals being arranged during the celebrations?',
           answer: 'Yes — meals around the wedding celebrations are being arranged for our guests, so please don’t worry about going hungry. Scheduled meals, including lunch and other event meals, are part of the arrangements.',
+        },
+        {
+          id: 'food-options',
+          audience: 'groom',
+          question: 'Will there be vegetarian and Jain food?',
+          answer: 'Yes — both vegetarian and Jain food will be available at the celebrations.',
         },
         {
           id: 'separate-orders',
@@ -352,6 +370,17 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           link: 'switchAudience',
         },
         {
+          id: 'rsvp-guests',
+          question: 'Do I need to do anything for the people coming with me?',
+          answer: 'If you’ve already RSVPed, you and the guests on your list are all taken care of — there’s nothing more you need to arrange on this front.',
+        },
+        {
+          id: 'food-options-bride',
+          audience: 'bride',
+          question: 'Will there be vegetarian and Jain food?',
+          answer: 'Yes — both vegetarian and Jain food will be available at the celebrations.',
+        },
+        {
           id: 'contact',
           question: 'Who do I contact if I still have questions?',
           answer: 'Reach out to Ashok & Chetana Haria (Dr. Sahil’s parents) — they’re happy to help with anything not already covered here.',
@@ -450,6 +479,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'आप बेझिझक आ सकते हैं — बस ध्यान रखें कि व्यवस्थित पिकअप केवल 20 जनवरी को सुबह 6 से 11 बजे के बीच ही उपलब्ध है। इस समय के बाहर, या किसी और दिन (20 तारीख़ से पहले, या 21 तारीख़ को) पहुँचने पर, कृपया होटल तक अपनी यात्रा ख़ुद तय करें, और फ़ॉर्म के नोट्स वाले हिस्से में हमें अपनी योजना बता दें।',
         },
         {
+          id: 'check-in-time',
+          audience: 'groom',
+          question: 'चेक-इन कब है — और क्या मैं जल्दी चेक-इन कर सकता/सकती हूँ?',
+          answer: 'चेक-इन दोपहर 2 बजे है। जल्दी चेक-इन की गारंटी नहीं दी जा सकती, लेकिन कमरे जैसे-जैसे तैयार होते हैं वैसे-वैसे दिए जाते हैं — इसलिए अगर आपके पहुँचने पर आपका कमरा तैयार है, तो आपको मिल जाएगा।',
+        },
+        {
           id: 'tickets-not-booked-yet',
           audience: 'groom',
           question: 'अगर मैंने अभी तक अपनी टिकट बुक नहीं की है तो?',
@@ -499,6 +534,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           question: 'वापसी की यात्रा कब बुक करूँ?',
           answer: 'शादी गुरुवार, 21 जनवरी की शाम को है और चेकआउट शुक्रवार, 22 जनवरी को सुबह 11 बजे है — इसलिए वापसी की यात्रा 21 की रात के बजाय 22 तारीख़ को, चेकआउट के बाद की योजना बनाएं। जनवरी में कोहरे से सुबह की रवानगी देर हो सकती है, इसलिए 22 तारीख़ को थोड़ी देर की रवानगी ज़्यादा सुरक्षित रहती है।',
         },
+        {
+          id: 'departure-transport',
+          audience: 'groom',
+          question: 'क्या मेरी वापसी के लिए परिवहन की व्यवस्था है?',
+          answer: 'जी हाँ — शुक्रवार, 22 जनवरी को सुबह 11 बजे चेकआउट के बाद, हम दिल्ली एयरपोर्ट या रेलवे स्टेशन तक परिवहन की व्यवस्था करेंगे। अगर आप कहीं और जा रहे हैं, तो कृपया अपना परिवहन ख़ुद तय करें।',
+        },
       ],
     },
     {
@@ -534,6 +575,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'क्या उत्सवों के दौरान खाने की व्यवस्था है?',
           answer: 'जी हाँ — शादी के उत्सवों के आसपास मेहमानों के लिए खाने की व्यवस्था की जा रही है, तो भूखे रहने की चिंता बिल्कुल न करें। लंच सहित तय किए गए भोजन इन व्यवस्थाओं का हिस्सा हैं।',
+        },
+        {
+          id: 'food-options',
+          audience: 'groom',
+          question: 'क्या शाकाहारी और जैन भोजन होगा?',
+          answer: 'जी हाँ — उत्सवों में शाकाहारी और जैन, दोनों तरह का भोजन उपलब्ध रहेगा।',
         },
         {
           id: 'separate-orders',
@@ -678,6 +725,17 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           link: 'switchAudience',
         },
         {
+          id: 'rsvp-guests',
+          question: 'क्या मुझे अपने साथ आने वालों के लिए कुछ करना होगा?',
+          answer: 'अगर आप पहले ही RSVP कर चुके हैं, तो आप और आपकी सूची के मेहमान पूरी तरह निश्चिंत हैं — इस बारे में आपको और कुछ करने की ज़रूरत नहीं है।',
+        },
+        {
+          id: 'food-options-bride',
+          audience: 'bride',
+          question: 'क्या शाकाहारी और जैन भोजन होगा?',
+          answer: 'जी हाँ — उत्सवों में शाकाहारी और जैन, दोनों तरह का भोजन उपलब्ध रहेगा।',
+        },
+        {
           id: 'contact',
           question: 'अगर मेरे कोई और सवाल हैं तो मैं किससे संपर्क करूं?',
           answer: 'अशोक और चेतना हरिया (डॉ. सहिल के माता-पिता) से संपर्क करें — यहाँ न बताई गई किसी भी बात में वे मदद करने में खुशी महसूस करेंगे।',
@@ -776,6 +834,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           answer: 'તમે બેધડક આવી શકો છો — ફક્ત ધ્યાન રાખો કે ગોઠવાયેલું પિકઅપ ફક્ત 20 જાન્યુઆરીએ સવારે 6 થી 11 વાગ્યા દરમિયાન જ ઉપલબ્ધ છે. આ સમય પછી, અથવા બીજા દિવસે (20 તારીખ પહેલાં, અથવા 21મીએ) પહોંચવા પર, કૃપા કરી હોટેલ સુધીની તમારી મુસાફરી જાતે ગોઠવો, અને ફોર્મના નોંધ વિભાગમાં અમને તમારી યોજના જણાવો.',
         },
         {
+          id: 'check-in-time',
+          audience: 'groom',
+          question: 'ચેક-ઇન ક્યારે છે — અને શું હું વહેલો ચેક-ઇન કરી શકું?',
+          answer: 'ચેક-ઇન બપોરે 2 વાગ્યે છે. વહેલા ચેક-ઇનની ખાતરી આપી શકાતી નથી, પણ રૂમ જેમ જેમ તૈયાર થાય તેમ તેમ આપવામાં આવે છે — તેથી જો તમારા પહોંચતા સમયે તમારો રૂમ તૈયાર હશે, તો તમને મળી જશે.',
+        },
+        {
           id: 'tickets-not-booked-yet',
           audience: 'groom',
           question: 'જો મેં હજુ મારી ટિકિટ બુક ન કરી હોય તો?',
@@ -825,6 +889,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           question: 'પાછા ફરવાની મુસાફરી ક્યારે બુક કરવી?',
           answer: 'લગ્ન ગુરુવાર, 21 જાન્યુઆરીની સાંજે છે અને ચેકઆઉટ શુક્રવાર, 22 જાન્યુઆરીએ સવારે 11 વાગ્યે છે — તેથી પાછા ફરવાની મુસાફરી 21ની રાત્રિને બદલે 22 તારીખે, ચેકઆઉટ પછી ગોઠવવાનું આયોજન કરો. જાન્યુઆરીમાં ધુમ્મસથી વહેલી સવારની રવાનગી મોડી પડી શકે છે, તેથી 22 તારીખે થોડી મોડી રવાનગી વધુ સલામત રહે છે.',
         },
+        {
+          id: 'departure-transport',
+          audience: 'groom',
+          question: 'શું મારી વિદાય માટે પરિવહનની વ્યવસ્થા છે?',
+          answer: 'હા — શુક્રવાર, 22 જાન્યુઆરીએ સવારે 11 વાગ્યાના ચેકઆઉટ પછી, અમે દિલ્હી એરપોર્ટ અથવા રેલવે સ્ટેશન સુધી પરિવહન ગોઠવીશું. જો તમે બીજે ક્યાંય જઈ રહ્યા હો, તો કૃપા કરી તમારું પરિવહન જાતે ગોઠવો.',
+        },
       ],
     },
     {
@@ -860,6 +930,12 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           audience: 'groom',
           question: 'શું ઉત્સવો દરમિયાન ભોજનની વ્યવસ્થા છે?',
           answer: 'હા — લગ્નના ઉત્સવોની આસપાસ મહેમાનો માટે ભોજનની વ્યવસ્થા કરવામાં આવી રહી છે, તો ભૂખ્યા રહેવાની ચિંતા બિલકુલ ન કરો. લંચ સહિત નિર્ધારિત ભોજન આ વ્યવસ્થાનો ભાગ છે.',
+        },
+        {
+          id: 'food-options',
+          audience: 'groom',
+          question: 'શું શાકાહારી અને જૈન ભોજન હશે?',
+          answer: 'હા — ઉત્સવોમાં શાકાહારી અને જૈન, બંને પ્રકારનું ભોજન ઉપલબ્ધ રહેશે.',
         },
         {
           id: 'separate-orders',
@@ -1002,6 +1078,17 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           question: 'લાગે છે હું ખોટા મહેમાન પાના પર છું — શું હું બદલી શકું?',
           answer: 'હા — સાક્ષીના મહેમાનો અને ડૉ. સહિલના મહેમાનો વચ્ચે જવા માટે હેડરમાં આપેલ સ્વિચ લિંકનો ઉપયોગ કરો.',
           link: 'switchAudience',
+        },
+        {
+          id: 'rsvp-guests',
+          question: 'શું મારે મારી સાથે આવનારાઓ માટે કંઈ કરવાનું છે?',
+          answer: 'જો તમે પહેલેથી RSVP કરી દીધું હોય, તો તમે અને તમારી યાદીના મહેમાનો સંપૂર્ણ નિશ્ચિંત છો — આ બાબતે તમારે બીજું કંઈ કરવાની જરૂર નથી.',
+        },
+        {
+          id: 'food-options-bride',
+          audience: 'bride',
+          question: 'શું શાકાહારી અને જૈન ભોજન હશે?',
+          answer: 'હા — ઉત્સવોમાં શાકાહારી અને જૈન, બંને પ્રકારનું ભોજન ઉપલબ્ધ રહેશે.',
         },
         {
           id: 'contact',
