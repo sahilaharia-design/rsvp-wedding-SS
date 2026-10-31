@@ -13,6 +13,10 @@ type ArrivalMode = 'flight' | 'train' | 'road'
 const EASE = [0.25, 0.1, 0.25, 1] as const
 const MAX_FILES = 4
 const MAX_FILE_BYTES = 3.2 * 1024 * 1024 // ~3.2MB raw — keeps base64 well under the API's cap
+// Phone cameras routinely produce 4–8MB photos, so images are shrunk in the
+// browser before the size cap is applied (PDFs can't be, and still hit it).
+const COMPRESS_ABOVE_BYTES = 1.2 * 1024 * 1024
+const OTHER_TIME = 'other' // arrival_time sentinel for "later than 2 pm / a different day"
 
 const labelCls = 'block font-sans uppercase text-charcoal/70'
 const labelStyle = { fontSize: '0.85rem', letterSpacing: '0.12em' }
@@ -33,6 +37,40 @@ function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file)
   })
 }
+
+// Shrinks a large photo to a JPEG that comfortably fits the upload cap.
+// Falls back to the original file on any failure — never blocks the guest.
+async function compressImage(file: File): Promise<File> {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif' || file.size <= COMPRESS_ABOVE_BYTES) return file
+  try {
+    const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
+    for (const [maxDim, quality] of [[2000, 0.82], [1500, 0.7], [1100, 0.65]] as const) {
+      const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height))
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(bitmap.width * scale)
+      canvas.height = Math.round(bitmap.height * scale)
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return file
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+      const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', quality))
+      if (blob && blob.size <= MAX_FILE_BYTES) {
+        bitmap.close?.()
+        return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' })
+      }
+    }
+    bitmap.close?.()
+    return file
+  } catch {
+    return file
+  }
+}
+
+type FieldKey = 'name' | 'mobile' | 'time' | 'other' | 'id'
+const FIELD_IDS: Record<FieldKey, string> = {
+  name: 'field-name', mobile: 'field-mobile', time: 'field-time', other: 'field-other', id: 'id-upload-group',
+}
+const FIELD_ORDER: FieldKey[] = ['name', 'mobile', 'time', 'other', 'id']
+const errorBorderCls = 'border-rose-500 focus:border-rose-600'
 
 const ARRIVAL_ICONS: Record<ArrivalMode, string> = {
   flight: '/graphics/plane.svg',
@@ -59,13 +97,14 @@ interface FieldsState {
   mobile_number: string
   arrival_date: string
   arrival_time: string
+  arrival_other: string
   travel_number: string
   guest_names: string
   notes: string
 }
 
 const EMPTY_FIELDS: FieldsState = {
-  full_name: '', mobile_number: '', arrival_date: ARRIVAL_DATE, arrival_time: '',
+  full_name: '', mobile_number: '', arrival_date: ARRIVAL_DATE, arrival_time: '', arrival_other: '',
   travel_number: '', guest_names: '', notes: '',
 }
 
@@ -105,12 +144,45 @@ export default function TravelDetailsSection() {
   // regardless of render timing.
   const isSubmittingRef = useRef(false)
 
+  // Validation is custom (the <form> is noValidate) because the browser's
+  // native "please fill out this field" bubble is small, disappears fast,
+  // and on a phone is easy to miss entirely — guests were tapping Confirm,
+  // seeing nothing happen, and giving up. Instead, tapping Confirm with
+  // anything missing shows a banner listing exactly what's left (each item
+  // jumps to its field) and marks those fields inline; the list then
+  // shrinks live as they fix things.
+  const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({})
+  const [attempted, setAttempted] = useState(false)
+  const bannerRef = useRef<HTMLDivElement>(null)
+
+  function validate() {
+    const e: Partial<Record<FieldKey, string>> = {}
+    if (!fields.full_name.trim()) e.name = t.errName
+    if (fields.mobile_number.replace(/\D/g, '').length < 10) e.mobile = t.errMobile
+    if (!fields.arrival_time) e.time = t.errTime
+    else if (fields.arrival_time === OTHER_TIME && !fields.arrival_other.trim()) e.other = t.errOther
+    if (files.length === 0) e.id = t.idUploadRequiredError
+    return e
+  }
+
+  useEffect(() => {
+    if (attempted) setErrors(validate())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fields, files, attempted, t])
+
+  function jumpTo(key: FieldKey) {
+    const el = document.getElementById(FIELD_IDS[key])
+    el?.scrollIntoView({ behavior: 'instant', block: 'center' })
+    ;(el as HTMLElement | null)?.focus?.({ preventScroll: true })
+  }
+
   const setField = (key: keyof FieldsState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setFields((prev) => ({ ...prev, [key]: e.target.value }))
 
-  function addFiles(list: FileList | File[]) {
-    const picked = Array.from(list)
-    if (!picked.length) return
+  async function addFiles(list: FileList | File[]) {
+    const original = Array.from(list)
+    if (!original.length) return
+    const picked = await Promise.all(original.map(compressImage))
     const tooBig = picked.filter((f) => f.size > MAX_FILE_BYTES)
     const okSized = picked.filter((f) => f.size <= MAX_FILE_BYTES)
     if (tooBig.length) {
@@ -133,14 +205,15 @@ export default function TravelDetailsSection() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (isSubmittingRef.current) return
-    // Arrival time is validated natively via `required` on the <select>.
-    // ID upload is a custom control, not a native input, so it needs its
-    // own check — everything else on this form is optional.
-    if (files.length === 0) {
-      setFileError(t.idUploadRequiredError)
-      document.getElementById('id-upload-group')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const found = validate()
+    setAttempted(true)
+    setErrors(found)
+    if (Object.keys(found).length) {
+      // Keep the guest at the button, where the "what's left" banner appears.
+      requestAnimationFrame(() => bannerRef.current?.scrollIntoView({ behavior: 'instant', block: 'center' }))
       return
     }
+    const isOther = fields.arrival_time === OTHER_TIME
     isSubmittingRef.current = true
     setFormState('submitting')
     setErrorMsg('')
@@ -150,7 +223,13 @@ export default function TravelDetailsSection() {
       const infoRes = await fetch('/api/travel-details', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...fields, arrival_mode: arrivalMode }),
+        body: JSON.stringify({
+          ...fields,
+          arrival_mode: arrivalMode,
+          // "Later / different day" has no fixed date or slot — the guest's own words go in the time column.
+          arrival_date: isOther ? '' : fields.arrival_date,
+          arrival_time: isOther ? `Other: ${fields.arrival_other.trim()}` : fields.arrival_time,
+        }),
       })
       const infoJson = await infoRes.json()
       if (!infoRes.ok) {
@@ -223,7 +302,10 @@ export default function TravelDetailsSection() {
                     summaryLabel={t.successReceivedLabel}
                     summary={[
                       fields.full_name,
-                      `${arrivalMode === 'flight' ? t.byFlight : arrivalMode === 'train' ? t.byTrain : t.byRoad} · ${fields.arrival_date}${fields.arrival_time ? ` · ${fields.arrival_time}` : ''}`,
+                      [
+                        arrivalMode === 'flight' ? t.byFlight : arrivalMode === 'train' ? t.byTrain : arrivalMode === 'road' ? t.byRoad : '',
+                        fields.arrival_time === OTHER_TIME ? fields.arrival_other.trim() : `${fields.arrival_date}${fields.arrival_time ? ` · ${fields.arrival_time}` : ''}`,
+                      ].filter(Boolean).join(' · '),
                     ].filter(Boolean)}
                     note={t.travelSuccessNote}
                     links={[
@@ -248,21 +330,25 @@ export default function TravelDetailsSection() {
                     {t.travelConfirmIntro}
                   </p>
 
-                  <form onSubmit={handleSubmit} className="space-y-10">
+                  <form onSubmit={handleSubmit} noValidate className="space-y-10">
                     {/* ── About you ── */}
                     <div className="space-y-7">
                       <p className={sectionLabelCls} style={sectionLabelStyle}>{t.stepAboutTitle}</p>
 
                       <div className="space-y-2">
                         <label className={labelCls} style={labelStyle}>{t.fullName}</label>
-                        <input type="text" value={fields.full_name} onChange={setField('full_name')} required
-                          placeholder="Your name" className={inputCls} style={inputStyle} />
+                        <input id="field-name" type="text" value={fields.full_name} onChange={setField('full_name')} required
+                          autoComplete="name" aria-invalid={!!errors.name}
+                          placeholder="Your name" className={`${inputCls} ${errors.name ? errorBorderCls : ''}`} style={inputStyle} />
+                        {errors.name && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.name}</p>}
                       </div>
 
                       <div className="space-y-2">
                         <label className={labelCls} style={labelStyle}>{t.mobile}</label>
-                        <input type="tel" value={fields.mobile_number} onChange={setField('mobile_number')} required
-                          placeholder="10-digit mobile number" className={inputCls} style={inputStyle} />
+                        <input id="field-mobile" type="tel" inputMode="tel" value={fields.mobile_number} onChange={setField('mobile_number')} required
+                          autoComplete="tel" aria-invalid={!!errors.mobile}
+                          placeholder="10-digit mobile number" className={`${inputCls} ${errors.mobile ? errorBorderCls : ''}`} style={inputStyle} />
+                        {errors.mobile && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.mobile}</p>}
                       </div>
 
                       {/* Arrival mode — segmented control with a sliding active pill */}
@@ -312,16 +398,34 @@ export default function TravelDetailsSection() {
                         <label className={labelCls} style={labelStyle}>
                           {t.arrivalTime}
                         </label>
-                        <select value={fields.arrival_time} onChange={setField('arrival_time')} required
-                          className={inputCls} style={inputStyle}>
+                        <select id="field-time" value={fields.arrival_time} onChange={setField('arrival_time')} required
+                          aria-invalid={!!errors.time}
+                          className={`${inputCls} ${errors.time ? errorBorderCls : ''}`} style={inputStyle}>
                           <option value="" disabled>—</option>
                           {ARRIVAL_TIME_VALUES.map((value, i) => (
                             <option key={value} value={value}>{t.arrivalTimeSlots[i]}</option>
                           ))}
+                          <option value={OTHER_TIME}>{t.arrivalTimeOther}</option>
                         </select>
+                        {errors.time && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.time}</p>}
                         <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
                         <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.arrivalTimeEstimateHint}</p>
                       </div>
+
+                      {fields.arrival_time === OTHER_TIME && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE }}
+                          className="space-y-2 rounded-2xl border-2 border-gold/45 bg-paper-light px-5 py-5"
+                        >
+                          <label htmlFor="field-other" className={labelCls} style={labelStyle}>{t.arrivalOtherLabel}</label>
+                          <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>{t.arrivalOtherHint}</p>
+                          <input id="field-other" type="text" value={fields.arrival_other} onChange={setField('arrival_other')}
+                            autoComplete="off" aria-invalid={!!errors.other}
+                            placeholder={t.arrivalOtherPlaceholder}
+                            className={`${inputCls} ${errors.other ? errorBorderCls : ''}`} style={inputStyle} />
+                          {errors.other && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.other}</p>}
+                        </motion.div>
+                      )}
 
                       <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>
                         {t.arrivalTimeReminder}
@@ -414,9 +518,30 @@ export default function TravelDetailsSection() {
                         {fileError && (
                           <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{fileError}</p>
                         )}
+                        {errors.id && (
+                          <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.id}</p>
+                        )}
                       </div>
                     </div>
 
+                    {attempted && Object.keys(errors).length > 0 && (
+                      <div ref={bannerRef} role="alert" aria-live="assertive"
+                        className="scroll-mt-28 rounded-2xl border-2 border-rose-400 bg-rose-50 px-5 py-5">
+                        <p className="font-sans font-semibold text-rose-800 mb-1" style={{ fontSize: '1.02rem' }}>{t.formFixTitle}</p>
+                        <p className="font-sans text-rose-700/80 mb-3" style={{ fontSize: '0.85rem' }}>{t.formFixTap}</p>
+                        <ul className="space-y-2">
+                          {FIELD_ORDER.filter((k) => errors[k]).map((k) => (
+                            <li key={k}>
+                              <button type="button" onClick={() => jumpTo(k)}
+                                className="w-full text-left rounded-xl bg-white/80 border border-rose-300 px-4 py-3 font-sans text-rose-900 underline decoration-rose-300 underline-offset-4"
+                                style={{ fontSize: '0.95rem' }}>
+                                {k === 'name' ? t.fullName : k === 'mobile' ? t.mobile : k === 'time' ? t.arrivalTime : k === 'other' ? t.arrivalOtherLabel : t.idUploadLabel} →
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                     {formState === 'error' && errorMsg && (
                       <p className="font-sans text-rose-700" style={{ fontSize: '1rem' }}>{errorMsg}</p>
                     )}

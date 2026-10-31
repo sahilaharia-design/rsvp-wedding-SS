@@ -101,12 +101,16 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
       return
     }
     if (!selfStatus || (selfStatus === 'joining' && !selfHand)) {
-      setErrorMsg(t.mehndiErrorGeneric)
+      setErrorMsg(t.mehndiMissingChoiceError)
       return
     }
     for (const g of guests) {
-      if (!g.name.trim() || !g.status || (g.status === 'joining' && !g.hand)) {
-        setErrorMsg(t.mehndiErrorGeneric)
+      if (!g.name.trim()) {
+        setErrorMsg(t.mehndiMissingGuestNameError)
+        return
+      }
+      if (!g.status || (g.status === 'joining' && !g.hand)) {
+        setErrorMsg(t.mehndiMissingChoiceError)
         return
       }
     }
@@ -193,7 +197,7 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
                     {t.mehndiIntro}
                   </p>
 
-                  <form onSubmit={handleSubmit} className="space-y-8">
+                  <form onSubmit={handleSubmit} noValidate className="space-y-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className={labelCls} style={labelStyle}>{t.mehndiYourName}</label>
