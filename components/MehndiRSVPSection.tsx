@@ -135,7 +135,7 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
       })
       const json = await res.json()
       if (!res.ok) {
-        setErrorMsg(json.error ?? t.mehndiErrorGeneric)
+        setErrorMsg(res.status >= 500 ? t.mehndiErrorGeneric : (json.error ?? t.mehndiErrorGeneric))
         setFormState('error')
         return
       }

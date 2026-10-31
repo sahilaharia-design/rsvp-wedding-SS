@@ -272,7 +272,7 @@ export default function TravelDetailsSection() {
       })
       const infoJson = await infoRes.json().catch(() => ({} as { error?: string; mobile?: string }))
       if (!infoRes.ok) {
-        setErrorMsg(infoJson.error ?? t.mehndiErrorGeneric)
+        setErrorMsg(infoRes.status >= 500 ? t.mehndiErrorGeneric : (infoJson.error ?? t.mehndiErrorGeneric))
         setFormState('error')
         return
       }

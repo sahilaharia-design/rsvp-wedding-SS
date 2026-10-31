@@ -1,30 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { postToSheet } from '@/lib/sheet'
 
 // Same Apps Script Web App as /api/travel-details — one new 'mehndi_rsvp'
 // action, writing to its own "Mehndi RSVP" tab. See google-apps-script.gs.
-async function postToSheet(payload: Record<string, unknown>) {
-  const url = process.env.TRAVEL_APPS_SCRIPT_URL
-  if (!url || url === 'PENDING') {
-    return { ok: false, error: 'Not configured yet — please try again shortly.' }
-  }
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload),
-    })
-    if (!res.ok) {
-      console.error('Apps Script non-OK response:', res.status)
-      return { ok: false, error: 'Something went wrong. Please try again.' }
-    }
-    const json = await res.json().catch(() => ({ ok: true }))
-    return json
-  } catch (e) {
-    console.error('Apps Script append error:', e)
-    return { ok: false, error: 'Something went wrong. Please try again.' }
-  }
-}
-
 type GuestInput = {
   name?: string
   status?: 'joining' | 'unable' | 'not_sure'
