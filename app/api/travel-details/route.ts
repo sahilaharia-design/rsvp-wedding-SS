@@ -64,15 +64,16 @@ export async function POST(request: NextRequest) {
 
   const result = await postToSheet({
     action: 'travel_info',
-    full_name: full_name.trim(),
+    // Length-clamped so a pasted wall of text can't bloat the sheet.
+    full_name: full_name.trim().slice(0, 100),
     mobile: normalised,
-    arrival_mode: arrival_mode?.trim() ?? '',
-    arrival_date: arrival_date?.trim() ?? '',
-    arrival_time: arrival_time?.trim() ?? '',
-    travel_number: travel_number?.trim() ?? '',
-    departure_date: departure_date?.trim() ?? '',
-    guest_names: guest_names?.trim() ?? '',
-    notes: notes?.trim() ?? '',
+    arrival_mode: arrival_mode?.trim().slice(0, 20) ?? '',
+    arrival_date: arrival_date?.trim().slice(0, 20) ?? '',
+    arrival_time: arrival_time?.trim().slice(0, 160) ?? '',
+    travel_number: travel_number?.trim().slice(0, 80) ?? '',
+    departure_date: departure_date?.trim().slice(0, 20) ?? '',
+    guest_names: guest_names?.trim().slice(0, 300) ?? '',
+    notes: notes?.trim().slice(0, 600) ?? '',
   })
 
   if (!result.ok) {

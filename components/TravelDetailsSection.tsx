@@ -16,6 +16,8 @@ const MAX_FILE_BYTES = 3.2 * 1024 * 1024 // ~3.2MB raw — keeps base64 well und
 // Phone cameras routinely produce 4–8MB photos, so images are shrunk in the
 // browser before the size cap is applied (PDFs can't be, and still hit it).
 const COMPRESS_ABOVE_BYTES = 1.2 * 1024 * 1024
+const COMPRESS_TARGET_BYTES = 2 * 1024 * 1024 // headroom under the ~4.5MB request-body limit, and quicker on mobile data
+const REQUEST_TIMEOUT_MS = 90_000
 const OTHER_TIME = 'other' // arrival_time sentinel for "later than 2 pm / a different day"
 
 const labelCls = 'block font-sans uppercase text-charcoal/70'
@@ -53,7 +55,7 @@ async function compressImage(file: File): Promise<File> {
       if (!ctx) return file
       ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
       const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', quality))
-      if (blob && blob.size <= MAX_FILE_BYTES) {
+      if (blob && blob.size <= COMPRESS_TARGET_BYTES) {
         bitmap.close?.()
         return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' })
       }
@@ -62,6 +64,18 @@ async function compressImage(file: File): Promise<File> {
     return file
   } catch {
     return file
+  }
+}
+
+// fetch with a hard timeout, so a stalled mobile connection ends in a clear
+// error + retry rather than a button stuck on "Sending…" forever.
+async function fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
+  const ctl = new AbortController()
+  const timer = setTimeout(() => ctl.abort(), REQUEST_TIMEOUT_MS)
+  try {
+    return await fetch(url, { ...init, signal: ctl.signal })
+  } finally {
+    clearTimeout(timer)
   }
 }
 
@@ -135,6 +149,13 @@ export default function TravelDetailsSection() {
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [files, setFiles] = useState<File[]>([])
+  // Mirror of `files` that's readable synchronously, plus the in-flight
+  // photo-preparation promise: a guest who picks a big photo and taps
+  // Confirm straight away must not be told "upload your ID" while it is
+  // still being shrunk — submit waits for it instead.
+  const filesRef = useRef<File[]>([])
+  const pendingFilesRef = useRef<Promise<void> | null>(null)
+  const [processing, setProcessing] = useState(false)
   const [fileError, setFileError] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
@@ -155,13 +176,13 @@ export default function TravelDetailsSection() {
   const [attempted, setAttempted] = useState(false)
   const bannerRef = useRef<HTMLDivElement>(null)
 
-  function validate() {
+  function validate(fileList: File[] = files) {
     const e: Partial<Record<FieldKey, string>> = {}
     if (!fields.full_name.trim()) e.name = t.errName
     if (fields.mobile_number.replace(/\D/g, '').length < 10) e.mobile = t.errMobile
     if (!fields.arrival_time) e.time = t.errTime
     else if (fields.arrival_time === OTHER_TIME && !fields.arrival_other.trim()) e.other = t.errOther
-    if (files.length === 0) e.id = t.idUploadRequiredError
+    if (fileList.length === 0) e.id = t.idUploadRequiredError
     return e
   }
 
@@ -179,18 +200,31 @@ export default function TravelDetailsSection() {
   const setField = (key: keyof FieldsState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setFields((prev) => ({ ...prev, [key]: e.target.value }))
 
-  async function addFiles(list: FileList | File[]) {
+  async function addFilesInner(list: FileList | File[]) {
     const original = Array.from(list)
     if (!original.length) return
-    const picked = await Promise.all(original.map(compressImage))
-    const tooBig = picked.filter((f) => f.size > MAX_FILE_BYTES)
-    const okSized = picked.filter((f) => f.size <= MAX_FILE_BYTES)
-    if (tooBig.length) {
-      setFileError(`"${tooBig[0].name}"${tooBig.length > 1 ? ` and ${tooBig.length - 1} other file(s)` : ''} — too large, please use a photo under 3MB.`)
-    } else {
-      setFileError('')
+    setProcessing(true)
+    try {
+      const picked = await Promise.all(original.map(compressImage))
+      const tooBig = picked.filter((f) => f.size > MAX_FILE_BYTES)
+      const okSized = picked.filter((f) => f.size <= MAX_FILE_BYTES)
+      if (tooBig.length) {
+        setFileError(t.fileTooLargeError.replace('{name}', tooBig[0].name + (tooBig.length > 1 ? ` (+${tooBig.length - 1})` : '')))
+      } else {
+        setFileError('')
+      }
+      const next = [...filesRef.current, ...okSized].slice(0, MAX_FILES)
+      filesRef.current = next
+      setFiles(next)
+    } finally {
+      setProcessing(false)
     }
-    setFiles((prev) => [...prev, ...okSized].slice(0, MAX_FILES))
+  }
+
+  function addFiles(list: FileList | File[]) {
+    const p = addFilesInner(list)
+    pendingFilesRef.current = p
+    return p
   }
 
   function handleFilesSelected(e: React.ChangeEvent<HTMLInputElement>) {
@@ -199,28 +233,33 @@ export default function TravelDetailsSection() {
   }
 
   function removeFile(idx: number) {
-    setFiles((prev) => prev.filter((_, i) => i !== idx))
+    const next = filesRef.current.filter((_, i) => i !== idx)
+    filesRef.current = next
+    setFiles(next)
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (isSubmittingRef.current) return
-    const found = validate()
+    isSubmittingRef.current = true
+    if (pendingFilesRef.current) await pendingFilesRef.current
+    const currentFiles = filesRef.current
+    const found = validate(currentFiles)
     setAttempted(true)
     setErrors(found)
     if (Object.keys(found).length) {
+      isSubmittingRef.current = false
       // Keep the guest at the button, where the "what's left" banner appears.
       requestAnimationFrame(() => bannerRef.current?.scrollIntoView({ behavior: 'instant', block: 'center' }))
       return
     }
     const isOther = fields.arrival_time === OTHER_TIME
-    isSubmittingRef.current = true
     setFormState('submitting')
     setErrorMsg('')
     setUploadProgress('')
 
     try {
-      const infoRes = await fetch('/api/travel-details', {
+      const infoRes = await fetchWithTimeout('/api/travel-details', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -231,9 +270,9 @@ export default function TravelDetailsSection() {
           arrival_time: isOther ? `Other: ${fields.arrival_other.trim()}` : fields.arrival_time,
         }),
       })
-      const infoJson = await infoRes.json()
+      const infoJson = await infoRes.json().catch(() => ({} as { error?: string; mobile?: string }))
       if (!infoRes.ok) {
-        setErrorMsg(infoJson.error ?? 'Something went wrong. Please try again.')
+        setErrorMsg(infoJson.error ?? t.mehndiErrorGeneric)
         setFormState('error')
         return
       }
@@ -241,12 +280,12 @@ export default function TravelDetailsSection() {
       const normalisedMobile = infoJson.mobile as string
       const failedUploads: string[] = []
 
-      for (let i = 0; i < files.length; i++) {
-        setUploadProgress(`${t.uploadingLabel} ${i + 1}/${files.length}`)
-        const file = files[i]
+      for (let i = 0; i < currentFiles.length; i++) {
+        setUploadProgress(`${t.uploadingLabel} ${i + 1}/${currentFiles.length}`)
+        const file = currentFiles[i]
         try {
           const data = await fileToBase64(file)
-          const uploadRes = await fetch('/api/travel-details/upload', {
+          const uploadRes = await fetchWithTimeout('/api/travel-details/upload', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -266,7 +305,7 @@ export default function TravelDetailsSection() {
       setUploadProgress('')
 
       if (failedUploads.length) {
-        setErrorMsg(`Your details were saved, but ${failedUploads.join(', ')} didn't upload. Please try again or send it to us on WhatsApp.`)
+        setErrorMsg(t.travelUploadPartialError.replace('{files}', failedUploads.join(', ')))
         setFormState('error')
         return
       }
@@ -336,18 +375,18 @@ export default function TravelDetailsSection() {
                       <p className={sectionLabelCls} style={sectionLabelStyle}>{t.stepAboutTitle}</p>
 
                       <div className="space-y-2">
-                        <label className={labelCls} style={labelStyle}>{t.fullName}</label>
+                        <label htmlFor="field-name" className={labelCls} style={labelStyle}>{t.fullName}</label>
                         <input id="field-name" type="text" value={fields.full_name} onChange={setField('full_name')} required
-                          autoComplete="name" aria-invalid={!!errors.name}
-                          placeholder="Your name" className={`${inputCls} ${errors.name ? errorBorderCls : ''}`} style={inputStyle} />
+                          autoComplete="name" maxLength={100} aria-invalid={!!errors.name}
+                          placeholder={t.namePlaceholder} className={`${inputCls} ${errors.name ? errorBorderCls : ''}`} style={inputStyle} />
                         {errors.name && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.name}</p>}
                       </div>
 
                       <div className="space-y-2">
-                        <label className={labelCls} style={labelStyle}>{t.mobile}</label>
+                        <label htmlFor="field-mobile" className={labelCls} style={labelStyle}>{t.mobile}</label>
                         <input id="field-mobile" type="tel" inputMode="tel" value={fields.mobile_number} onChange={setField('mobile_number')} required
-                          autoComplete="tel" aria-invalid={!!errors.mobile}
-                          placeholder="10-digit mobile number" className={`${inputCls} ${errors.mobile ? errorBorderCls : ''}`} style={inputStyle} />
+                          autoComplete="tel" maxLength={20} aria-invalid={!!errors.mobile}
+                          placeholder={t.mobilePlaceholder} className={`${inputCls} ${errors.mobile ? errorBorderCls : ''}`} style={inputStyle} />
                         {errors.mobile && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.mobile}</p>}
                       </div>
 
@@ -360,7 +399,7 @@ export default function TravelDetailsSection() {
                             const active = arrivalMode === mode
                             return (
                               <button
-                                key={mode} type="button"
+                                key={mode} type="button" aria-pressed={active}
                                 onClick={() => setArrivalMode(mode)}
                                 className="relative flex flex-col items-center gap-2 rounded-xl py-4 border-2 transition-colors duration-200 overflow-hidden"
                                 style={{ borderColor: active ? '#760D25' : 'rgba(216,198,173,0.6)' }}
@@ -395,7 +434,7 @@ export default function TravelDetailsSection() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className={labelCls} style={labelStyle}>
+                        <label htmlFor="field-time" className={labelCls} style={labelStyle}>
                           {t.arrivalTime}
                         </label>
                         <select id="field-time" value={fields.arrival_time} onChange={setField('arrival_time')} required
@@ -420,7 +459,7 @@ export default function TravelDetailsSection() {
                           <label htmlFor="field-other" className={labelCls} style={labelStyle}>{t.arrivalOtherLabel}</label>
                           <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>{t.arrivalOtherHint}</p>
                           <input id="field-other" type="text" value={fields.arrival_other} onChange={setField('arrival_other')}
-                            autoComplete="off" aria-invalid={!!errors.other}
+                            autoComplete="off" maxLength={120} aria-invalid={!!errors.other}
                             placeholder={t.arrivalOtherPlaceholder}
                             className={`${inputCls} ${errors.other ? errorBorderCls : ''}`} style={inputStyle} />
                           {errors.other && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.other}</p>}
@@ -444,7 +483,7 @@ export default function TravelDetailsSection() {
                         <p className="font-sans text-stone leading-[1.6]" style={{ fontSize: '0.88rem' }}>
                           {t.notesHint}
                         </p>
-                        <textarea value={fields.notes} onChange={setField('notes')} rows={3} autoComplete="off"
+                        <textarea value={fields.notes} onChange={setField('notes')} rows={3} maxLength={600} autoComplete="off"
                           className={inputCls} style={inputStyle} />
                       </div>
 
@@ -453,7 +492,7 @@ export default function TravelDetailsSection() {
                           {travelNumberLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
                         </label>
                         <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.travelNumberHint}</p>
-                        <input type="text" value={fields.travel_number} onChange={setField('travel_number')} autoComplete="off"
+                        <input type="text" value={fields.travel_number} onChange={setField('travel_number')} maxLength={80} autoComplete="off"
                           placeholder="e.g. AI-2401" className={inputCls} style={inputStyle} />
                       </div>
 
@@ -461,7 +500,7 @@ export default function TravelDetailsSection() {
                         <label className={labelCls} style={labelStyle}>
                           {t.guestNamesLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
                         </label>
-                        <input type="text" value={fields.guest_names} onChange={setField('guest_names')} autoComplete="off"
+                        <input type="text" value={fields.guest_names} onChange={setField('guest_names')} maxLength={300} autoComplete="off"
                           className={inputCls} style={inputStyle} />
                       </div>
                     </div>
@@ -484,7 +523,7 @@ export default function TravelDetailsSection() {
                                 {f.name}
                               </span>
                               <button type="button" onClick={() => removeFile(i)}
-                                className="font-sans text-charcoal/50 hover:text-burgundy flex-shrink-0 transition-colors"
+                                className="font-sans text-charcoal/50 hover:text-burgundy flex-shrink-0 transition-colors min-w-[44px] min-h-[44px] -mr-3 flex items-center justify-center"
                                 style={{ fontSize: '0.85rem' }} aria-label={`Remove ${f.name}`}>
                                 ✕
                               </button>
@@ -515,6 +554,9 @@ export default function TravelDetailsSection() {
                           </label>
                         )}
 
+                        {processing && (
+                          <p className="font-sans text-stone" style={{ fontSize: '0.9rem' }}>{t.preparingPhoto}</p>
+                        )}
                         {fileError && (
                           <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{fileError}</p>
                         )}
