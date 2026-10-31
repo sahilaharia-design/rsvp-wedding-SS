@@ -49,31 +49,3 @@ export async function postToSheet(payload: Record<string, unknown>, timeoutMs = 
     return { ok: false, error: GENERIC_ERROR }
   }
 }
-
-// Read-only diagnostic: sends an action the script does not recognise (so it
-// can never write anything) and reports the *shape* of what came back.
-export async function probeSheet() {
-  const url = process.env.TRAVEL_APPS_SCRIPT_URL
-  if (!url || url === 'PENDING') return { configured: false }
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'health_probe_noop' }),
-      signal: AbortSignal.timeout(25_000),
-    })
-    const text = await res.text()
-    let json: { ok?: unknown; error?: unknown } | null = null
-    try { json = JSON.parse(text) } catch { /* not JSON */ }
-    return {
-      configured: true,
-      httpStatus: res.status,
-      contentType: res.headers.get('content-type'),
-      isJson: json !== null,
-      scriptAnswered: json ? { ok: json.ok, error: typeof json.error === 'string' ? json.error.slice(0, 160) : undefined } : null,
-      textHead: json ? undefined : text.slice(0, 160).replace(/\s+/g, ' '),
-    }
-  } catch (e) {
-    return { configured: true, fetchError: String(e).slice(0, 200) }
-  }
-}
