@@ -19,6 +19,7 @@ export async function postToSheet(payload: Record<string, unknown>, timeoutMs = 
     console.error('[sheet] TRAVEL_APPS_SCRIPT_URL is not configured')
     return { ok: false, error: GENERIC_ERROR }
   }
+  const started = Date.now()
   try {
     const res = await fetch(url, {
       method: 'POST',
@@ -43,6 +44,7 @@ export async function postToSheet(payload: Record<string, unknown>, timeoutMs = 
       console.error('[sheet] script reported failure', JSON.stringify(json).slice(0, 300))
       return { ok: false, error: GENERIC_ERROR }
     }
+    console.info(`[sheet] ${String(payload.action)} ok in ${Date.now() - started}ms`)
     return { ok: true, data: obj as Record<string, unknown> }
   } catch (e) {
     console.error('[sheet] request failed', e)

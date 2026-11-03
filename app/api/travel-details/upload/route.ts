@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { postToSheet } from '@/lib/sheet'
 
+// Guests are in India: run next to them (Mumbai) so photo uploads reach the server quickly.
+export const preferredRegion = 'bom1'
+
 // Base64 is ~1.37x the raw file size — this caps raw files at roughly 3.2MB,
 // comfortably under typical serverless request body limits with headroom
 // for JSON field overhead.

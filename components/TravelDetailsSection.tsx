@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
@@ -15,8 +15,10 @@ const MAX_FILES = 4
 const MAX_FILE_BYTES = 3.2 * 1024 * 1024 // ~3.2MB raw — keeps base64 well under the API's cap
 // Phone cameras routinely produce 4–8MB photos, so images are shrunk in the
 // browser before the size cap is applied (PDFs can't be, and still hit it).
-const COMPRESS_ABOVE_BYTES = 1.2 * 1024 * 1024
-const COMPRESS_TARGET_BYTES = 2 * 1024 * 1024 // headroom under the ~4.5MB request-body limit, and quicker on mobile data
+// ID photos only need to be legible, not high-res. Smaller files upload far
+// faster over mobile data (the biggest single factor in how long Confirm takes).
+const COMPRESS_ABOVE_BYTES = 400 * 1024
+const COMPRESS_TARGET_BYTES = 900 * 1024
 const REQUEST_TIMEOUT_MS = 90_000
 const OTHER_TIME = 'other' // arrival_time sentinel for "later than 2 pm / a different day"
 
@@ -46,7 +48,7 @@ async function compressImage(file: File): Promise<File> {
   if (!file.type.startsWith('image/') || file.type === 'image/gif' || file.size <= COMPRESS_ABOVE_BYTES) return file
   try {
     const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
-    for (const [maxDim, quality] of [[2000, 0.82], [1500, 0.7], [1100, 0.65]] as const) {
+    for (const [maxDim, quality] of [[1600, 0.75], [1280, 0.68], [1000, 0.6]] as const) {
       const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height))
       const canvas = document.createElement('canvas')
       canvas.width = Math.round(bitmap.width * scale)
@@ -78,6 +80,37 @@ async function fetchWithTimeout(url: string, init: RequestInit): Promise<Respons
     clearTimeout(timer)
   }
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+class HttpError extends Error {
+  constructor(public status: number) { super(`HTTP ${status}`) }
+}
+
+async function uploadOnce(body: Record<string, string>) {
+  const res = await fetchWithTimeout('/api/travel-details/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new HttpError(res.status)
+}
+
+// The sheet backend (Google Apps Script) occasionally hiccups, so a network
+// error or 5xx gets one automatic retry before the guest ever sees a problem.
+// Client errors (bad/oversized file) are not retried — they'd fail again.
+async function uploadWithRetry(body: Record<string, string>) {
+  try {
+    await uploadOnce(body)
+  } catch (err) {
+    if (err instanceof HttpError && err.status < 500) throw err
+    await sleep(1500)
+    await uploadOnce(body)
+  }
+}
+
+type StepStatus = 'active' | 'done' | 'error'
+interface StepRow { key: string; label: string; status: StepStatus }
 
 type FieldKey = 'name' | 'mobile' | 'time' | 'other' | 'id'
 const FIELD_IDS: Record<FieldKey, string> = {
@@ -158,7 +191,34 @@ export default function TravelDetailsSection() {
   const [processing, setProcessing] = useState(false)
   const [fileError, setFileError] = useState('')
   const [dragOver, setDragOver] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState('')
+  // Submit progress: the details save and every ID upload run at the same
+  // time, each with its own row so the guest can see exactly what's happening
+  // (previously: one tiny "Uploading 1/2" line while everything ran in a queue).
+  const [steps, setSteps] = useState<StepRow[]>([])
+  const [slow, setSlow] = useState(false)
+  const progressRef = useRef<HTMLDivElement>(null)
+  // What has already been saved — so a retry after a partial failure only
+  // redoes what actually failed (no duplicate ID files in Drive).
+  const savedInfoRef = useRef<string | null>(null)
+  const uploadedRef = useRef<Map<File, string>>(new Map())
+
+  function setStep(key: string, status: StepStatus) {
+    setSteps((prev) => prev.map((s) => (s.key === key ? { ...s, status } : s)))
+  }
+
+  const previews = useMemo(
+    () => files.map((f) => (f.type.startsWith('image/') ? URL.createObjectURL(f) : null)),
+    [files],
+  )
+  useEffect(() => () => previews.forEach((u) => u && URL.revokeObjectURL(u)), [previews])
+
+  // Closing the tab mid-upload would silently lose the ID photos.
+  useEffect(() => {
+    if (formState !== 'submitting') return
+    const warn = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = '' }
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [formState])
   // Belt-and-suspenders against a double-click or Enter-key repeat firing
   // handleSubmit twice before React re-renders the button's `disabled`
   // state — this ref is synchronous, so the second call bails immediately
@@ -254,67 +314,91 @@ export default function TravelDetailsSection() {
       return
     }
     const isOther = fields.arrival_time === OTHER_TIME
+    const payload = {
+      ...fields,
+      arrival_mode: arrivalMode,
+      // "Later / different day" has no fixed date or slot — the guest's own words go in the time column.
+      arrival_date: isOther ? '' : fields.arrival_date,
+      arrival_time: isOther ? `Other: ${fields.arrival_other.trim()}` : fields.arrival_time,
+    }
+    const payloadKey = JSON.stringify(payload)
+    const mobile = fields.mobile_number.replace(/\D/g, '').slice(-10)
+
     setFormState('submitting')
     setErrorMsg('')
-    setUploadProgress('')
+    setSlow(false)
+    setSteps([
+      { key: 'details', label: t.stepDetails, status: savedInfoRef.current === payloadKey ? 'done' : 'active' },
+      ...currentFiles.map((f, i): StepRow => ({
+        key: `f${i}`,
+        label: `${t.stepIdPhoto} · ${f.name}`,
+        status: uploadedRef.current.get(f) === mobile ? 'done' : 'active',
+      })),
+    ])
+    requestAnimationFrame(() => progressRef.current?.scrollIntoView({ behavior: 'instant', block: 'center' }))
+    const slowTimer = setTimeout(() => setSlow(true), 12_000)
 
     try {
-      const infoRes = await fetchWithTimeout('/api/travel-details', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...fields,
-          arrival_mode: arrivalMode,
-          // "Later / different day" has no fixed date or slot — the guest's own words go in the time column.
-          arrival_date: isOther ? '' : fields.arrival_date,
-          arrival_time: isOther ? `Other: ${fields.arrival_other.trim()}` : fields.arrival_time,
-        }),
-      })
-      const infoJson = await infoRes.json().catch(() => ({} as { error?: string; mobile?: string }))
-      if (!infoRes.ok) {
-        setErrorMsg(infoRes.status >= 500 ? t.mehndiErrorGeneric : (infoJson.error ?? t.mehndiErrorGeneric))
-        setFormState('error')
-        return
-      }
-
-      const normalisedMobile = infoJson.mobile as string
-      const failedUploads: string[] = []
-
-      for (let i = 0; i < currentFiles.length; i++) {
-        setUploadProgress(`${t.uploadingLabel} ${i + 1}/${currentFiles.length}`)
-        const file = currentFiles[i]
+      let detailsErr = ''
+      const detailsTask = (async () => {
+        if (savedInfoRef.current === payloadKey) return true
         try {
-          const data = await fileToBase64(file)
-          const uploadRes = await fetchWithTimeout('/api/travel-details/upload', {
+          const res = await fetchWithTimeout('/api/travel-details', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              mobile_number: normalisedMobile,
-              full_name: fields.full_name,
-              filename: file.name,
-              mime_type: file.type,
-              data,
-            }),
+            body: JSON.stringify(payload),
           })
-          if (!uploadRes.ok) failedUploads.push(file.name)
+          const json = await res.json().catch(() => ({} as { error?: string }))
+          if (!res.ok) {
+            detailsErr = res.status >= 500 ? t.mehndiErrorGeneric : (json.error ?? t.mehndiErrorGeneric)
+            throw new Error('details')
+          }
+          savedInfoRef.current = payloadKey
+          setStep('details', 'done')
+          return true
         } catch {
-          failedUploads.push(file.name)
+          if (!detailsErr) detailsErr = t.travelDetailsError
+          setStep('details', 'error')
+          return false
         }
-      }
+      })()
 
-      setUploadProgress('')
+      // All photos go up in parallel with the details save. This is safe: the
+      // sheet script serialises its row writes, and a photo that lands before
+      // the details simply creates the row, which the details then fill in.
+      const fileTasks = currentFiles.map(async (file, i) => {
+        if (uploadedRef.current.get(file) === mobile) return true
+        try {
+          const data = await fileToBase64(file)
+          await uploadWithRetry({ mobile_number: mobile, full_name: fields.full_name, filename: file.name, mime_type: file.type, data })
+          uploadedRef.current.set(file, mobile)
+          setStep(`f${i}`, 'done')
+          return true
+        } catch {
+          setStep(`f${i}`, 'error')
+          return false
+        }
+      })
 
-      if (failedUploads.length) {
-        setErrorMsg(t.travelUploadPartialError.replace('{files}', failedUploads.join(', ')))
+      const [detailsOk, ...filesOk] = await Promise.all([detailsTask, ...fileTasks])
+
+      if (!detailsOk) {
+        setErrorMsg(detailsErr)
         setFormState('error')
         return
       }
-
+      const failed = currentFiles.filter((_, i) => !filesOk[i])
+      if (failed.length) {
+        setErrorMsg(t.travelUploadPartialError.replace('{files}', failed.map((f) => f.name).join(', ')))
+        setFormState('error')
+        return
+      }
       setFormState('success')
     } catch {
       setErrorMsg(t.travelDetailsError)
       setFormState('error')
     } finally {
+      clearTimeout(slowTimer)
       isSubmittingRef.current = false
     }
   }
@@ -518,12 +602,19 @@ export default function TravelDetailsSection() {
                         <div className="space-y-2">
                           {files.map((f, i) => (
                             <div key={`${f.name}-${i}`}
-                              className="flex items-center justify-between bg-white/70 border border-thread-border/50 px-4 py-3 rounded-xl">
-                              <span className="font-sans text-charcoal truncate pr-3" style={{ fontSize: '0.9rem' }}>
-                                {f.name}
+                              className="flex items-center gap-3 bg-white/70 border border-thread-border/50 pl-3 pr-1 py-2 rounded-xl">
+                              {previews[i] ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={previews[i] as string} alt="" className="w-11 h-11 rounded-lg object-cover flex-shrink-0 border border-thread-border/50" />
+                              ) : (
+                                <span className="w-11 h-11 rounded-lg bg-blush/30 flex items-center justify-center flex-shrink-0 font-sans text-burgundy" style={{ fontSize: '0.7rem' }}>PDF</span>
+                              )}
+                              <span className="min-w-0 flex-1">
+                                <span className="block font-sans text-charcoal truncate" style={{ fontSize: '0.9rem' }}>{f.name}</span>
+                                <span className="block font-sans text-stone/60" style={{ fontSize: '0.75rem' }}>{Math.max(1, Math.round(f.size / 1024))} KB</span>
                               </span>
                               <button type="button" onClick={() => removeFile(i)}
-                                className="font-sans text-charcoal/50 hover:text-burgundy flex-shrink-0 transition-colors min-w-[44px] min-h-[44px] -mr-3 flex items-center justify-center"
+                                className="font-sans text-charcoal/50 hover:text-burgundy flex-shrink-0 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                                 style={{ fontSize: '0.85rem' }} aria-label={`Remove ${f.name}`}>
                                 ✕
                               </button>
@@ -587,14 +678,52 @@ export default function TravelDetailsSection() {
                     {formState === 'error' && errorMsg && (
                       <p className="font-sans text-rose-700" style={{ fontSize: '1rem' }}>{errorMsg}</p>
                     )}
-                    {uploadProgress && (
-                      <p className="font-sans text-stone" style={{ fontSize: '0.9rem' }}>{uploadProgress}</p>
-                    )}
+                    {steps.length > 0 && (formState === 'submitting' || formState === 'error') && (() => {
+                      const done = steps.filter((x) => x.status === 'done').length
+                      return (
+                        <div ref={progressRef} role="status" aria-live="polite"
+                          className="scroll-mt-28 rounded-2xl border-2 border-gold/45 bg-paper-light px-5 py-5 space-y-4">
+                          {formState === 'submitting' && (
+                            <p className="font-sans font-semibold text-charcoal" style={{ fontSize: '1rem' }}>{t.submitTitle}</p>
+                          )}
+                          <div>
+                            <div className="h-2.5 rounded-full bg-thread-border/40 overflow-hidden">
+                              <motion.div className="h-full rounded-full bg-burgundy"
+                                initial={false}
+                                animate={{ width: `${Math.max(done / steps.length, formState === 'submitting' ? 0.06 : 0) * 100}%` }}
+                                transition={{ duration: 0.5, ease: EASE }} />
+                            </div>
+                            <p className="font-sans text-stone/70 mt-2" style={{ fontSize: '0.8rem' }}>
+                              {t.doneOf.replace('{done}', String(done)).replace('{total}', String(steps.length))}
+                            </p>
+                          </div>
+                          <ul className="space-y-2.5">
+                            {steps.map((st) => (
+                              <li key={st.key} className="flex items-center gap-3 font-sans" style={{ fontSize: '0.92rem' }}>
+                                <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center" aria-label={st.status === 'done' ? t.stepDone : st.status === 'error' ? t.stepFailed : undefined}>
+                                  {st.status === 'done' ? (
+                                    <svg viewBox="0 0 24 24" className="w-6 h-6 text-emerald" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" strokeWidth="1.6" /><path d="M7.5 12.5l3 3 6-6.5" /></svg>
+                                  ) : st.status === 'error' ? (
+                                    <svg viewBox="0 0 24 24" className="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="12" cy="12" r="10" strokeWidth="1.6" /><path d="M9 9l6 6M15 9l-6 6" /></svg>
+                                  ) : (
+                                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-burgundy animate-spin" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><circle cx="12" cy="12" r="9" strokeOpacity="0.2" /><path d="M21 12a9 9 0 00-9-9" /></svg>
+                                  )}
+                                </span>
+                                <span className={`min-w-0 truncate ${st.status === 'error' ? 'text-rose-700' : 'text-charcoal'}`}>{st.label}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          {slow && formState === 'submitting' && (
+                            <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.submitSlow}</p>
+                          )}
+                        </div>
+                      )
+                    })()}
 
                     <button type="submit" disabled={formState === 'submitting'}
                       className="shimmer-btn w-full py-4 bg-burgundy text-paper-light font-sans uppercase hover:bg-[#5c0a1c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-sm"
                       style={{ fontSize: '0.9rem', letterSpacing: '0.24em' }}>
-                      {formState === 'submitting' ? t.sending : t.travelConfirmBtn}
+                      {formState === 'submitting' ? t.sending : formState === 'error' && steps.some((x) => x.status === 'error') ? t.tryAgainBtn : t.travelConfirmBtn}
                     </button>
                   </form>
                 </motion.div>
