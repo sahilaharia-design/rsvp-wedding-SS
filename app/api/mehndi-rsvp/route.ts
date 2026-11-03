@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { postToSheet } from '@/lib/sheet'
 
-// Guests are in India: run next to them (Mumbai) so photo uploads reach the server quickly.
-export const preferredRegion = 'bom1'
-
 // Same Apps Script Web App as /api/travel-details — one new 'mehndi_rsvp'
 // action, writing to its own "Mehndi RSVP" tab. See google-apps-script.gs.
 type GuestInput = {

@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { postToSheet } from '@/lib/sheet'
 
-// Guests are in India: run next to them (Mumbai) so photo uploads reach the server quickly.
-export const preferredRegion = 'bom1'
-
 export async function POST(request: NextRequest) {
   let body: {
     full_name?: string
