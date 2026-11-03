@@ -706,7 +706,7 @@ export default function TravelDetailsSection() {
                                   ) : st.status === 'error' ? (
                                     <svg viewBox="0 0 24 24" className="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="12" cy="12" r="10" strokeWidth="1.6" /><path d="M9 9l6 6M15 9l-6 6" /></svg>
                                   ) : (
-                                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-burgundy animate-spin" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><circle cx="12" cy="12" r="9" strokeOpacity="0.2" /><path d="M21 12a9 9 0 00-9-9" /></svg>
+                                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-burgundy animate-spin motion-reduce:animate-none" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><circle cx="12" cy="12" r="9" strokeOpacity="0.2" /><path d="M21 12a9 9 0 00-9-9" /></svg>
                                   )}
                                 </span>
                                 <span className={`min-w-0 truncate ${st.status === 'error' ? 'text-rose-700' : 'text-charcoal'}`}>{st.label}</span>
