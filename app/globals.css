@@ -194,3 +194,45 @@ select {
 @media (prefers-reduced-motion: reduce) {
   .gentle-float { animation: none; }
 }
+
+/* ── Hero atmosphere: drifting petals + cursor spotlight ─────────────────── */
+@keyframes petal-fall {
+  0%   { transform: translate3d(0, -14vh, 0) rotate(0deg); opacity: 0; }
+  8%   { opacity: var(--op); }
+  50%  { transform: translate3d(var(--sway), 48vh, 0) rotate(calc(var(--rot) * 0.5)); }
+  92%  { opacity: var(--op); }
+  100% { transform: translate3d(calc(var(--sway) * -0.7), 112vh, 0) rotate(var(--rot)); opacity: 0; }
+}
+.petal {
+  position: absolute;
+  top: 0;
+  display: block;
+  opacity: 0;
+  will-change: transform;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+  animation: petal-fall var(--dur) linear var(--delay) infinite;
+}
+.petals-paused .petal { animation-play-state: paused; }
+@media (max-width: 767px) {
+  .petal:nth-child(n+10) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .petals-layer, .hero-spotlight { display: none; }
+}
+.hero-spotlight {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(460px circle at var(--mx, 50%) var(--my, 50%), rgba(243,217,164,0.20), transparent 62%);
+  mix-blend-mode: soft-light;
+}
+
+/* ── Hashtag ribbon ──────────────────────────────────────────────────────── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee-scroll 42s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}

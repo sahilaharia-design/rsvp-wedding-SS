@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import SparkleBurst from '@/components/SparkleBurst'
+import Confetti from '@/components/Confetti'
 
 const EASE = [0.25, 0.1, 0.25, 1] as const
 
@@ -45,6 +46,8 @@ export default function FormSuccess({ heading, body, summaryLabel, summary, note
   }, [])
 
   return (
+    <>
+    <Confetti />
     <motion.div
       ref={ref}
       role="status"
@@ -111,5 +114,6 @@ export default function FormSuccess({ heading, body, summaryLabel, summary, note
         ))}
       </div>
     </motion.div>
+    </>
   )
 }

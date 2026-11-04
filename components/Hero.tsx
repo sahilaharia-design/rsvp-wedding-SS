@@ -2,13 +2,14 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import type { Audience } from '@/lib/audience'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
 import { willShowEnvelopeIntro, ENVELOPE_SEQUENCE_MS } from '@/lib/envelopeIntro'
 import Countdown from '@/components/Countdown'
+import HeroAtmosphere from '@/components/HeroAtmosphere'
 
 interface HeroProps {
   onCTAClick: () => void
@@ -39,6 +40,14 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
   const { t } = useLang()
   const isBride = audience === 'bride'
 
+  // Scroll-linked parallax: as the guest scrolls away from the hero, the copy
+  // block drifts up slower than the page and fades out. The photo itself is
+  // deliberately NOT moved (its crop is tuned to the faces — see heroImage).
+  const heroRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -70])
+  const contentOpacity = useTransform(scrollYProgress, [0.35, 0.9], [1, 0])
+
   useEffect(() => {
     if (!isBride && willShowEnvelopeIntro()) {
       setEntranceDelay(ENVELOPE_SEQUENCE_MS / 1000)
@@ -63,7 +72,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
   }
 
   return (
-    <section id="hero" className="relative min-h-[100svh] overflow-hidden bg-ink">
+    <section id="hero" ref={heroRef} className="relative min-h-[100svh] overflow-hidden bg-ink">
       {/* ── Full-bleed photo — a cinematic clip-path wipe reveal on first
             paint, then a slow Ken Burns drift. Never touches the crop/face
             framing itself (scale/clip only, object-position untouched). ── */}
@@ -107,8 +116,10 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
         />
       </motion.div>
 
+      <HeroAtmosphere />
+
       {/* ── Content — anchored to the bottom of the full-height frame ── */}
-      <div className="relative z-10 min-h-[100svh] flex flex-col justify-end max-w-6xl mx-auto px-6 md:px-14 pt-36 pb-14 md:pb-20">
+      <motion.div style={{ y: contentY, opacity: contentOpacity }} className="relative z-10 min-h-[100svh] flex flex-col justify-end max-w-6xl mx-auto px-6 md:px-14 pt-36 pb-14 md:pb-20">
         <motion.div initial="hidden" animate="visible">
           <motion.p variants={heroFade(0.15)}
             className="font-sans uppercase text-gold mb-4"
@@ -206,7 +217,7 @@ export default function Hero({ onCTAClick, audience }: HeroProps) {
             #SakshiKoMilaKinara
           </motion.h2>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* ── Scroll cue ── */}
       <motion.button

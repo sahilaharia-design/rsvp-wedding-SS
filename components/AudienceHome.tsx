@@ -21,6 +21,7 @@ import TopFaqBar from '@/components/TopFaqBar'
 import BottomTabBar from '@/components/BottomTabBar'
 import SiteHeader from '@/components/SiteHeader'
 import SectionThread from '@/components/SectionThread'
+import HashtagMarquee from '@/components/HashtagMarquee'
 import { useLang } from '@/contexts/Language'
 import { AUDIENCE_CONFIG, OTHER_AUDIENCE, type Audience } from '@/lib/audience'
 
@@ -123,6 +124,7 @@ export default function AudienceHome({ audience }: { audience: Audience }) {
             had this "gate" feel and doesn't get it reintroduced here. */}
         {!isBride && <EnvelopeIntro />}
         <Hero onCTAClick={scrollToTravelDetails} audience={audience} />
+        <HashtagMarquee audience={audience} />
         <LadiesPopupTeaser audience={audience} />
 
         {isBride ? (

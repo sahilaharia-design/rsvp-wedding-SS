@@ -7,6 +7,8 @@ import { ReactNode } from 'react'
 import { MotionConfig } from 'framer-motion'
 import { LanguageProvider } from '@/contexts/Language'
 import { MusicProvider } from '@/contexts/Music'
+import ScrollThread from '@/components/ScrollThread'
+import CursorSparkles from '@/components/CursorSparkles'
 
 export default function Providers({ children }: { children: ReactNode }) {
   // reducedMotion="user" makes every Framer Motion animation on the site
@@ -15,7 +17,11 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <MotionConfig reducedMotion="user">
       <LanguageProvider>
-        <MusicProvider>{children}</MusicProvider>
+        <MusicProvider>
+          <ScrollThread />
+          <CursorSparkles />
+          {children}
+        </MusicProvider>
       </LanguageProvider>
     </MotionConfig>
   )
