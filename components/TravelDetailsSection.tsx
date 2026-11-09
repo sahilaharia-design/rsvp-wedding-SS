@@ -183,6 +183,7 @@ export default function TravelDetailsSection() {
   // gets in ~9:45 am) and the train name, which the guest can still edit.
   const [trainTipApplied, setTrainTipApplied] = useState(false)
   function applyTrainTip() {
+    setArrivalMode('train')
     setFields((prev) => ({ ...prev, arrival_time: '10:00', arrival_other: '', travel_number: '12953 August Kranti Rajdhani' }))
     setTrainTipApplied(true)
   }
@@ -462,6 +463,33 @@ export default function TravelDetailsSection() {
                   </p>
 
                   <form onSubmit={handleSubmit} noValidate className="space-y-10">
+
+                    {/* Suggested train for Mumbai guests — always visible at the top of the
+                        form (not hidden behind the "By Train" tap), with a one-tap fill. */}
+                    <div className="relative overflow-hidden rounded-2xl border-2 border-gold/60 bg-gradient-to-br from-gold/10 to-blush/25 px-5 py-5 shadow-sm">
+                      <div className="flex items-start gap-3.5">
+                        <span className="flex-shrink-0 w-11 h-11 rounded-full bg-burgundy text-paper-light flex items-center justify-center">
+                          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3" /><path d="M5 11h14M9 21l2-4M15 21l-2-4" /><circle cx="9" cy="14" r="0.8" fill="currentColor" /><circle cx="15" cy="14" r="0.8" fill="currentColor" /></svg>
+                        </span>
+                        <div className="min-w-0 space-y-2">
+                          <p className="font-sans uppercase text-gold" style={{ fontSize: '0.7rem', letterSpacing: '0.16em' }}>&#10022; {t.trainTipTitle}</p>
+                          <p className="font-serif text-ink leading-tight" style={{ fontSize: '1.3rem' }}>{t.tlR0T}</p>
+                          <p className="font-sans leading-[1.65] text-stone" style={{ fontSize: '0.92rem' }}>{t.trainTipBody}</p>
+                        </div>
+                      </div>
+                      {trainTipApplied ? (
+                        <p className="font-sans text-emerald flex items-start gap-2 mt-4" style={{ fontSize: '0.92rem' }}>
+                          <span aria-hidden="true">&#10003;</span> <span>{t.trainTipDone}</span>
+                        </p>
+                      ) : (
+                        <button type="button" onClick={applyTrainTip}
+                          className="shimmer-btn mt-4 w-full px-5 py-3.5 bg-burgundy text-paper-light font-sans hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
+                          style={{ fontSize: '0.92rem' }}>
+                          {t.trainTipBtn}
+                        </button>
+                      )}
+                    </div>
+
                     {/* ── About you ── */}
                     <div className="space-y-7">
                       <p className={sectionLabelCls} style={sectionLabelStyle}>{t.stepAboutTitle}</p>
@@ -513,28 +541,6 @@ export default function TravelDetailsSection() {
                             )
                           })}
                         </div>
-                        {arrivalMode === 'train' && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }}
-                            className="rounded-2xl border-2 border-gold/50 bg-paper-light px-5 py-5 space-y-3"
-                          >
-                            <p className="font-sans uppercase text-gold flex items-center gap-2" style={{ fontSize: '0.75rem', letterSpacing: '0.16em' }}>
-                              <span aria-hidden="true">&#10022;</span> {t.trainTipTitle}
-                            </p>
-                            <p className="font-sans leading-[1.65] text-stone" style={{ fontSize: '0.92rem' }}>{t.trainTipBody}</p>
-                            {trainTipApplied ? (
-                              <p className="font-sans text-emerald flex items-start gap-2" style={{ fontSize: '0.9rem' }}>
-                                <span aria-hidden="true">&#10003;</span> <span>{t.trainTipDone}</span>
-                              </p>
-                            ) : (
-                              <button type="button" onClick={applyTrainTip}
-                                className="shimmer-btn w-full px-5 py-3.5 border-2 border-burgundy text-burgundy font-sans hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
-                                style={{ fontSize: '0.9rem' }}>
-                                {t.trainTipBtn}
-                              </button>
-                            )}
-                          </motion.div>
-                        )}
                       </div>
                     </div>
 
@@ -562,6 +568,16 @@ export default function TravelDetailsSection() {
                         </select>
                         {errors.time && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.time}</p>}
                         <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
+                        {!trainTipApplied && (
+                          <p className="font-sans leading-[1.55] text-burgundy flex flex-wrap items-center gap-x-2 gap-y-0.5" style={{ fontSize: '0.85rem' }}>
+                            <span className="text-gold"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3" /><path d="M5 11h14M9 21l2-4M15 21l-2-4" /><circle cx="9" cy="14" r="0.8" fill="currentColor" /><circle cx="15" cy="14" r="0.8" fill="currentColor" /></svg></span>
+                            <span>{t.trainInlineHint}</span>
+                            <button type="button" onClick={applyTrainTip}
+                              className="underline underline-offset-4 decoration-gold font-medium min-h-[44px] px-1">
+                              {t.trainInlineBtn}
+                            </button>
+                          </p>
+                        )}
                         <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.arrivalTimeEstimateHint}</p>
                       </div>
 
@@ -606,6 +622,16 @@ export default function TravelDetailsSection() {
                           {travelNumberLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
                         </label>
                         <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.travelNumberHint}</p>
+                        {arrivalMode === 'train' && !trainTipApplied && (
+                          <p className="font-sans leading-[1.55] text-burgundy flex flex-wrap items-center gap-x-2 gap-y-0.5" style={{ fontSize: '0.85rem' }}>
+                            <span className="text-gold"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3" /><path d="M5 11h14M9 21l2-4M15 21l-2-4" /><circle cx="9" cy="14" r="0.8" fill="currentColor" /><circle cx="15" cy="14" r="0.8" fill="currentColor" /></svg></span>
+                            <span>{t.trainInlineHint}</span>
+                            <button type="button" onClick={applyTrainTip}
+                              className="underline underline-offset-4 decoration-gold font-medium min-h-[44px] px-1">
+                              {t.trainInlineBtn}
+                            </button>
+                          </p>
+                        )}
                         <input type="text" value={fields.travel_number} onChange={setField('travel_number')} maxLength={80} autoComplete="off"
                           placeholder="e.g. AI-2401" className={inputCls} style={inputStyle} />
                       </div>
