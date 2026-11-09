@@ -178,6 +178,14 @@ export default function TravelDetailsSection() {
 
   const [fields, setFields] = useState<FieldsState>(EMPTY_FIELDS)
   const [arrivalMode, setArrivalMode] = useState<ArrivalMode | null>(null)
+  // One-tap helper for the suggested Mumbai → Hazrat Nizamuddin train (shown
+  // when "By Train" is picked): fills the nearest arrival slot (the train
+  // gets in ~9:45 am) and the train name, which the guest can still edit.
+  const [trainTipApplied, setTrainTipApplied] = useState(false)
+  function applyTrainTip() {
+    setFields((prev) => ({ ...prev, arrival_time: '10:00', arrival_other: '', travel_number: '12953 August Kranti Rajdhani' }))
+    setTrainTipApplied(true)
+  }
 
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -505,6 +513,28 @@ export default function TravelDetailsSection() {
                             )
                           })}
                         </div>
+                        {arrivalMode === 'train' && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }}
+                            className="rounded-2xl border-2 border-gold/50 bg-paper-light px-5 py-5 space-y-3"
+                          >
+                            <p className="font-sans uppercase text-gold flex items-center gap-2" style={{ fontSize: '0.75rem', letterSpacing: '0.16em' }}>
+                              <span aria-hidden="true">&#10022;</span> {t.trainTipTitle}
+                            </p>
+                            <p className="font-sans leading-[1.65] text-stone" style={{ fontSize: '0.92rem' }}>{t.trainTipBody}</p>
+                            {trainTipApplied ? (
+                              <p className="font-sans text-emerald flex items-start gap-2" style={{ fontSize: '0.9rem' }}>
+                                <span aria-hidden="true">&#10003;</span> <span>{t.trainTipDone}</span>
+                              </p>
+                            ) : (
+                              <button type="button" onClick={applyTrainTip}
+                                className="shimmer-btn w-full px-5 py-3.5 border-2 border-burgundy text-burgundy font-sans hover:bg-burgundy hover:text-paper-light transition-colors duration-300 rounded-sm"
+                                style={{ fontSize: '0.9rem' }}>
+                                {t.trainTipBtn}
+                              </button>
+                            )}
+                          </motion.div>
+                        )}
                       </div>
                     </div>
 
