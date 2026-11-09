@@ -112,7 +112,7 @@ export const strings = {
     // Makeup guide (groom side, /groom/makeup)
     makeupEyebrow:     'For the Lovely Ladies',
     makeupHeading:     'Your Makeup, Your Choice',
-    makeupBody1:       'Makeup is personal. We\'ve put together a few nearby Pitampura salons to make exploring easier, or you can choose an artist you already love. Please contact, book and pay your chosen salon directly, and arrange your ride from the hotel and back.',
+    makeupBody1:       'Makeup is personal. We\'ve put together a few nearby Pitampura salons to make exploring easier, or you can choose an artist you already love.',
     makeupTimingHeading: 'Wed 20 & Thu 21 January · 3–5 pm',
     makeupTimingBody:  'This is the entire two-hour window for the trip to the salon, makeup, and the trip back. We\'re in the heart of Pitampura, with nearby salons easy to reach. Please be back at the hotel by or before 5 pm.',
     makeupDisclaimer:  'These salons are starting points, not appointments we\'ve arranged — please check services, rates and available slots directly.',
@@ -357,7 +357,7 @@ export const strings = {
 
     makeupEyebrow:     'प्रिय महिला मेहमानों के लिए',
     makeupHeading:     'आपका मेकअप, आपकी पसंद',
-    makeupBody1:       'मेकअप व्यक्तिगत पसंद है। हमने खोज आसान बनाने के लिए पितमपुरा के कुछ नज़दीकी सैलून चुने हैं, या आप अपनी पसंदीदा आर्टिस्ट चुन सकती हैं। कृपया अपने चुने हुए सैलून से सीधे संपर्क करें, बुकिंग करें और भुगतान करें, और होटल से आने-जाने की व्यवस्था स्वयं करें।',
+    makeupBody1:       'मेकअप व्यक्तिगत पसंद है। हमने खोज आसान बनाने के लिए पितमपुरा के कुछ नज़दीकी सैलून चुने हैं, या आप अपनी पसंदीदा आर्टिस्ट चुन सकती हैं।',
     makeupTimingHeading: 'बुध 20 और गुरु 21 जनवरी · दोपहर 3–5 बजे',
     makeupTimingBody:  'यह सैलून जाने, मेकअप कराने और वापस आने के लिए पूरी दो घंटे की समय-सीमा है। हम पितमपुरा के मध्य में हैं, जहां नज़दीकी सैलून आसानी से पहुंचा जा सकता है। कृपया शाम 5 बजे तक या उससे पहले होटल लौट आएं।',
     makeupDisclaimer:  'ये सैलून केवल शुरुआती सुझाव हैं, हमारे द्वारा बुक की गई अपॉइंटमेंट नहीं — कृपया सेवाएं, दरें और उपलब्ध समय सीधे जांच लें।',
@@ -596,7 +596,7 @@ export const strings = {
 
     makeupEyebrow:     'પ્રિય મહિલા મહેમાનો માટે',
     makeupHeading:     'તમારો મેકઅપ, તમારી પસંદગી',
-    makeupBody1:       'મેકઅપ વ્યક્તિગત પસંદગી છે. શોધવાનું સરળ બનાવવા અમે પિતમપુરાનાં થોડાં નજીકનાં સલૂન પસંદ કર્યાં છે, અથવા તમે તમારી મનપસંદ આર્ટિસ્ટ પસંદ કરી શકો છો. કૃપા કરી તમારા પસંદ કરેલા સલૂનનો સીધો સંપર્ક કરો, બુક કરો અને ચુકવણી કરો, અને હોટેલથી આવવા-જવાની વ્યવસ્થા જાતે કરો.',
+    makeupBody1:       'મેકઅપ વ્યક્તિગત પસંદગી છે. શોધવાનું સરળ બનાવવા અમે પિતમપુરાનાં થોડાં નજીકનાં સલૂન પસંદ કર્યાં છે, અથવા તમે તમારી મનપસંદ આર્ટિસ્ટ પસંદ કરી શકો છો.',
     makeupTimingHeading: 'બુધ 20 અને ગુરુ 21 જાન્યુઆરી · બપોરે 3–5 વાગ્યા',
     makeupTimingBody:  'આ સલૂન જવા, મેકઅપ કરાવવા અને પાછા આવવા માટેની સંપૂર્ણ બે-કલાકની સમય-મર્યાદા છે. અમે પિતમપુરાના મધ્યમાં છીએ, જ્યાં નજીકનાં સલૂન સરળતાથી પહોંચી શકાય છે. કૃપા કરી સાંજે 5 વાગ્યા સુધીમાં અથવા તે પહેલાં હોટેલ પરત ફરો.',
     makeupDisclaimer:  'આ સલૂન ફક્ત શરૂઆતના સૂચનો છે, અમે બુક કરેલી એપોઇન્ટમેન્ટ નથી — કૃપા કરી સેવાઓ, દરો અને ઉપલબ્ધ સમય સીધા તપાસો.',
