@@ -236,3 +236,23 @@ select {
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
 }
+
+/* ── Diwali diyas (travel landing hero) ──────────────────────────────────── */
+@keyframes diya-flicker {
+  0%, 100% { transform: scale(1, 1) rotate(-1deg); opacity: 1; }
+  25%      { transform: scale(0.94, 1.07) rotate(2.5deg); opacity: 0.92; }
+  50%      { transform: scale(1.05, 0.95) rotate(-2.5deg); opacity: 1; }
+  75%      { transform: scale(0.97, 1.05) rotate(1.5deg); opacity: 0.94; }
+}
+@keyframes diya-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 0.95; transform: scale(1.12); }
+}
+.diya-flame { transform-origin: 50% 100%; animation: diya-flicker 1.5s ease-in-out infinite; }
+.diya-glow  { transform-origin: 50% 50%; animation: diya-glow 2.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .diya-flame, .diya-glow { animation: none; }
+}
+
+/* Anchored jumps to the travel form clear the fixed bar + header. */
+#travel-details { scroll-margin-top: 5.5rem; }
