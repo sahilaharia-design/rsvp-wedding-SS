@@ -493,7 +493,7 @@ export default function TravelDetailsSection() {
                             transition={{ duration: 0.3, ease: EASE }} className="overflow-hidden"
                           >
                             <div className="px-3.5 pb-3.5 space-y-3">
-                              <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.88rem' }}>{t.trainTipBody}</p>
+                              <p className="font-sans leading-[1.6] text-stone whitespace-pre-line" style={{ fontSize: '0.88rem' }}>{t.trainTipBody}</p>
                               <button type="button" onClick={applyTrainTip}
                                 className="shimmer-btn w-full px-4 py-3 bg-burgundy text-paper-light font-sans hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
                                 style={{ fontSize: '0.88rem' }}>
@@ -504,6 +504,12 @@ export default function TravelDetailsSection() {
                         )}
                       </AnimatePresence>
                     </div>
+
+                    {/* January fog heads-up for anyone booking flights or trains. */}
+                    <p className="-mt-6 flex items-start gap-2.5 rounded-xl bg-[#F3B64A]/15 border border-[#E2971F]/35 px-3 py-2.5 font-sans leading-[1.5] text-ink" style={{ fontSize: '0.85rem' }}>
+                      <span className="flex-shrink-0 mt-0.5 text-[#B97914]"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 14a4 4 0 010-8 5 5 0 019.6 1.4A3.3 3.3 0 0116.5 14H7z" /><path d="M5 18h14M8 21h8" /></svg></span>
+                      <span>{t.fogNote}</span>
+                    </p>
 
                     {/* ── About you ── */}
                     <div className="space-y-7">

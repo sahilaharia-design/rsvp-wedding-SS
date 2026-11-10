@@ -90,7 +90,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'who-books-travel',
           audience: 'groom',
           question: 'Do you book our tickets, or should we do that ourselves?',
-          answer: 'Please go ahead and book whichever flight or train works best for you — getting to Delhi is on you. Once you’re here, your stay is taken care of, and we’ll coordinate your pickup from the airport/station during the supported arrival window — see the next question for details.',
+          answer: 'Please go ahead and book whichever flight or train works best for you — getting to Delhi is on you. Once you’re here, your stay is taken care of, and we’ll coordinate your pickup from the airport/station during the supported arrival window — see the next question for details. Please keep January fog in mind when you book — it can delay flights and trains in Delhi, so allow a little buffer.',
         },
         {
           id: 'travel-deadline',
@@ -146,7 +146,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'mumbai-rajdhani',
           audience: 'groom',
           question: 'I’m coming from Mumbai by Rajdhani — which train and stations?',
-          answer: 'Both Mumbai–Delhi Rajdhanis work well for the 20th, and both reach Delhi inside our 6–11 am pickup window. Board at Mumbai Central (MMCT) on Tuesday 19 January 2027 — Borivali also works if it’s closer to you. The Mumbai Rajdhani (12951) leaves around 5:00 pm and reaches New Delhi (NDLS) around 8:30 am. The August Kranti Rajdhani (12953) leaves around 5:10 pm and reaches Hazrat Nizamuddin (NZM) around 9:45 am — a very comfortable arrival time. On the form, pick the nearest time slot. Timings and running days can change, so check IRCTC or NTES when you book (bookings open on 20 November).',
+          answer: 'Both Mumbai–Delhi Rajdhanis work well for the 20th, and both reach Delhi inside our 6–11 am pickup window. Board at Mumbai Central (MMCT) on Tuesday 19 January 2027 — Borivali also works if it’s closer to you. The Mumbai Rajdhani (12951) leaves around 5:00 pm and reaches New Delhi (NDLS) around 8:30 am. The August Kranti Rajdhani (12953) leaves around 5:10 pm and reaches Hazrat Nizamuddin (NZM) around 9:45 am — a very comfortable arrival time. On the form, pick the nearest time slot. Timings and running days can change, so check IRCTC or NTES when you book (bookings open on 20 November). Delhi gets fog in January, so allow a little buffer.',
         },
         {
           id: 'which-airport-station',
@@ -445,7 +445,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'who-books-travel',
           audience: 'groom',
           question: 'क्या आप हमारी टिकट बुक करेंगे, या हमें खुद बुक करनी होगी?',
-          answer: 'जो भी फ़्लाइट या ट्रेन आपके लिए सही रहे, बेझिझक उसकी बुकिंग करें — दिल्ली तक पहुँचना आपकी तरफ़ से है। यहाँ पहुँचने के बाद आपका ठहरना हमारी तरफ़ से है, और तय पिकअप समय के दौरान हम आपकी एयरपोर्ट/स्टेशन पिकअप की व्यवस्था करेंगे — पूरी जानकारी अगले सवाल में है।',
+          answer: 'जो भी फ़्लाइट या ट्रेन आपके लिए सही रहे, बेझिझक उसकी बुकिंग करें — दिल्ली तक पहुँचना आपकी तरफ़ से है। यहाँ पहुँचने के बाद आपका ठहरना हमारी तरफ़ से है, और तय पिकअप समय के दौरान हम आपकी एयरपोर्ट/स्टेशन पिकअप की व्यवस्था करेंगे — पूरी जानकारी अगले सवाल में है। बुकिंग करते समय जनवरी के कोहरे का ध्यान रखें — इससे दिल्ली में फ़्लाइट और ट्रेनें देर से चल सकती हैं, इसलिए थोड़ा समय बचाकर रखें।',
         },
         {
           id: 'travel-deadline',
@@ -501,7 +501,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'mumbai-rajdhani',
           audience: 'groom',
           question: 'मैं मुंबई से राजधानी से आ रहा/रही हूँ — कौन-सी ट्रेन और स्टेशन?',
-          answer: 'मुंबई से दिल्ली की दोनों राजधानी ट्रेनें 20 तारीख़ के लिए अच्छी हैं, और दोनों हमारे सुबह 6 से 11 बजे के पिकअप समय के भीतर दिल्ली पहुँचती हैं। मंगलवार, 19 जनवरी 2027 को मुंबई सेंट्रल (MMCT) से चढ़ें — बोरीवली नज़दीक हो तो वहाँ से भी चढ़ सकते हैं। मुंबई राजधानी (12951) लगभग शाम 5:00 बजे चलती है और लगभग सुबह 8:30 बजे नई दिल्ली (NDLS) पहुँचती है। अगस्त क्रांति राजधानी (12953) लगभग शाम 5:10 बजे चलती है और लगभग सुबह 9:45 बजे हज़रत निज़ामुद्दीन (NZM) पहुँचती है — पहुँचने के लिए बहुत आरामदायक समय। फ़ॉर्म में सबसे नज़दीकी समय चुनें। समय और चलने के दिन बदल सकते हैं, इसलिए बुकिंग करते समय IRCTC या NTES पर देख लें (बुकिंग 20 नवंबर को खुलती है)।',
+          answer: 'मुंबई से दिल्ली की दोनों राजधानी ट्रेनें 20 तारीख़ के लिए अच्छी हैं, और दोनों हमारे सुबह 6 से 11 बजे के पिकअप समय के भीतर दिल्ली पहुँचती हैं। मंगलवार, 19 जनवरी 2027 को मुंबई सेंट्रल (MMCT) से चढ़ें — बोरीवली नज़दीक हो तो वहाँ से भी चढ़ सकते हैं। मुंबई राजधानी (12951) लगभग शाम 5:00 बजे चलती है और लगभग सुबह 8:30 बजे नई दिल्ली (NDLS) पहुँचती है। अगस्त क्रांति राजधानी (12953) लगभग शाम 5:10 बजे चलती है और लगभग सुबह 9:45 बजे हज़रत निज़ामुद्दीन (NZM) पहुँचती है — पहुँचने के लिए बहुत आरामदायक समय। फ़ॉर्म में सबसे नज़दीकी समय चुनें। समय और चलने के दिन बदल सकते हैं, इसलिए बुकिंग करते समय IRCTC या NTES पर देख लें (बुकिंग 20 नवंबर को खुलती है)। जनवरी में दिल्ली में कोहरा रहता है, इसलिए थोड़ा समय बचाकर रखें।',
         },
         {
           id: 'which-airport-station',
@@ -800,7 +800,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'who-books-travel',
           audience: 'groom',
           question: 'શું તમે અમારી ટિકિટ બુક કરશો, કે અમારે જાતે બુક કરવાની રહેશે?',
-          answer: 'તમારા માટે જે પણ ફ્લાઇટ કે ટ્રેન અનુકૂળ હોય તે બેધડક બુક કરો — દિલ્હી સુધી પહોંચવું તમારા તરફથી છે. અહીં પહોંચ્યા પછી તમારું રોકાણ અમારા તરફથી છે, અને નિર્ધારિત પિકઅપ સમય દરમિયાન અમે તમારું એરપોર્ટ/સ્ટેશન પિકઅપ ગોઠવીશું — સંપૂર્ણ વિગતો આગળના પ્રશ્નમાં છે.',
+          answer: 'તમારા માટે જે પણ ફ્લાઇટ કે ટ્રેન અનુકૂળ હોય તે બેધડક બુક કરો — દિલ્હી સુધી પહોંચવું તમારા તરફથી છે. અહીં પહોંચ્યા પછી તમારું રોકાણ અમારા તરફથી છે, અને નિર્ધારિત પિકઅપ સમય દરમિયાન અમે તમારું એરપોર્ટ/સ્ટેશન પિકઅપ ગોઠવીશું — સંપૂર્ણ વિગતો આગળના પ્રશ્નમાં છે. બુકિંગ કરતી વખતે જાન્યુઆરીના ધુમ્મસનું ધ્યાન રાખો — તેનાથી દિલ્હીમાં ફ્લાઇટ અને ટ્રેન મોડી પડી શકે છે, તેથી થોડો સમય બચાવીને રાખો.',
         },
         {
           id: 'travel-deadline',
@@ -856,7 +856,7 @@ export const faqContent: Record<Lang, FaqCategory[]> = {
           id: 'mumbai-rajdhani',
           audience: 'groom',
           question: 'હું મુંબઈથી રાજધાનીમાં આવું છું — કઈ ટ્રેન અને કયા સ્ટેશન?',
-          answer: 'મુંબઈથી દિલ્હીની બંને રાજધાની ટ્રેનો 20 તારીખ માટે સારી છે, અને બંને અમારા સવારે 6 થી 11 વાગ્યાના પિકઅપ સમયની અંદર દિલ્હી પહોંચે છે. મંગળવાર, 19 જાન્યુઆરી 2027ના રોજ મુંબઈ સેન્ટ્રલ (MMCT) થી ચડો — બોરીવલી નજીક હોય તો ત્યાંથી પણ ચડી શકો. મુંબઈ રાજધાની (12951) લગભગ સાંજે 5:00 વાગ્યે ઉપડે છે અને લગભગ સવારે 8:30 વાગ્યે નવી દિલ્હી (NDLS) પહોંચે છે. ઑગસ્ટ ક્રાંતિ રાજધાની (12953) લગભગ સાંજે 5:10 વાગ્યે ઉપડે છે અને લગભગ સવારે 9:45 વાગ્યે હઝરત નિઝામુદ્દીન (NZM) પહોંચે છે — પહોંચવા માટે ખૂબ આરામદાયક સમય. ફોર્મમાં સૌથી નજીકનો સમય પસંદ કરો. સમય અને ચાલવાના દિવસો બદલાઈ શકે છે, તેથી બુકિંગ કરતી વખતે IRCTC અથવા NTES પર જોઈ લો (બુકિંગ 20 નવેમ્બરે ખુલે છે).',
+          answer: 'મુંબઈથી દિલ્હીની બંને રાજધાની ટ્રેનો 20 તારીખ માટે સારી છે, અને બંને અમારા સવારે 6 થી 11 વાગ્યાના પિકઅપ સમયની અંદર દિલ્હી પહોંચે છે. મંગળવાર, 19 જાન્યુઆરી 2027ના રોજ મુંબઈ સેન્ટ્રલ (MMCT) થી ચડો — બોરીવલી નજીક હોય તો ત્યાંથી પણ ચડી શકો. મુંબઈ રાજધાની (12951) લગભગ સાંજે 5:00 વાગ્યે ઉપડે છે અને લગભગ સવારે 8:30 વાગ્યે નવી દિલ્હી (NDLS) પહોંચે છે. ઑગસ્ટ ક્રાંતિ રાજધાની (12953) લગભગ સાંજે 5:10 વાગ્યે ઉપડે છે અને લગભગ સવારે 9:45 વાગ્યે હઝરત નિઝામુદ્દીન (NZM) પહોંચે છે — પહોંચવા માટે ખૂબ આરામદાયક સમય. ફોર્મમાં સૌથી નજીકનો સમય પસંદ કરો. સમય અને ચાલવાના દિવસો બદલાઈ શકે છે, તેથી બુકિંગ કરતી વખતે IRCTC અથવા NTES પર જોઈ લો (બુકિંગ 20 નવેમ્બરે ખુલે છે). જાન્યુઆરીમાં દિલ્હીમાં ધુમ્મસ રહે છે, તેથી થોડો સમય બચાવીને રાખો.',
         },
         {
           id: 'which-airport-station',

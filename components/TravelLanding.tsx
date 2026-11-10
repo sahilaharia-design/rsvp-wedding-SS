@@ -87,6 +87,7 @@ export default function TravelLanding() {
   const steps = useMemo(() => [t.tlStep1, t.tlStep2, t.tlStep3], [t])
   const reassurance = useMemo(() => [
     { title: t.tlR0T, body: t.tlR0B, icon: 'train' },
+    { title: t.tlR5T, body: t.tlR5B, icon: 'fog' },
     { title: t.tlR1T, body: t.tlR1B, icon: 'ticket' },
     { title: t.tlR2T, body: t.tlR2B, icon: 'clock' },
     { title: t.tlR3T, body: t.tlR3B, icon: 'shield' },
@@ -207,6 +208,7 @@ export default function TravelLanding() {
                   <span className="flex-shrink-0 w-10 h-10 rounded-full bg-gold/12 border border-gold/40 flex items-center justify-center text-gold">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       {r.icon === 'train' && <><rect x="5" y="3" width="14" height="14" rx="3" /><path d="M5 11h14M9 21l2-4M15 21l-2-4" /><circle cx="9" cy="14" r="0.8" fill="currentColor" /><circle cx="15" cy="14" r="0.8" fill="currentColor" /></>}
+                      {r.icon === 'fog' && <><path d="M7 14a4 4 0 010-8 5 5 0 019.6 1.4A3.3 3.3 0 0116.5 14H7z" /><path d="M5 18h14M8 21h8" /></>}
                       {r.icon === 'ticket' && <path d="M4 8a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 000-4V8zM14 6v12" />}
                       {r.icon === 'clock' && <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>}
                       {r.icon === 'shield' && <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4" />}
