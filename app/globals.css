@@ -256,3 +256,31 @@ select {
 
 /* Anchored jumps to the travel form clear the fixed bar + header. */
 #travel-details { scroll-margin-top: 5.5rem; }
+
+/* ── Train ticket route line (travel form tip panel) ─────────────────────── */
+.route-line {
+  position: relative;
+  display: block;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #A17B3D 0 6px, transparent 6px 11px);
+}
+.route-dot {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #760D25;
+  box-shadow: 0 0 6px rgba(118,13,37,0.45);
+  animation: route-travel 3.4s ease-in-out infinite;
+}
+@keyframes route-travel {
+  0%   { left: 0; opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { left: calc(100% - 8px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-dot { animation: none; left: calc(100% - 8px); opacity: 1; }
+}

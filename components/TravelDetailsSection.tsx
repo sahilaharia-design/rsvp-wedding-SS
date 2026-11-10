@@ -6,6 +6,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
 import FormSuccess from '@/components/FormSuccess'
+import TravelModeTip, { type TrainPick } from '@/components/TravelModeTip'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 type ArrivalMode = 'flight' | 'train' | 'road'
@@ -178,16 +179,21 @@ export default function TravelDetailsSection() {
 
   const [fields, setFields] = useState<FieldsState>(EMPTY_FIELDS)
   const [arrivalMode, setArrivalMode] = useState<ArrivalMode | null>(null)
-  // One-tap helper for the suggested Mumbai → Hazrat Nizamuddin train (shown
-  // when "By Train" is picked): fills the nearest arrival slot (the train
-  // gets in ~9:45 am) and the train name, which the guest can still edit.
-  const [trainTipApplied, setTrainTipApplied] = useState(false)
-  const [trainTipOpen, setTrainTipOpen] = useState(false)
-  function applyTrainTip() {
+  // Which Rajdhani (if any) the guest has tapped "Use this" on in the tip
+  // panel — derived from the train-number field so it stays honest if they
+  // edit it by hand afterwards.
+  const selectedTrain: TrainPick | null = arrivalMode === 'train'
+    ? (/12953/.test(fields.travel_number) ? '12953' : /12951/.test(fields.travel_number) ? '12951' : null)
+    : null
+  // Fills the nearest arrival slot + the train name; the guest can still edit both.
+  function pickTrain(p: TrainPick) {
     setArrivalMode('train')
-    setFields((prev) => ({ ...prev, arrival_time: '10:00', arrival_other: '', travel_number: '12953 August Kranti Rajdhani' }))
-    setTrainTipApplied(true)
-    setTrainTipOpen(false)
+    setFields((prev) => ({
+      ...prev,
+      arrival_time: p === '12953' ? '10:00' : '09:00', // 9:45 am / 8:30 am arrivals → nearest slot
+      arrival_other: '',
+      travel_number: p === '12953' ? '12953 August Kranti Rajdhani' : '12951 Mumbai Rajdhani',
+    }))
   }
 
   const [formState, setFormState] = useState<FormState>('idle')
@@ -466,51 +472,6 @@ export default function TravelDetailsSection() {
 
                   <form onSubmit={handleSubmit} noValidate className="space-y-10">
 
-                    {/* Suggested train for Mumbai guests — a slim, always-visible strip (so it
-                        can't be missed) that opens to the details + a one-tap fill. Kept
-                        small on purpose: most guests are on phones. */}
-                    <div className="-mt-3 rounded-xl border border-gold/60 bg-gold/10 overflow-hidden">
-                      <button type="button" onClick={() => setTrainTipOpen((o) => !o)} aria-expanded={trainTipOpen}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 text-left min-h-[52px]">
-                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-burgundy text-paper-light flex items-center justify-center">
-                          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3" /><path d="M5 11h14M9 21l2-4M15 21l-2-4" /><circle cx="9" cy="14" r="0.8" fill="currentColor" /><circle cx="15" cy="14" r="0.8" fill="currentColor" /></svg>
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block font-serif text-ink leading-tight" style={{ fontSize: '0.95rem' }}>{t.tlR0T}</span>
-                          <span className={`block font-sans leading-snug ${trainTipApplied ? 'text-emerald' : 'text-stone'}`} style={{ fontSize: '0.76rem' }}>
-                            {trainTipApplied ? t.trainTipAppliedShort : t.trainTipShort}
-                          </span>
-                        </span>
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                          className={`flex-shrink-0 text-gold transition-transform duration-300 ${trainTipOpen ? 'rotate-180' : ''}`} aria-hidden="true">
-                          <path d="M6 9l6 6 6-6" />
-                        </svg>
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {trainTipOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3, ease: EASE }} className="overflow-hidden"
-                          >
-                            <div className="px-3.5 pb-3.5 space-y-3">
-                              <p className="font-sans leading-[1.6] text-stone whitespace-pre-line" style={{ fontSize: '0.88rem' }}>{t.trainTipBody}</p>
-                              <button type="button" onClick={applyTrainTip}
-                                className="shimmer-btn w-full px-4 py-3 bg-burgundy text-paper-light font-sans hover:bg-[#5c0a1c] transition-colors duration-300 rounded-sm"
-                                style={{ fontSize: '0.88rem' }}>
-                                {t.trainTipBtn}
-                              </button>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* January fog heads-up for anyone booking flights or trains. */}
-                    <p className="-mt-6 flex items-start gap-2.5 rounded-xl bg-[#F3B64A]/15 border border-[#E2971F]/35 px-3 py-2.5 font-sans leading-[1.5] text-ink" style={{ fontSize: '0.85rem' }}>
-                      <span className="flex-shrink-0 mt-0.5 text-[#B97914]"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 14a4 4 0 010-8 5 5 0 019.6 1.4A3.3 3.3 0 0116.5 14H7z" /><path d="M5 18h14M8 21h8" /></svg></span>
-                      <span>{t.fogNote}</span>
-                    </p>
-
                     {/* ── About you ── */}
                     <div className="space-y-7">
                       <p className={sectionLabelCls} style={sectionLabelStyle}>{t.stepAboutTitle}</p>
@@ -562,6 +523,7 @@ export default function TravelDetailsSection() {
                             )
                           })}
                         </div>
+                        <TravelModeTip mode={arrivalMode} selectedTrain={selectedTrain} onPickTrain={pickTrain} />
                       </div>
                     </div>
 
@@ -589,16 +551,6 @@ export default function TravelDetailsSection() {
                         </select>
                         {errors.time && <p className="font-sans text-rose-700" style={{ fontSize: '0.9rem' }}>{errors.time}</p>}
                         <p className="font-sans text-stone/60" style={{ fontSize: '0.78rem' }}>{t.arrivalTimeHint}</p>
-                        {!trainTipApplied && (
-                          <p className="font-sans leading-[1.55] text-burgundy flex flex-wrap items-center gap-x-2 gap-y-0.5" style={{ fontSize: '0.85rem' }}>
-                            <span className="text-gold"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3" /><path d="M5 11h14M9 21l2-4M15 21l-2-4" /><circle cx="9" cy="14" r="0.8" fill="currentColor" /><circle cx="15" cy="14" r="0.8" fill="currentColor" /></svg></span>
-                            <span>{t.trainTipShort}</span>
-                            <button type="button" onClick={applyTrainTip}
-                              className="underline underline-offset-4 decoration-gold font-medium min-h-[44px] px-1">
-                              {t.trainInlineBtn}
-                            </button>
-                          </p>
-                        )}
                         <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.arrivalTimeEstimateHint}</p>
                       </div>
 
@@ -643,16 +595,6 @@ export default function TravelDetailsSection() {
                           {travelNumberLabel} <span className="normal-case tracking-normal">{t.optionalTag}</span>
                         </label>
                         <p className="font-sans leading-[1.6] text-stone" style={{ fontSize: '0.85rem' }}>{t.travelNumberHint}</p>
-                        {arrivalMode === 'train' && !trainTipApplied && (
-                          <p className="font-sans leading-[1.55] text-burgundy flex flex-wrap items-center gap-x-2 gap-y-0.5" style={{ fontSize: '0.85rem' }}>
-                            <span className="text-gold"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3" /><path d="M5 11h14M9 21l2-4M15 21l-2-4" /><circle cx="9" cy="14" r="0.8" fill="currentColor" /><circle cx="15" cy="14" r="0.8" fill="currentColor" /></svg></span>
-                            <span>{t.trainTipShort}</span>
-                            <button type="button" onClick={applyTrainTip}
-                              className="underline underline-offset-4 decoration-gold font-medium min-h-[44px] px-1">
-                              {t.trainInlineBtn}
-                            </button>
-                          </p>
-                        )}
                         <input type="text" value={fields.travel_number} onChange={setField('travel_number')} maxLength={80} autoComplete="off"
                           placeholder="e.g. AI-2401" className={inputCls} style={inputStyle} />
                       </div>
