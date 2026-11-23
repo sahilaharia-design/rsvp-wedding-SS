@@ -5,6 +5,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import { AUDIENCE_CONFIG, type Audience } from '@/lib/audience'
 import FormSuccess from '@/components/FormSuccess'
+import { markTask } from '@/lib/gameStore'
 
 type Status = 'joining' | 'unable' | 'not_sure'
 type Hand = 'one_hand' | 'both_hands'
@@ -81,6 +82,8 @@ export default function MehndiRSVPSection({ audience }: { audience: Audience }) 
   const [selfHand, setSelfHand] = useState<Hand | null>(null)
   const [guests, setGuests] = useState<Guest[]>([])
   const [formState, setFormState] = useState<FormState>('idle')
+  // Completing the form ticks it off on the homepage's "Road to the wedding".
+  useEffect(() => { if (formState === 'success') markTask('mehndi') }, [formState])
   const [errorMsg, setErrorMsg] = useState('')
   const isSubmittingRef = useRef(false)
 

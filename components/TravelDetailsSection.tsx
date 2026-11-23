@@ -6,6 +6,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useLang } from '@/contexts/Language'
 import { AUDIENCE_CONFIG } from '@/lib/audience'
 import FormSuccess from '@/components/FormSuccess'
+import { markTask } from '@/lib/gameStore'
 import TravelModeTip, { type TrainPick } from '@/components/TravelModeTip'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
@@ -197,6 +198,8 @@ export default function TravelDetailsSection() {
   }
 
   const [formState, setFormState] = useState<FormState>('idle')
+  // Completing the form ticks it off on the homepage's "Road to the wedding".
+  useEffect(() => { if (formState === 'success') markTask('travel') }, [formState])
   const [errorMsg, setErrorMsg] = useState('')
   const [files, setFiles] = useState<File[]>([])
   // Mirror of `files` that's readable synchronously, plus the in-flight
