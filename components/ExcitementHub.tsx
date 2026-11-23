@@ -58,7 +58,8 @@ export default function ExcitementHub({ audience }: { audience: Audience }) {
     const before = readGame().taps
     const next = addTap()
     setPop((p) => p + 1)
-    try { navigator.vibrate?.(12) } catch { /* not supported */ }
+    // Haptic tick on supporting phones — only after a real user gesture (browsers block it otherwise).
+    try { if (navigator.userActivation?.hasBeenActive) navigator.vibrate?.(12) } catch { /* not supported */ }
     const lvl = (n: number) => LEVELS.reduce((l, need, i) => (n >= need ? i : l), 0)
     if (lvl(next.taps) > lvl(before) && lvl(next.taps) > 0) setBurst((b) => b + 1)
   }, [])
